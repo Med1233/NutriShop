@@ -22,10 +22,25 @@ GitHub (push to main) → GitHub Actions → SSH into Droplet → git pull → d
 
 ### URLs
 
-| Service     | URL                       |
-| ----------- | ------------------------- |
-| Frontend    | http://68.183.214.69:3000 |
-| Backend API | http://68.183.214.69:4000 |
+| Service     | URL                              |
+| ----------- | -------------------------------- |
+| Frontend    | http://68-183-214-69.nip.io:3000 |
+| Backend API | http://68-183-214-69.nip.io:4000 |
+
+### Domain — nip.io
+
+Google OAuth requires a domain name (bare IP addresses are rejected). We use **nip.io**, a free wildcard DNS service that maps any IP to a hostname:
+
+```
+68-183-214-69.nip.io → resolves to 68.183.214.69
+```
+
+No setup needed — it works instantly. If you buy a real domain later, update:
+
+1. DNS A record pointing to the Droplet IP
+2. `.env` on the server (`FRONTEND_URL`, `NEXT_PUBLIC_BACKEND_URL`, `GOOGLE_CALLBACK_URL`)
+3. Google Cloud Console (authorized origins + redirect URIs)
+4. Rebuild the frontend (`docker compose build --no-cache frontend && docker compose up -d`)
 
 ## Server Setup (One-Time)
 
@@ -102,9 +117,9 @@ JWT_SECRET=<generate-with-openssl-rand-hex-32>
 JWT_REFRESH_SECRET=<generate-with-openssl-rand-hex-32>
 GOOGLE_CLIENT_ID=<your-google-client-id>
 GOOGLE_CLIENT_SECRET=<your-google-client-secret>
-GOOGLE_CALLBACK_URL=http://<DROPLET_IP>:4000/api/auth/google/callback
-FRONTEND_URL=http://<DROPLET_IP>:3000
-NEXT_PUBLIC_BACKEND_URL=http://<DROPLET_IP>:4000
+GOOGLE_CALLBACK_URL=http://<IP-WITH-DASHES>.nip.io:4000/api/auth/google/callback
+FRONTEND_URL=http://<IP-WITH-DASHES>.nip.io:3000
+NEXT_PUBLIC_BACKEND_URL=http://<IP-WITH-DASHES>.nip.io:4000
 ADMIN_EMAIL=<your-admin-email>
 ADMIN_PASSWORD=<strong-password>
 ADMIN_NAME=Admin
@@ -119,7 +134,18 @@ openssl rand -hex 32   # for JWT_REFRESH_SECRET
 openssl rand -hex 16   # for POSTGRES_PASSWORD
 ```
 
-### 7. Build and Start
+### 7. Configure Google OAuth
+
+In [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials), update your OAuth 2.0 Client:
+
+- **Authorised JavaScript origins**: add `http://<IP-WITH-DASHES>.nip.io:3000`
+- **Authorised redirect URIs**: add `http://<IP-WITH-DASHES>.nip.io:4000/api/auth/google/callback`
+
+Keep the `localhost` entries for local development.
+
+> **Note:** Google OAuth rejects bare IP addresses — a domain name is required. The nip.io hostname satisfies this requirement.
+
+### 8. Build and Start
 
 ```bash
 cd /opt/app
