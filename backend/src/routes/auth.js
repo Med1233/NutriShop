@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const {
   hashPassword,
@@ -281,6 +282,16 @@ router.get('/google', (req, res) => {
     return res.status(501).json({ error: 'Google OAuth is not configured' });
   }
 
+  const state = crypto.randomBytes(32).toString('hex');
+  const isProduction = process.env.NODE_ENV === 'production';
+  res.cookie('oauth_state', state, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'lax',
+    maxAge: 10 * 60 * 1000, // 10 minutes
+    path: '/api/auth',
+  });
+
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
@@ -288,6 +299,7 @@ router.get('/google', (req, res) => {
     scope: 'openid email profile',
     access_type: 'offline',
     prompt: 'consent',
+    state,
   });
 
   res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params}`);
@@ -299,7 +311,15 @@ router.get('/google/callback', async (req, res) => {
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
 
   try {
-    const { code } = req.query;
+    const { code, state } = req.query;
+    const storedState = req.cookies?.oauth_state;
+
+    // Clear the state cookie
+    res.clearCookie('oauth_state', { path: '/api/auth' });
+
+    if (!state || !storedState || state !== storedState) {
+      return res.redirect(`${frontendUrl}/login?error=invalid_state`);
+    }
 
     if (!code) {
       return res.redirect(`${frontendUrl}/login?error=no_code`);
