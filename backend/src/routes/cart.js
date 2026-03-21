@@ -35,11 +35,17 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const { product_id, quantity = 1 } = req.body;
 
-  if (!product_id || !Number.isInteger(Number(product_id)) || Number(product_id) < 1) {
+  if (
+    !product_id ||
+    !Number.isInteger(Number(product_id)) ||
+    Number(product_id) < 1
+  ) {
     return res.status(400).json({ error: 'Valid product_id is required' });
   }
   if (!Number.isInteger(quantity) || quantity < 1 || quantity > 999) {
-    return res.status(400).json({ error: 'Quantity must be an integer between 1 and 999' });
+    return res
+      .status(400)
+      .json({ error: 'Quantity must be an integer between 1 and 999' });
   }
 
   try {
@@ -77,7 +83,9 @@ router.put('/:id', async (req, res) => {
   const { quantity } = req.body;
 
   if (!Number.isInteger(quantity) || quantity < 1 || quantity > 999) {
-    return res.status(400).json({ error: 'Quantity must be an integer between 1 and 999' });
+    return res
+      .status(400)
+      .json({ error: 'Quantity must be an integer between 1 and 999' });
   }
 
   try {

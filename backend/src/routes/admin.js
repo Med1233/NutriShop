@@ -60,7 +60,12 @@ router.post('/users', async (req, res) => {
       [email, passwordHash, name, role || 'customer'],
     );
 
-    auditLog('USER_CREATED', { by: req.user.id, newUser: rows[0].id, email, role: role || 'customer' });
+    auditLog('USER_CREATED', {
+      by: req.user.id,
+      newUser: rows[0].id,
+      email,
+      role: role || 'customer',
+    });
     res.status(201).json(rows[0]);
   } catch (err) {
     console.error(err);
@@ -99,7 +104,11 @@ router.put('/users/:id/role', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    auditLog('ROLE_CHANGED', { by: req.user.id, targetUser: userId, newRole: role });
+    auditLog('ROLE_CHANGED', {
+      by: req.user.id,
+      targetUser: userId,
+      newRole: role,
+    });
     res.json(rows[0]);
   } catch (err) {
     console.error(err);

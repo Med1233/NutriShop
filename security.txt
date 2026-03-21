@@ -1,0 +1,148 @@
+================================================================================
+                    SECURITY AUDIT — NutriShop
+                    Date: 2026-03-21
+================================================================================
+
+POSITIVE FINDINGS
+-----------------
+- All SQL queries use parameterized statements (no SQL injection)
+- Passwords hashed with bcrypt (12 rounds)
+- JWTs stored in HttpOnly cookies with SameSite: lax and secure in production
+- Proper role-based middleware (requireAuth, requireAdmin, requireStaff)
+- CORS scoped to FRONTEND_URL (not wildcard)
+- .env is properly gitignored and not in git history
+- No use of dangerouslySetInnerHTML (no XSS via React)
+
+
+================================================================================
+CRITICAL ISSUES
+================================================================================
+
+#1 — Hardcoded default admin credentials
+   Location: backend/src/db.js
+   Issue:    Default admin seeded with macinessa365@gmail.com / 123456.
+             Anyone with repo access has admin credentials.
+   Fix:      Use environment variables for initial admin credentials.
+             Force password change on first login.
+
+#2 — No rate limiting on authentication endpoints
+   Location: backend/src/routes/auth.js
+   Issue:    /api/auth/login, /register, /refresh have no rate limiting.
+             Allows unlimited brute force password guessing.
+   Fix:      Add express-rate-limit middleware (e.g., 5 attempts per 15 min).
+
+#3 — No security headers (Helmet)
+   Location: backend/src/app.js
+   Issue:    Missing CSP, X-Frame-Options, X-Content-Type-Options,
+             Strict-Transport-Security, Referrer-Policy headers.
+   Fix:      Add helmet middleware: app.use(helmet())
+
+#4 — No CSRF protection
+   Location: backend/src/app.js
+   Issue:    Cookie-based auth without CSRF tokens on state-changing
+             endpoints (POST, PUT, DELETE).
+   Fix:      Implement CSRF protection using csurf or double-submit cookie.
+
+#5 — Missing OAuth state parameter
+   Location: backend/src/routes/auth.js (line ~267)
+   Issue:    Google OAuth flow does not include a state parameter.
+             Vulnerable to OAuth CSRF attacks.
+   Fix:      Generate random state, store in session/cookie, validate on callback.
+
+
+================================================================================
+HIGH SEVERITY ISSUES
+================================================================================
+
+#6 — Account enumeration via provider leak
+   Location: backend/src/routes/auth.js (line 94)
+   Issue:    Login returns "This account uses google sign-in" when email
+             exists but uses OAuth. Reveals registered emails.
+   Fix:      Return identical "Invalid email or password" for all failures.
+
+#7 — Inconsistent password policy
+   Location: backend/src/routes/admin.js (line 36) vs auth.js (line 30)
+   Issue:    Admin user creation allows 6-char passwords.
+             Regular registration requires 8 characters.
+   Fix:      Enforce 8+ characters for all password creation endpoints.
+
+#8 — No input validation library
+   Location: All route files
+   Issue:    Manual validation misses edge cases:
+             - quantity accepts NaN, Infinity, floats, negative via type coercion
+             - req.params.id not validated as positive integer
+             - No max bounds on numeric fields
+   Fix:      Add zod or joi for schema validation on all endpoints.
+
+
+================================================================================
+MEDIUM SEVERITY ISSUES
+================================================================================
+
+#9 — No .env.example file
+   Location: Project root
+   Issue:    New developers have no template for required environment variables.
+   Fix:      Create .env.example with placeholder values.
+
+#10 — No audit logging
+   Location: All routes
+   Issue:    No logging for admin actions, role changes, failed logins,
+             order modifications, or token revocations.
+   Fix:      Implement structured audit logging for security-sensitive operations.
+
+#11 — No email verification
+   Location: backend/src/routes/auth.js
+   Issue:    Registration does not verify email ownership. Attacker can
+             register with someone else's email.
+   Fix:      Send verification email with time-limited token on registration.
+
+#12 — No password reset functionality
+   Location: N/A (feature not implemented)
+   Issue:    Users who forget passwords are locked out.
+   Fix:      Implement password reset via email with time-limited token.
+
+#13 — Weak type validation on route params
+   Location: backend/src/routes/admin.js (lines 81, 105)
+   Issue:    req.params.id parsed with parseInt() for comparison but passed
+             as string to query. Non-numeric IDs not rejected.
+   Fix:      Validate all ID params as positive integers before processing.
+
+#14 — Email enumeration on registration
+   Location: backend/src/routes/auth.js (line 38)
+   Issue:    Returns 409 "Email already registered" — reveals if email exists.
+   Fix:      Return generic 400 error or always return success with
+             "Check your email to verify" pattern.
+
+
+================================================================================
+RECOMMENDED PRIORITY FIXES
+================================================================================
+
+BEFORE PRODUCTION:
+  1. Add helmet for security headers
+  2. Add express-rate-limit on auth endpoints
+  3. Add OAuth state parameter for CSRF protection
+  4. Fix account enumeration (same error for all login failures)
+  5. Enforce consistent 8+ char password minimum everywhere
+  6. Validate quantity as a positive integer with upper bound
+  7. Create .env.example with placeholder values
+
+NEXT SPRINT:
+  8. Add input validation library (zod or joi)
+  9. Add audit logging for admin/auth actions
+  10. Implement email verification and password reset
+
+
+================================================================================
+RECOMMENDED LIBRARIES TO ADD
+================================================================================
+
+  helmet              ^7.0.0    Security headers
+  express-rate-limit  ^7.0.0    Rate limiting
+  zod                 ^3.0.0    Input validation
+  winston             ^3.0.0    Structured logging
+
+
+================================================================================
+END OF REPORT
+================================================================================

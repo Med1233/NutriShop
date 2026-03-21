@@ -48,7 +48,10 @@ router.post('/register', authLimiter, async (req, res) => {
       email,
     ]);
     if (existing.rows.length > 0) {
-      return res.status(400).json({ error: 'Unable to create account. Please try again or use a different email.' });
+      return res.status(400).json({
+        error:
+          'Unable to create account. Please try again or use a different email.',
+      });
     }
 
     const passwordHash = await hashPassword(password);

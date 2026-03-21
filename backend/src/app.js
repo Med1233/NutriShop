@@ -39,7 +39,11 @@ app.get('/api/auth/csrf-token', (req, res) => {
 });
 
 function csrfProtection(req, res, next) {
-  if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') {
+  if (
+    req.method === 'GET' ||
+    req.method === 'HEAD' ||
+    req.method === 'OPTIONS'
+  ) {
     return next();
   }
   const cookieToken = req.cookies?.csrf_token;

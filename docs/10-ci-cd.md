@@ -6,15 +6,15 @@ The project uses **GitHub Actions** for continuous integration. Each workflow is
 
 ## Workflows
 
-| Workflow | File | Triggers on paths | What it does |
-| --- | --- | --- | --- |
-| **Lint & Format** | `lint.yml` | `**.js`, `**.ts`, `**.tsx`, `**.json`, `**.css`, config files | Runs ESLint and Prettier check |
-| **UI Component Tests** | `test-ui.yml` | `packages/ui/**` | Runs `@nutrishop/ui` Vitest tests (57 tests) |
-| **Frontend Tests** | `test-frontend.yml` | `frontend/**`, `packages/ui/**` | Runs frontend Vitest tests (41 tests) |
-| **Backend Tests** | `test-backend.yml` | `backend/**` | Runs backend Vitest tests (69 tests) with Postgres service |
-| **Frontend Build** | `build-frontend.yml` | `frontend/**`, `packages/ui/**` | Verifies `next build` succeeds |
-| **Docker Build** | `docker-build.yml` | `frontend/**`, `backend/**`, `packages/ui/**`, Dockerfiles, docker-compose | Builds backend and frontend Docker images |
-| **E2E Tests** | `e2e.yml` | `frontend/**`, `backend/**`, `packages/ui/**`, `e2e/**` | Full stack Cypress Gherkin tests with artifact uploads |
+| Workflow               | File                 | Triggers on paths                                                          | What it does                                               |
+| ---------------------- | -------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| **Lint & Format**      | `lint.yml`           | `**.js`, `**.ts`, `**.tsx`, `**.json`, `**.css`, config files              | Runs ESLint and Prettier check                             |
+| **UI Component Tests** | `test-ui.yml`        | `packages/ui/**`                                                           | Runs `@nutrishop/ui` Vitest tests (57 tests)               |
+| **Frontend Tests**     | `test-frontend.yml`  | `frontend/**`, `packages/ui/**`                                            | Runs frontend Vitest tests (41 tests)                      |
+| **Backend Tests**      | `test-backend.yml`   | `backend/**`                                                               | Runs backend Vitest tests (69 tests) with Postgres service |
+| **Frontend Build**     | `build-frontend.yml` | `frontend/**`, `packages/ui/**`                                            | Verifies `next build` succeeds                             |
+| **Docker Build**       | `docker-build.yml`   | `frontend/**`, `backend/**`, `packages/ui/**`, Dockerfiles, docker-compose | Builds backend and frontend Docker images                  |
+| **E2E Tests**          | `e2e.yml`            | `frontend/**`, `backend/**`, `packages/ui/**`, `e2e/**`                    | Full stack Cypress Gherkin tests with artifact uploads     |
 
 ## Path Filtering
 
@@ -72,11 +72,11 @@ Builds both images to verify Dockerfiles are valid:
 
 ### Tools
 
-| Tool | Config file | Purpose |
-| --- | --- | --- |
-| ESLint 9 | `eslint.config.js` | Code quality and error detection |
-| Prettier | `.prettierrc` | Code formatting |
-| prettier-plugin-tailwindcss | `.prettierrc` | Tailwind class sorting |
+| Tool                        | Config file        | Purpose                          |
+| --------------------------- | ------------------ | -------------------------------- |
+| ESLint 9                    | `eslint.config.js` | Code quality and error detection |
+| Prettier                    | `.prettierrc`      | Code formatting                  |
+| prettier-plugin-tailwindcss | `.prettierrc`      | Tailwind class sorting           |
 
 ### ESLint Configuration
 

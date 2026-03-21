@@ -89,11 +89,18 @@ router.post('/', requireAuth, requireProductManager, async (req, res) => {
     }
 
     if (isNaN(price) || Number(price) <= 0 || Number(price) > 99999) {
-      return res.status(400).json({ error: 'Price must be a positive number up to 99999' });
+      return res
+        .status(400)
+        .json({ error: 'Price must be a positive number up to 99999' });
     }
 
-    if (stock !== undefined && (!Number.isInteger(Number(stock)) || Number(stock) < 0)) {
-      return res.status(400).json({ error: 'Stock must be a non-negative integer' });
+    if (
+      stock !== undefined &&
+      (!Number.isInteger(Number(stock)) || Number(stock) < 0)
+    ) {
+      return res
+        .status(400)
+        .json({ error: 'Stock must be a non-negative integer' });
     }
 
     const { rows } = await pool.query(
