@@ -1,4 +1,5 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const {
   hashPassword,
   verifyPassword,
@@ -15,9 +16,17 @@ const { requireAuth } = require('../middleware');
 
 const router = express.Router();
 
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // 10 attempts per window
+  message: { error: 'Too many attempts, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // ─── Register (local) ───────────────────────────────────────────────
 
-router.post('/register', async (req, res) => {
+router.post('/register', authLimiter, async (req, res) => {
   try {
     const { email, password, name } = req.body;
 
@@ -72,7 +81,7 @@ router.post('/register', async (req, res) => {
 
 // ─── Login (local) ──────────────────────────────────────────────────
 
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -126,7 +135,7 @@ router.post('/login', async (req, res) => {
 
 // ─── Refresh token ──────────────────────────────────────────────────
 
-router.post('/refresh', async (req, res) => {
+router.post('/refresh', authLimiter, async (req, res) => {
   try {
     const oldToken = req.cookies?.refresh_token;
 
