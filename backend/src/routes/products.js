@@ -88,6 +88,14 @@ router.post('/', requireAuth, requireProductManager, async (req, res) => {
         .json({ error: 'Name, price, and category are required' });
     }
 
+    if (isNaN(price) || Number(price) <= 0 || Number(price) > 99999) {
+      return res.status(400).json({ error: 'Price must be a positive number up to 99999' });
+    }
+
+    if (stock !== undefined && (!Number.isInteger(Number(stock)) || Number(stock) < 0)) {
+      return res.status(400).json({ error: 'Stock must be a non-negative integer' });
+    }
+
     const { rows } = await pool.query(
       `INSERT INTO products (name, description, price, image_url, category, stock, nutrition_info)
        VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
