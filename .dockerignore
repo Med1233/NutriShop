@@ -1,0 +1,12 @@
+node_modules
+**/.pnpm-store
+.next
+.git
+.github
+.claude
+CLAUDE.md
+e2e
+docs
+coverage
+*.md
+!frontend/README.md
