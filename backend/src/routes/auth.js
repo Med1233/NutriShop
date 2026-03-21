@@ -14,6 +14,7 @@ const {
 } = require('../auth');
 const { pool } = require('../db');
 const { requireAuth } = require('../middleware');
+const { auditLog } = require('../audit');
 
 const router = express.Router();
 
@@ -96,19 +97,24 @@ router.post('/login', authLimiter, async (req, res) => {
     );
 
     if (rows.length === 0) {
+      auditLog('LOGIN_FAILED', { email, reason: 'user_not_found', ip: req.ip });
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     const user = rows[0];
 
     if (user.provider !== 'local') {
+      auditLog('LOGIN_FAILED', { email, reason: 'wrong_provider', ip: req.ip });
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     const valid = await verifyPassword(password, user.password_hash);
     if (!valid) {
+      auditLog('LOGIN_FAILED', { email, reason: 'wrong_password', ip: req.ip });
       return res.status(401).json({ error: 'Invalid email or password' });
     }
+
+    auditLog('LOGIN_SUCCESS', { userId: user.id, email, ip: req.ip });
 
     const accessToken = generateAccessToken(user);
     const { token: refreshToken, expiresAt } = await generateRefreshToken(
