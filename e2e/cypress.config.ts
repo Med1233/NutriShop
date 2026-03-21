@@ -28,11 +28,8 @@ export default defineConfig({
           await pool.query('DELETE FROM cart_items');
           await pool.query('DELETE FROM orders');
           await pool.query('DELETE FROM refresh_tokens');
-          const adminEmail =
-            process.env.ADMIN_EMAIL || 'admin@nutrishop.test';
-          await pool.query('DELETE FROM users WHERE email != $1', [
-            adminEmail,
-          ]);
+          const adminEmail = process.env.ADMIN_EMAIL || 'admin@nutrishop.test';
+          await pool.query('DELETE FROM users WHERE email != $1', [adminEmail]);
           await pool.end();
           return null;
         },

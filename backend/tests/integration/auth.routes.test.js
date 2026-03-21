@@ -20,7 +20,7 @@ describe('POST /api/auth/register', () => {
     const res = await request
       .post('/api/auth/register')
       .send({ email: 'dup@test.com', password: 'password123', name: 'Dup' });
-    expect(res.status).toBe(409);
+    expect(res.status).toBe(400);
   });
 
   it('rejects missing fields', async () => {

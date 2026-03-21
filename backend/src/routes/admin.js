@@ -2,6 +2,7 @@ const express = require('express');
 const { pool } = require('../db');
 const { hashPassword } = require('../auth');
 const { requireAuth, requireAdmin } = require('../middleware');
+const { auditLog } = require('../audit');
 
 const router = express.Router();
 
@@ -33,10 +34,10 @@ router.post('/users', async (req, res) => {
         .json({ error: 'Email, password, and name are required' });
     }
 
-    if (password.length < 6) {
+    if (password.length < 8) {
       return res
         .status(400)
-        .json({ error: 'Password must be at least 6 characters' });
+        .json({ error: 'Password must be at least 8 characters' });
     }
 
     if (role && !validRoles.includes(role)) {
@@ -59,6 +60,12 @@ router.post('/users', async (req, res) => {
       [email, passwordHash, name, role || 'customer'],
     );
 
+    auditLog('USER_CREATED', {
+      by: req.user.id,
+      newUser: rows[0].id,
+      email,
+      role: role || 'customer',
+    });
     res.status(201).json(rows[0]);
   } catch (err) {
     console.error(err);
@@ -70,6 +77,11 @@ router.post('/users', async (req, res) => {
 router.put('/users/:id/role', async (req, res) => {
   const { role } = req.body;
   const validRoles = ['customer', 'manager', 'stockist', 'admin'];
+  const userId = Number(req.params.id);
+
+  if (!Number.isInteger(userId) || userId < 1) {
+    return res.status(400).json({ error: 'Invalid user ID' });
+  }
 
   if (!role || !validRoles.includes(role)) {
     return res
@@ -78,20 +90,25 @@ router.put('/users/:id/role', async (req, res) => {
   }
 
   // Prevent admin from changing their own role
-  if (parseInt(req.params.id) === req.user.id) {
+  if (userId === req.user.id) {
     return res.status(400).json({ error: 'Cannot change your own role' });
   }
 
   try {
     const { rows } = await pool.query(
       'UPDATE users SET role = $1, updated_at = NOW() WHERE id = $2 RETURNING id, email, name, role, provider, created_at',
-      [role, req.params.id],
+      [role, userId],
     );
 
     if (rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    auditLog('ROLE_CHANGED', {
+      by: req.user.id,
+      targetUser: userId,
+      newRole: role,
+    });
     res.json(rows[0]);
   } catch (err) {
     console.error(err);
@@ -101,18 +118,25 @@ router.put('/users/:id/role', async (req, res) => {
 
 // DELETE /api/admin/users/:id — delete a user
 router.delete('/users/:id', async (req, res) => {
+  const userId = Number(req.params.id);
+
+  if (!Number.isInteger(userId) || userId < 1) {
+    return res.status(400).json({ error: 'Invalid user ID' });
+  }
+
   // Prevent admin from deleting themselves
-  if (parseInt(req.params.id) === req.user.id) {
+  if (userId === req.user.id) {
     return res.status(400).json({ error: 'Cannot delete your own account' });
   }
 
   try {
     const { rowCount } = await pool.query('DELETE FROM users WHERE id = $1', [
-      req.params.id,
+      userId,
     ]);
     if (rowCount === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
+    auditLog('USER_DELETED', { by: req.user.id, deletedUser: userId });
     res.json({ message: 'User deleted' });
   } catch (err) {
     console.error(err);

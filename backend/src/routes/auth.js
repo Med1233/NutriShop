@@ -1,4 +1,6 @@
 const express = require('express');
+const crypto = require('crypto');
+const rateLimit = require('express-rate-limit');
 const {
   hashPassword,
   verifyPassword,
@@ -12,12 +14,22 @@ const {
 } = require('../auth');
 const { pool } = require('../db');
 const { requireAuth } = require('../middleware');
+const { auditLog } = require('../audit');
 
 const router = express.Router();
 
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // 10 attempts per window
+  message: { error: 'Too many attempts, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: () => process.env.NODE_ENV === 'test',
+});
+
 // ─── Register (local) ───────────────────────────────────────────────
 
-router.post('/register', async (req, res) => {
+router.post('/register', authLimiter, async (req, res) => {
   try {
     const { email, password, name } = req.body;
 
@@ -37,7 +49,10 @@ router.post('/register', async (req, res) => {
       email,
     ]);
     if (existing.rows.length > 0) {
-      return res.status(409).json({ error: 'Email already registered' });
+      return res.status(400).json({
+        error:
+          'Unable to create account. Please try again or use a different email.',
+      });
     }
 
     const passwordHash = await hashPassword(password);
@@ -72,7 +87,7 @@ router.post('/register', async (req, res) => {
 
 // ─── Login (local) ──────────────────────────────────────────────────
 
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -86,21 +101,24 @@ router.post('/login', async (req, res) => {
     );
 
     if (rows.length === 0) {
+      auditLog('LOGIN_FAILED', { email, reason: 'user_not_found', ip: req.ip });
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     const user = rows[0];
 
     if (user.provider !== 'local') {
-      return res.status(401).json({
-        error: `This account uses ${user.provider} sign-in. Please use that method instead.`,
-      });
+      auditLog('LOGIN_FAILED', { email, reason: 'wrong_provider', ip: req.ip });
+      return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     const valid = await verifyPassword(password, user.password_hash);
     if (!valid) {
+      auditLog('LOGIN_FAILED', { email, reason: 'wrong_password', ip: req.ip });
       return res.status(401).json({ error: 'Invalid email or password' });
     }
+
+    auditLog('LOGIN_SUCCESS', { userId: user.id, email, ip: req.ip });
 
     const accessToken = generateAccessToken(user);
     const { token: refreshToken, expiresAt } = await generateRefreshToken(
@@ -126,7 +144,7 @@ router.post('/login', async (req, res) => {
 
 // ─── Refresh token ──────────────────────────────────────────────────
 
-router.post('/refresh', async (req, res) => {
+router.post('/refresh', authLimiter, async (req, res) => {
   try {
     const oldToken = req.cookies?.refresh_token;
 
@@ -272,6 +290,16 @@ router.get('/google', (req, res) => {
     return res.status(501).json({ error: 'Google OAuth is not configured' });
   }
 
+  const state = crypto.randomBytes(32).toString('hex');
+  const isProduction = process.env.NODE_ENV === 'production';
+  res.cookie('oauth_state', state, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'lax',
+    maxAge: 10 * 60 * 1000, // 10 minutes
+    path: '/api/auth',
+  });
+
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
@@ -279,6 +307,7 @@ router.get('/google', (req, res) => {
     scope: 'openid email profile',
     access_type: 'offline',
     prompt: 'consent',
+    state,
   });
 
   res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params}`);
@@ -290,7 +319,15 @@ router.get('/google/callback', async (req, res) => {
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
 
   try {
-    const { code } = req.query;
+    const { code, state } = req.query;
+    const storedState = req.cookies?.oauth_state;
+
+    // Clear the state cookie
+    res.clearCookie('oauth_state', { path: '/api/auth' });
+
+    if (!state || !storedState || state !== storedState) {
+      return res.redirect(`${frontendUrl}/login?error=invalid_state`);
+    }
 
     if (!code) {
       return res.redirect(`${frontendUrl}/login?error=no_code`);
