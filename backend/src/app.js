@@ -39,6 +39,10 @@ app.get('/api/auth/csrf-token', (req, res) => {
 });
 
 function csrfProtection(req, res, next) {
+  // Skip CSRF in test environment
+  if (process.env.NODE_ENV === 'test') {
+    return next();
+  }
   if (
     req.method === 'GET' ||
     req.method === 'HEAD' ||

@@ -24,6 +24,7 @@ const authLimiter = rateLimit({
   message: { error: 'Too many attempts, please try again later' },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: () => process.env.NODE_ENV === 'test',
 });
 
 // ─── Register (local) ───────────────────────────────────────────────

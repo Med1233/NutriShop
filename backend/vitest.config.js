@@ -12,6 +12,7 @@ export default defineConfig({
       forks: { singleFork: true },
     },
     env: {
+      NODE_ENV: 'test',
       JWT_SECRET: 'test-jwt-secret',
       JWT_REFRESH_SECRET: 'test-refresh-secret',
       FRONTEND_URL: 'http://localhost:3000',

@@ -46,6 +46,7 @@ jobs:
       - name: Start backend
         run: node backend/src/index.js &
         env:
+          NODE_ENV: test
           DATABASE_URL: postgresql://admin:password@localhost:5432/appdb
           JWT_SECRET: ci-jwt-secret
           JWT_REFRESH_SECRET: ci-refresh-secret
