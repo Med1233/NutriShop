@@ -8,6 +8,8 @@
 - **jsonwebtoken** for JWT creation/verification
 - **cookie-parser** for reading cookies from requests
 - **cors** for cross-origin request handling
+- **helmet** for security headers (CSP, X-Frame-Options, HSTS, etc.)
+- **express-rate-limit** for brute force protection on auth endpoints
 - **uuid** for generating refresh tokens
 
 ---
@@ -18,16 +20,20 @@ Initializes the Express app with middleware and routes:
 
 ```
 1. Load .env variables
-2. Configure CORS (allow frontend origin with credentials)
-3. Enable JSON body parsing
-4. Enable cookie parsing
-5. Mount auth routes at /api/auth
-6. Define public routes (GET /api/health)
-7. Mount product routes at /api/products (public)
-8. Mount cart routes at /api/cart (auth required)
-9. Mount order routes at /api/orders (auth required)
-10. Start server on port 4000
-11. Initialize database (create tables, seed products)
+2. Enable Helmet security headers
+3. Configure CORS (allow frontend origin with credentials)
+4. Enable JSON body parsing
+5. Enable cookie parsing
+6. CSRF token endpoint (GET /api/auth/csrf-token)
+7. CSRF protection middleware (double-submit cookie on /cart, /orders, /admin)
+8. Mount auth routes at /api/auth (with rate limiting)
+9. Define public routes (GET /api/health)
+10. Mount product routes at /api/products (public)
+11. Mount cart routes at /api/cart (auth + CSRF required)
+12. Mount order routes at /api/orders (auth + CSRF required)
+13. Mount admin routes at /api/admin (admin + CSRF required)
+14. Start server on port 4000
+15. Initialize database (create tables, seed products, seed admin from env)
 ```
 
 ### CORS Configuration
@@ -129,16 +135,18 @@ Must be used after `requireAuth`. Checks that `req.user.role === 'admin'`. Retur
 
 ### Auth Endpoints (mounted at `/api/auth`)
 
-| Method | Path                        | Description               | Auth Required            |
-| ------ | --------------------------- | ------------------------- | ------------------------ |
-| POST   | `/api/auth/register`        | Create local account      | No                       |
-| POST   | `/api/auth/login`           | Login with email/password | No                       |
-| POST   | `/api/auth/refresh`         | Refresh access token      | No (uses refresh cookie) |
-| POST   | `/api/auth/logout`          | Logout current session    | No                       |
-| POST   | `/api/auth/logout-all`      | Revoke all sessions       | Yes                      |
-| GET    | `/api/auth/me`              | Get current user profile  | Yes                      |
-| GET    | `/api/auth/google`          | Start Google OAuth flow   | No                       |
-| GET    | `/api/auth/google/callback` | Google OAuth callback     | No                       |
+| Method | Path                        | Description                  | Auth Required            | Rate Limited |
+| ------ | --------------------------- | ---------------------------- | ------------------------ | ------------ |
+| POST   | `/api/auth/register`        | Create local account         | No                       | Yes          |
+| POST   | `/api/auth/login`           | Login with email/password    | No                       | Yes          |
+| POST   | `/api/auth/refresh`         | Refresh access token         | No (uses refresh cookie) | Yes          |
+| POST   | `/api/auth/logout`          | Logout current session       | No                       | No           |
+| POST   | `/api/auth/logout-all`      | Revoke all sessions          | Yes                      | No           |
+| GET    | `/api/auth/me`              | Get current user profile     | Yes                      | No           |
+| PUT    | `/api/auth/profile`         | Update profile               | Yes                      | No           |
+| GET    | `/api/auth/csrf-token`      | Get CSRF token (sets cookie) | No                       | No           |
+| GET    | `/api/auth/google`          | Start Google OAuth flow      | No                       | No           |
+| GET    | `/api/auth/google/callback` | Google OAuth callback        | No                       | No           |
 
 See [Authentication docs](./02-authentication.md) for detailed request/response formats.
 
@@ -187,16 +195,18 @@ See [E-Commerce docs](./07-ecommerce.md) for full details on the order flow.
 
 ## Dependencies
 
-| Package         | Version | Purpose                                |
-| --------------- | ------- | -------------------------------------- |
-| `express`       | ^4.19   | HTTP framework                         |
-| `pg`            | ^8.12   | PostgreSQL client with connection pool |
-| `bcrypt`        | ^5.1    | Password hashing (native C++ addon)    |
-| `jsonwebtoken`  | ^9.0    | JWT sign/verify                        |
-| `cookie-parser` | ^1.4    | Parse Cookie header into req.cookies   |
-| `cors`          | ^2.8    | CORS headers                           |
-| `dotenv`        | ^16.4   | Load .env file                         |
-| `uuid`          | ^9.0    | Generate v4 UUIDs for refresh tokens   |
+| Package              | Version | Purpose                                |
+| -------------------- | ------- | -------------------------------------- |
+| `express`            | ^4.19   | HTTP framework                         |
+| `pg`                 | ^8.12   | PostgreSQL client with connection pool |
+| `bcryptjs`           | ^2.4    | Password hashing                       |
+| `jsonwebtoken`       | ^9.0    | JWT sign/verify                        |
+| `cookie-parser`      | ^1.4    | Parse Cookie header into req.cookies   |
+| `cors`               | ^2.8    | CORS headers                           |
+| `helmet`             | ^8.0    | Security headers                       |
+| `express-rate-limit` | ^8.0    | Rate limiting on auth endpoints        |
+| `dotenv`             | ^16.4   | Load .env file                         |
+| `uuid`               | ^9.0    | Generate v4 UUIDs for refresh tokens   |
 
 ### Dev Dependencies
 

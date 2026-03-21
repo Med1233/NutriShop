@@ -325,12 +325,18 @@ When any API call returns `401 TOKEN_EXPIRED`, the context automatically tries t
 
 ## Security Summary
 
-| Threat                 | Protection                                                           |
-| ---------------------- | -------------------------------------------------------------------- |
-| Password theft         | bcrypt hashing (12 rounds) — passwords never stored in plain text    |
-| XSS token theft        | HttpOnly cookies — JavaScript cannot access tokens                   |
-| CSRF                   | SameSite=Lax cookies — not sent on cross-site POST requests          |
-| Token replay           | Refresh token rotation — each token is single-use                    |
-| Session hijacking      | Short-lived access tokens (15 min) + logout-all to revoke everything |
-| Email enumeration      | Same error message for "wrong email" and "wrong password"            |
-| OAuth account takeover | Account linking only when same email is verified by Google           |
+| Threat                 | Protection                                                                   |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| Password theft         | bcrypt hashing (12 rounds) — passwords never stored in plain text            |
+| XSS token theft        | HttpOnly cookies — JavaScript cannot access tokens                           |
+| CSRF                   | Double-submit cookie pattern + SameSite=Lax cookies                          |
+| Brute force            | Rate limiting on login/register/refresh (10 requests per 15 min per IP)      |
+| Token replay           | Refresh token rotation — each token is single-use                            |
+| Session hijacking      | Short-lived access tokens (15 min) + logout-all to revoke everything         |
+| Email enumeration      | Generic error messages on both login and registration failures               |
+| OAuth CSRF             | Random state parameter stored in httpOnly cookie, validated on callback      |
+| Security headers       | Helmet middleware (CSP, X-Frame-Options, HSTS, X-Content-Type-Options, etc.) |
+| OAuth account takeover | Account linking only when same email is verified by Google                   |
+| Audit trail            | Structured audit logging for login attempts, role changes, user CRUD         |
+| Input validation       | Strict type/range validation on quantities, IDs, prices                      |
+| Password policy        | Minimum 8 characters enforced consistently on all endpoints                  |

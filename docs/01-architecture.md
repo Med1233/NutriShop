@@ -55,21 +55,24 @@ The Next.js rewrite proxy (`/api/*` → `http://backend:4000/api/*`) works for s
 
 ## Environment Variables
 
-| Variable                       | Used By  | Purpose                                              |
-| ------------------------------ | -------- | ---------------------------------------------------- |
-| `POSTGRES_USER`                | postgres | Database superuser name                              |
-| `POSTGRES_PASSWORD`            | postgres | Database superuser password                          |
-| `POSTGRES_DB`                  | postgres | Default database name                                |
-| `DATABASE_URL`                 | backend  | Full Postgres connection string                      |
-| `JWT_SECRET`                   | backend  | Signs access tokens (JWT)                            |
-| `JWT_REFRESH_SECRET`           | backend  | Reserved for future refresh token signing            |
-| `GOOGLE_CLIENT_ID`             | backend  | Google OAuth app client ID                           |
-| `GOOGLE_CLIENT_SECRET`         | backend  | Google OAuth app secret                              |
-| `GOOGLE_CALLBACK_URL`          | backend  | Google OAuth redirect URI                            |
-| `FRONTEND_URL`                 | backend  | Allowed CORS origin + OAuth redirect target          |
-| `BACKEND_URL`                  | frontend | Backend URL for server-side requests                 |
-| `NEXT_PUBLIC_BACKEND_URL`      | frontend | Backend URL for browser requests (inlined at build)  |
-| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | frontend | Controls Google button visibility (inlined at build) |
+| Variable                       | Used By  | Purpose                                                    |
+| ------------------------------ | -------- | ---------------------------------------------------------- |
+| `POSTGRES_USER`                | postgres | Database superuser name                                    |
+| `POSTGRES_PASSWORD`            | postgres | Database superuser password                                |
+| `POSTGRES_DB`                  | postgres | Default database name                                      |
+| `DATABASE_URL`                 | backend  | Full Postgres connection string                            |
+| `JWT_SECRET`                   | backend  | Signs access tokens (JWT)                                  |
+| `JWT_REFRESH_SECRET`           | backend  | Reserved for future refresh token signing                  |
+| `GOOGLE_CLIENT_ID`             | backend  | Google OAuth app client ID                                 |
+| `GOOGLE_CLIENT_SECRET`         | backend  | Google OAuth app secret                                    |
+| `GOOGLE_CALLBACK_URL`          | backend  | Google OAuth redirect URI                                  |
+| `FRONTEND_URL`                 | backend  | Allowed CORS origin + OAuth redirect target                |
+| `BACKEND_URL`                  | frontend | Backend URL for server-side requests                       |
+| `NEXT_PUBLIC_BACKEND_URL`      | frontend | Backend URL for browser requests (inlined at build)        |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | frontend | Controls Google button visibility (inlined at build)       |
+| `ADMIN_EMAIL`                  | backend  | Default admin account email (seeded on first startup)      |
+| `ADMIN_PASSWORD`               | backend  | Default admin account password                             |
+| `ADMIN_NAME`                   | backend  | Default admin display name (optional, defaults to "Admin") |
 
 ## Project File Structure
 
