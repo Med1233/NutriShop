@@ -18,6 +18,10 @@ build/
 # Docker volumes
 postgres-data/
 
+# Claude
+CLAUDE.md
+.claude/
+
 # OS files
 .DS_Store
 Thumbs.db
