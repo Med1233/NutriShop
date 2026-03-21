@@ -24,13 +24,10 @@ ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 
 RUN pnpm --filter frontend build
 
-# Resolve pnpm symlinks in standalone output so they work outside the monorepo
-RUN cd /app/frontend/.next/standalone && \
-    find node_modules -maxdepth 1 -type l | while read link; do \
-      target=$(readlink -f "$link") && \
-      rm "$link" && \
-      cp -r "$target" "$link"; \
-    done
+# Resolve pnpm symlinks in standalone node_modules by copying
+# real files from the original frontend/node_modules (where symlinks still resolve)
+RUN rm -rf /app/frontend/.next/standalone/node_modules && \
+    cp -rL /app/frontend/node_modules /app/frontend/.next/standalone/node_modules
 
 FROM node:20-alpine AS runner
 
