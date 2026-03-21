@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
@@ -10,6 +11,7 @@ const adminRoutes = require('./routes/admin');
 
 const app = express();
 
+app.use(helmet());
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
