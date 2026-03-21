@@ -1,0 +1,28 @@
+name: Docker Build
+
+on:
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - 'packages/ui/**'
+      - '**/Dockerfile'
+      - 'docker-compose*.yml'
+      - '.dockerignore'
+
+jobs:
+  docker-build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t nutrishop-backend ./backend
+
+      - name: Build frontend image
+        run: >
+          docker build
+          -f frontend/Dockerfile
+          --build-arg NEXT_PUBLIC_BACKEND_URL=http://localhost:4000
+          -t nutrishop-frontend .
