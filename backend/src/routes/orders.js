@@ -5,10 +5,9 @@ const { requireAuth, requireStaff, requireVerified } = require('../middleware');
 const router = express.Router();
 
 router.use(requireAuth);
-router.use(requireVerified);
 
-// POST /api/orders — create order from cart
-router.post('/', async (req, res) => {
+// POST /api/orders — create order from cart (requires verified email)
+router.post('/', requireVerified, async (req, res) => {
   const { shipping_address } = req.body;
 
   if (!shipping_address) {
