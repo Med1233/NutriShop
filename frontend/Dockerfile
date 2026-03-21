@@ -24,10 +24,11 @@ ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 
 RUN pnpm --filter frontend build
 
-# Resolve pnpm symlinks: install production deps with npm for flat node_modules
+# Resolve pnpm symlinks: install only next/react/react-dom with npm for flat node_modules
 RUN cd /app/frontend/.next/standalone && \
-    rm -rf node_modules && \
-    npm install --omit=dev 2>/dev/null
+    rm -rf node_modules package-lock.json && \
+    echo '{"dependencies":{"next":"14.2.35","react":"18.3.1","react-dom":"18.3.1"}}' > package.json && \
+    npm install --omit=dev
 
 FROM node:20-alpine AS runner
 
