@@ -1,26 +1,9 @@
-const nodemailer = require('nodemailer');
-
-function createTransport() {
-  const host = process.env.SMTP_HOST;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-
-  if (!host || !user || !pass) {
-    return null;
-  }
-
-  return nodemailer.createTransport({
-    host,
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: process.env.SMTP_PORT === '465',
-    auth: { user, pass },
-  });
-}
+const { Resend } = require('resend');
 
 async function sendVerificationEmail(to, token, name) {
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
   const verifyUrl = `${frontendUrl}/verify-email?token=${token}`;
-  const from = process.env.SMTP_FROM || process.env.SMTP_USER;
+  const apiKey = process.env.RESEND_API_KEY;
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
@@ -42,15 +25,15 @@ async function sendVerificationEmail(to, token, name) {
     </div>
   `;
 
-  const transport = createTransport();
-
-  if (!transport) {
-    console.log('[EMAIL] SMTP not configured. Verification link:', verifyUrl);
+  if (!apiKey) {
+    console.log('[EMAIL] Resend not configured. Verification link:', verifyUrl);
     return;
   }
 
-  await transport.sendMail({
-    from: `NutriShop <${from}>`,
+  const resend = new Resend(apiKey);
+
+  await resend.emails.send({
+    from: process.env.EMAIL_FROM || 'NutriShop <onboarding@resend.dev>',
     to,
     subject: 'Verify your NutriShop email',
     html,
