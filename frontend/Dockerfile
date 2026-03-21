@@ -30,12 +30,13 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy standalone output and resolve pnpm symlinks into real files
-COPY --from=builder /app/frontend/.next/standalone /tmp/standalone
-RUN cp -rL /tmp/standalone/. ./ && rm -rf /tmp/standalone
+# Copy standalone output
+COPY --from=builder /app/frontend/.next/standalone ./
 # Copy public assets and static files
 COPY --from=builder /app/frontend/public ./public
 COPY --from=builder /app/frontend/.next/static ./.next/static
+# Fix pnpm symlinks: copy the .pnpm store so symlinks resolve correctly
+COPY --from=builder /app/node_modules/.pnpm ./node_modules/.pnpm
 
 EXPOSE 3000
 
