@@ -178,6 +178,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Install Cypress binary
+        run: pnpm --filter e2e exec cypress install
+
       - name: Start backend
         run: node backend/src/index.js &
         env:
