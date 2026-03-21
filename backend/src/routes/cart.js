@@ -1,11 +1,12 @@
 const express = require('express');
 const { pool } = require('../db');
-const { requireAuth } = require('../middleware');
+const { requireAuth, requireVerified } = require('../middleware');
 
 const router = express.Router();
 
-// All cart routes require authentication
+// All cart routes require authentication and verified email
 router.use(requireAuth);
+router.use(requireVerified);
 
 // Prevent Chrome from caching cart responses
 router.use((req, res, next) => {

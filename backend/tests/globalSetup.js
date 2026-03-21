@@ -14,7 +14,12 @@ module.exports = async function setup() {
     name TEXT NOT NULL, role TEXT NOT NULL DEFAULT 'customer',
     phone TEXT DEFAULT '', address TEXT DEFAULT '',
     provider TEXT NOT NULL DEFAULT 'local', provider_id TEXT,
+    email_verified BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMP DEFAULT NOW(), updated_at TIMESTAMP DEFAULT NOW()
+  )`);
+  await pool.query(`CREATE TABLE IF NOT EXISTS verification_tokens (
+    id SERIAL PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token TEXT UNIQUE NOT NULL, expires_at TIMESTAMP NOT NULL, created_at TIMESTAMP DEFAULT NOW()
   )`);
   await pool.query(`CREATE TABLE IF NOT EXISTS refresh_tokens (
     id SERIAL PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -44,6 +49,7 @@ module.exports = async function setup() {
   await pool.query(`DO $$ BEGIN
     ALTER TABLE orders ADD COLUMN IF NOT EXISTS status_updated_by INTEGER REFERENCES users(id) ON DELETE SET NULL;
     ALTER TABLE orders ADD COLUMN IF NOT EXISTS status_updated_at TIMESTAMP;
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN NOT NULL DEFAULT false;
   EXCEPTION WHEN others THEN NULL; END $$`);
 
   await pool.end();

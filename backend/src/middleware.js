@@ -77,10 +77,24 @@ function requireProductManager(req, res, next) {
   next();
 }
 
+/**
+ * Requires verified email. Must be used after requireAuth.
+ */
+function requireVerified(req, res, next) {
+  if (!req.user || !req.user.email_verified) {
+    return res.status(403).json({
+      error: 'Email verification required',
+      code: 'EMAIL_NOT_VERIFIED',
+    });
+  }
+  next();
+}
+
 module.exports = {
   requireAuth,
   optionalAuth,
   requireAdmin,
   requireStaff,
   requireProductManager,
+  requireVerified,
 };

@@ -184,6 +184,17 @@ export const translations: Record<Locale, Record<string, string>> = {
     'chat.clear': 'Clear chat',
     'chat.greeting':
       "Hi! I'm NutriBot. I can help with product recommendations, nutrition questions, and order status. How can I help?",
+    'verification.banner':
+      'Please verify your email address. Check your inbox for the verification link.',
+    'verification.resend': 'Resend verification email',
+    'verification.resendSuccess': 'Verification email sent! Check your inbox.',
+    'verification.resendError':
+      'Failed to send verification email. Please try again.',
+    'verification.pageTitle': 'Email Verification',
+    'verification.success':
+      'Your email has been verified! You can now access all features.',
+    'verification.failed': 'Invalid or expired verification link.',
+    'verification.required': 'Please verify your email to use this feature.',
   },
 
   fr: {
@@ -362,6 +373,18 @@ export const translations: Record<Locale, Record<string, string>> = {
     'chat.clear': 'Effacer',
     'chat.greeting':
       'Bonjour ! Je suis NutriBot. Je peux vous aider avec des recommandations, des questions nutritionnelles et le suivi de commandes. Comment puis-je vous aider ?',
+    'verification.banner':
+      'Veuillez vérifier votre adresse email. Consultez votre boîte de réception.',
+    'verification.resend': 'Renvoyer le mail de vérification',
+    'verification.resendSuccess':
+      'Email de vérification envoyé ! Consultez votre boîte de réception.',
+    'verification.resendError': "Échec de l'envoi. Veuillez réessayer.",
+    'verification.pageTitle': 'Vérification email',
+    'verification.success':
+      'Votre email a été vérifié ! Vous pouvez maintenant accéder à toutes les fonctionnalités.',
+    'verification.failed': 'Lien de vérification invalide ou expiré.',
+    'verification.required':
+      'Veuillez vérifier votre email pour utiliser cette fonctionnalité.',
   },
 
   ar: {
@@ -538,5 +561,17 @@ export const translations: Record<Locale, Record<string, string>> = {
     'chat.clear': 'مسح',
     'chat.greeting':
       'مرحبًا! أنا نيوتري بوت. يمكنني مساعدتك في توصيات المنتجات وأسئلة التغذية وحالة الطلبات. كيف يمكنني مساعدتك؟',
+    'verification.banner':
+      'يرجى التحقق من عنوان بريدك الإلكتروني. تحقق من صندوق الوارد.',
+    'verification.resend': 'إعادة إرسال رسالة التحقق',
+    'verification.resendSuccess':
+      'تم إرسال رسالة التحقق! تحقق من صندوق الوارد.',
+    'verification.resendError': 'فشل الإرسال. يرجى المحاولة مرة أخرى.',
+    'verification.pageTitle': 'التحقق من البريد الإلكتروني',
+    'verification.success':
+      'تم التحقق من بريدك الإلكتروني! يمكنك الآن الوصول إلى جميع الميزات.',
+    'verification.failed': 'رابط التحقق غير صالح أو منتهي الصلاحية.',
+    'verification.required':
+      'يرجى التحقق من بريدك الإلكتروني لاستخدام هذه الميزة.',
   },
 };

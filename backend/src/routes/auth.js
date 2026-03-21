@@ -11,10 +11,14 @@ const {
   revokeAllUserTokens,
   setTokenCookies,
   clearTokenCookies,
+  generateVerificationToken,
+  findVerificationToken,
+  deleteVerificationTokens,
 } = require('../auth');
 const { pool } = require('../db');
 const { requireAuth } = require('../middleware');
 const { auditLog } = require('../audit');
+const { sendVerificationEmail } = require('../email');
 
 const router = express.Router();
 
@@ -57,8 +61,8 @@ router.post('/register', authLimiter, async (req, res) => {
 
     const passwordHash = await hashPassword(password);
     const { rows } = await pool.query(
-      `INSERT INTO users (email, password_hash, name, provider)
-       VALUES ($1, $2, $3, 'local') RETURNING id, email, name, role, provider, created_at`,
+      `INSERT INTO users (email, password_hash, name, provider, email_verified)
+       VALUES ($1, $2, $3, 'local', false) RETURNING id, email, name, role, provider, email_verified, created_at`,
       [email, passwordHash, name],
     );
 
@@ -67,6 +71,14 @@ router.post('/register', authLimiter, async (req, res) => {
     const { token: refreshToken, expiresAt } = await generateRefreshToken(
       user.id,
     );
+
+    // Send verification email
+    try {
+      const verifyToken = await generateVerificationToken(user.id);
+      await sendVerificationEmail(email, verifyToken, name);
+    } catch (err) {
+      console.error('Failed to send verification email:', err);
+    }
 
     setTokenCookies(res, accessToken, refreshToken, expiresAt);
 
@@ -77,6 +89,7 @@ router.post('/register', authLimiter, async (req, res) => {
         name: user.name,
         role: user.role || 'customer',
         provider: user.provider,
+        email_verified: user.email_verified,
       },
     });
   } catch (err) {
@@ -96,7 +109,7 @@ router.post('/login', authLimiter, async (req, res) => {
     }
 
     const { rows } = await pool.query(
-      'SELECT id, email, name, role, password_hash, provider FROM users WHERE email = $1',
+      'SELECT id, email, name, role, password_hash, provider, email_verified FROM users WHERE email = $1',
       [email],
     );
 
@@ -134,6 +147,7 @@ router.post('/login', authLimiter, async (req, res) => {
         name: user.name,
         role: user.role || 'customer',
         provider: user.provider,
+        email_verified: user.email_verified,
       },
     });
   } catch (err) {
@@ -163,7 +177,7 @@ router.post('/refresh', authLimiter, async (req, res) => {
     await revokeRefreshToken(oldToken);
 
     const { rows } = await pool.query(
-      'SELECT id, email, name, role, provider FROM users WHERE id = $1',
+      'SELECT id, email, name, role, provider, email_verified FROM users WHERE id = $1',
       [stored.user_id],
     );
 
@@ -186,6 +200,7 @@ router.post('/refresh', authLimiter, async (req, res) => {
         name: user.name,
         role: user.role || 'customer',
         provider: user.provider,
+        email_verified: user.email_verified,
       },
     });
   } catch (err) {
@@ -228,7 +243,7 @@ router.post('/logout-all', requireAuth, async (req, res) => {
 router.get('/me', requireAuth, async (req, res) => {
   try {
     const { rows } = await pool.query(
-      'SELECT id, email, name, role, phone, address, provider, created_at FROM users WHERE id = $1',
+      'SELECT id, email, name, role, phone, address, provider, email_verified, created_at FROM users WHERE id = $1',
       [req.user.id],
     );
 
@@ -378,16 +393,17 @@ router.get('/google/callback', async (req, res) => {
       // If user exists with local provider, link the Google account
       if (user.provider === 'local') {
         await pool.query(
-          'UPDATE users SET provider = $1, provider_id = $2, updated_at = NOW() WHERE id = $3',
+          'UPDATE users SET provider = $1, provider_id = $2, email_verified = true, updated_at = NOW() WHERE id = $3',
           ['google', profile.id, user.id],
         );
         user.provider = 'google';
+        user.email_verified = true;
       }
     } else {
       const { rows } = await pool.query(
-        `INSERT INTO users (email, name, provider, provider_id)
-         VALUES ($1, $2, 'google', $3)
-         RETURNING id, email, name, role, provider, created_at`,
+        `INSERT INTO users (email, name, provider, provider_id, email_verified)
+         VALUES ($1, $2, 'google', $3, true)
+         RETURNING id, email, name, role, provider, email_verified, created_at`,
         [profile.email, profile.name || profile.email, profile.id],
       );
       user = rows[0];
@@ -406,5 +422,70 @@ router.get('/google/callback', async (req, res) => {
     res.redirect(`${frontendUrl}/login?error=server_error`);
   }
 });
+
+// ─── Verify email ────────────────────────────────────────────────
+
+router.post('/verify-email', authLimiter, async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({ error: 'Token is required' });
+    }
+
+    const stored = await findVerificationToken(token);
+    if (!stored) {
+      return res
+        .status(400)
+        .json({ error: 'Invalid or expired verification token' });
+    }
+
+    await pool.query('UPDATE users SET email_verified = true WHERE id = $1', [
+      stored.user_id,
+    ]);
+    await deleteVerificationTokens(stored.user_id);
+
+    auditLog('EMAIL_VERIFIED', { userId: stored.user_id });
+    res.json({ message: 'Email verified successfully' });
+  } catch (err) {
+    console.error('Verify email error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// ─── Resend verification email ───────────────────────────────────
+
+router.post(
+  '/resend-verification',
+  requireAuth,
+  authLimiter,
+  async (req, res) => {
+    try {
+      const { rows } = await pool.query(
+        'SELECT id, email, name, email_verified FROM users WHERE id = $1',
+        [req.user.id],
+      );
+
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      const user = rows[0];
+
+      if (user.email_verified) {
+        return res.status(400).json({ error: 'Email is already verified' });
+      }
+
+      await deleteVerificationTokens(user.id);
+      const token = await generateVerificationToken(user.id);
+      await sendVerificationEmail(user.email, token, user.name);
+
+      res.json({ message: 'Verification email sent' });
+    } catch (err) {
+      console.error('Resend verification error:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  },
+);
 
 module.exports = router;

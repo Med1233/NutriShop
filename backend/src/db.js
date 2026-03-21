@@ -28,8 +28,24 @@ async function initDb() {
       ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'customer';
       ALTER TABLE users ADD COLUMN IF NOT EXISTS phone TEXT DEFAULT '';
       ALTER TABLE users ADD COLUMN IF NOT EXISTS address TEXT DEFAULT '';
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN NOT NULL DEFAULT false;
     EXCEPTION WHEN others THEN NULL;
     END $$
+  `);
+
+  // Grandfather existing local users as verified
+  await pool.query(
+    "UPDATE users SET email_verified = true WHERE email_verified = false AND provider = 'local' AND created_at < NOW() - INTERVAL '1 minute'",
+  );
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS verification_tokens (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      token TEXT UNIQUE NOT NULL,
+      expires_at TIMESTAMP NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
   `);
 
   await pool.query(`
@@ -113,8 +129,8 @@ async function initDb() {
     if (adminCheck.length === 0) {
       const passwordHash = await bcrypt.hash(adminPassword, 12);
       await pool.query(
-        `INSERT INTO users (email, password_hash, name, role, provider)
-         VALUES ($1, $2, $3, 'admin', 'local')`,
+        `INSERT INTO users (email, password_hash, name, role, provider, email_verified)
+         VALUES ($1, $2, $3, 'admin', 'local', true)`,
         [adminEmail, passwordHash, adminName],
       );
       console.log('Seeded default admin user');

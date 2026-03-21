@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/Navbar';
 import ChatWidget from './components/ChatWidget';
+import VerificationBanner from './components/VerificationBanner';
 
 export const metadata = {
   title: 'NutriShop — Nutrition Products',
@@ -23,6 +24,7 @@ export default function RootLayout({
           <AuthProvider>
             <CartProvider>
               <Navbar />
+              <VerificationBanner />
               <main className="mx-auto max-w-[1100px] px-6 pb-8">
                 {children}
               </main>

@@ -1,10 +1,11 @@
 const express = require('express');
 const { pool } = require('../db');
-const { requireAuth, requireStaff } = require('../middleware');
+const { requireAuth, requireStaff, requireVerified } = require('../middleware');
 
 const router = express.Router();
 
 router.use(requireAuth);
+router.use(requireVerified);
 
 // POST /api/orders — create order from cart
 router.post('/', async (req, res) => {

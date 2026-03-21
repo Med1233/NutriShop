@@ -6,6 +6,7 @@ export interface User {
   phone: string;
   address: string;
   provider: string;
+  email_verified: boolean;
 }
 
 export interface AdminUser {

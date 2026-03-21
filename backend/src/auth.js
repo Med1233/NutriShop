@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const { pool } = require('./db');
@@ -14,6 +15,7 @@ function generateAccessToken(user) {
       email: user.email,
       name: user.name,
       role: user.role || 'customer',
+      email_verified: !!user.email_verified,
     },
     process.env.JWT_SECRET,
     { expiresIn: ACCESS_TOKEN_EXPIRY },
@@ -83,6 +85,30 @@ function clearTokenCookies(res) {
   res.clearCookie('refresh_token', { path: '/api/auth' });
 }
 
+async function generateVerificationToken(userId) {
+  const token = crypto.randomBytes(32).toString('hex');
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+  await pool.query(
+    'INSERT INTO verification_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)',
+    [userId, token, expiresAt],
+  );
+  return token;
+}
+
+async function findVerificationToken(token) {
+  const { rows } = await pool.query(
+    'SELECT * FROM verification_tokens WHERE token = $1 AND expires_at > NOW()',
+    [token],
+  );
+  return rows[0] || null;
+}
+
+async function deleteVerificationTokens(userId) {
+  await pool.query('DELETE FROM verification_tokens WHERE user_id = $1', [
+    userId,
+  ]);
+}
+
 module.exports = {
   generateAccessToken,
   generateRefreshToken,
@@ -94,4 +120,7 @@ module.exports = {
   findRefreshToken,
   setTokenCookies,
   clearTokenCookies,
+  generateVerificationToken,
+  findVerificationToken,
+  deleteVerificationTokens,
 };

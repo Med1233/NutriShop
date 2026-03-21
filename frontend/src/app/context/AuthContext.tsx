@@ -27,6 +27,7 @@ interface AuthContextType {
     phone?: string;
     address?: string;
   }) => Promise<{ error?: string }>;
+  resendVerification: () => Promise<{ error?: string; message?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -120,9 +121,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: result.error };
   };
 
+  const resendVerification = async () => {
+    const res = await apiFetch('/api/auth/resend-verification', {
+      method: 'POST',
+    });
+    const data = await res.json();
+    if (res.ok) return { message: data.message };
+    return { error: data.error };
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, register, logout, refresh, updateProfile }}
+      value={{
+        user,
+        loading,
+        login,
+        register,
+        logout,
+        refresh,
+        updateProfile,
+        resendVerification,
+      }}
     >
       {children}
     </AuthContext.Provider>

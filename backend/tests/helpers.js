@@ -5,7 +5,7 @@ const { hashPassword, generateAccessToken } = require('../src/auth');
 
 async function resetDb() {
   await pool.query(
-    'TRUNCATE users, refresh_tokens, products, cart_items, orders, order_items RESTART IDENTITY CASCADE',
+    'TRUNCATE users, refresh_tokens, verification_tokens, products, cart_items, orders, order_items RESTART IDENTITY CASCADE',
   );
 }
 
@@ -15,12 +15,13 @@ async function createTestUser(overrides = {}) {
     name: 'Test User',
     password: 'password123',
     role: 'customer',
+    email_verified: true,
     ...overrides,
   };
   const hash = await hashPassword(data.password);
   const { rows } = await pool.query(
-    'INSERT INTO users (email, name, password_hash, role, provider) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-    [data.email, data.name, hash, data.role, 'local'],
+    'INSERT INTO users (email, name, password_hash, role, provider, email_verified) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+    [data.email, data.name, hash, data.role, 'local', data.email_verified],
   );
   const user = rows[0];
   const token = generateAccessToken(user);
