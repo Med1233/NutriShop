@@ -24,10 +24,10 @@ ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 
 RUN pnpm --filter frontend build
 
-# Resolve pnpm symlinks in standalone node_modules by copying
-# real files from the original frontend/node_modules (where symlinks still resolve)
+# Resolve pnpm symlinks: standalone only includes next/react as symlinks.
+# Copy the full workspace node_modules (with .pnpm store) so all deps resolve.
 RUN rm -rf /app/frontend/.next/standalone/node_modules && \
-    cp -rL /app/frontend/node_modules /app/frontend/.next/standalone/node_modules
+    cp -rL /app/node_modules /app/frontend/.next/standalone/node_modules
 
 FROM node:20-alpine AS runner
 
