@@ -30,10 +30,15 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY --from=builder /app/frontend/public ./frontend/public
+# Copy standalone output (server.js, package.json)
 COPY --from=builder /app/frontend/.next/standalone ./
-COPY --from=builder /app/frontend/.next/static ./frontend/.next/static
+# Fix broken symlinks: copy real node_modules from builder
+RUN rm -rf node_modules
+COPY --from=builder /app/node_modules ./node_modules
+# Copy public assets and static files
+COPY --from=builder /app/frontend/public ./public
+COPY --from=builder /app/frontend/.next/static ./.next/static
 
 EXPOSE 3000
 
-CMD ["node", "frontend/server.js"]
+CMD ["node", "server.js"]
