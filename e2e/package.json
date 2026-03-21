@@ -1,0 +1,19 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test": "cypress run"
+  },
+  "devDependencies": {
+    "cypress": "^13.16.0",
+    "@badeball/cypress-cucumber-preprocessor": "^21.0.0",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5",
+    "pg": "^8.12.0",
+    "bcryptjs": "^2.4.3"
+  }
+}

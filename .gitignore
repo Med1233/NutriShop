@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+**/.pnpm-store/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Next.js
+frontend/.next/
+frontend/out/
+
+# Build output
+dist/
+build/
+
+# Docker volumes
+postgres-data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Debug logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+coverage/
+
+# Storybook build
+packages/ui/storybook-static/
+
+# Cypress
+e2e/cypress/screenshots/
+e2e/cypress/videos/
+e2e/cypress/downloads/
