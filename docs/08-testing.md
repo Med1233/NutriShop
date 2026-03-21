@@ -14,6 +14,8 @@ NutriShop uses a multi-layer testing strategy:
 
 **Total: 167 automated tests + E2E scenarios**
 
+All tests run automatically in CI via GitHub Actions on pull requests (see [10-ci-cd.md](10-ci-cd.md)). Each test suite has its own workflow with path filtering — only relevant tests run when files change.
+
 ## Quick Start
 
 ```bash

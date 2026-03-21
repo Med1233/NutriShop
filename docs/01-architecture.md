@@ -76,18 +76,35 @@ The Next.js rewrite proxy (`/api/*` → `http://backend:4000/api/*`) works for s
 ```
 claude/
 ├── .env                          # All environment variables
+├── .gitignore                    # Git ignore rules
+├── .dockerignore                 # Docker build context exclusions
+├── .prettierrc                   # Prettier configuration
+├── .prettierignore               # Prettier ignore rules
+├── eslint.config.js              # ESLint 9 flat config (monorepo-wide)
+├── package.json                  # Root workspace — lint & format scripts
+├── pnpm-workspace.yaml           # pnpm workspace definition
 ├── docker-compose.yml            # Production service orchestration
 ├── docker-compose.dev.yml        # Development (hot-reload)
-├── CLAUDE.md                     # AI assistant instructions
+├── docker-compose.test.yml       # Test database (port 5433)
+│
+├── .github/workflows/            # GitHub Actions CI (path-filtered)
+│   ├── lint.yml                  # Lint & format check
+│   ├── test-ui.yml               # UI component tests
+│   ├── test-frontend.yml         # Frontend tests
+│   ├── test-backend.yml          # Backend tests (with Postgres)
+│   ├── build-frontend.yml        # Next.js production build
+│   ├── docker-build.yml          # Docker image builds
+│   └── e2e.yml                   # E2E Cypress tests (full stack)
 │
 ├── backend/
 │   ├── Dockerfile
 │   ├── package.json
 │   └── src/
 │       ├── index.js              # Express app entry point
+│       ├── app.js                # Express app (exported for testing)
 │       ├── db.js                 # Database pool + schema init + product seeding
 │       ├── auth.js               # Auth utilities (JWT, bcrypt, cookies)
-│       ├── middleware.js          # requireAuth / optionalAuth
+│       ├── middleware.js          # requireAuth / optionalAuth / role guards
 │       └── routes/
 │           ├── auth.js           # Authentication endpoints
 │           ├── products.js       # Product catalog (public GET; admin POST/PUT/DELETE)
@@ -96,13 +113,16 @@ claude/
 │           └── admin.js          # Admin: user management + stats
 │
 ├── frontend/
-│   ├── Dockerfile
+│   ├── Dockerfile                # Multi-stage build (uses monorepo root context)
 │   ├── package.json
 │   ├── next.config.js
 │   ├── tsconfig.json
 │   └── src/app/
 │       ├── layout.tsx            # Root layout (providers + navbar)
 │       ├── page.tsx              # Home / product catalog (public)
+│       ├── types/                # Shared TypeScript interfaces and constants
+│       ├── api/                  # Centralized API client and endpoint functions
+│       ├── hooks/                # Custom hooks extracting business logic from pages
 │       ├── context/
 │       │   ├── AuthContext.tsx    # Auth state management
 │       │   └── CartContext.tsx    # Shopping cart state management
@@ -113,31 +133,29 @@ claude/
 │       │   ├── Navbar.tsx        # Navigation bar (with cart badge)
 │       │   ├── LanguageSelector.tsx # Language dropdown
 │       │   └── ProductImage.tsx  # SVG product images by category
-│       ├── profile/
-│       │   └── page.tsx          # User profile (account info + orders tabs)
-│       ├── admin/
-│       │   └── page.tsx          # Admin panel (products, users, orders management)
-│       ├── products/
-│       │   └── [id]/
-│       │       └── page.tsx      # Product detail page
-│       ├── cart/
-│       │   └── page.tsx          # Shopping cart page
-│       ├── checkout/
-│       │   └── page.tsx          # Checkout page
-│       ├── login/
-│       │   └── page.tsx          # Login page
-│       └── register/
-│           └── page.tsx          # Registration page
+│       └── [pages]/              # Route pages (thin UI-only components)
 │
-├── docs/                         # Project documentation
-│   ├── 01-architecture.md
-│   ├── 02-authentication.md
-│   ├── 03-internationalization.md
-│   ├── 04-frontend.md
-│   ├── 05-backend.md
-│   ├── 06-deployment.md
-│   └── 07-ecommerce.md
+├── packages/ui/                  # @nutrishop/ui design system
+│   ├── package.json
+│   ├── src/                      # Components, stories, and tests
+│   └── .storybook/               # Storybook configuration
 │
-├── docker-compose.yml            # Production (builds images)
-└── docker-compose.dev.yml        # Development (hot-reload, volume mounts)
+├── e2e/                          # Cypress E2E tests with Gherkin
+│   ├── cypress.config.ts
+│   └── cypress/
+│       ├── e2e/features/         # .feature files
+│       ├── e2e/step_definitions/ # Step definition files
+│       └── support/              # Custom commands
+│
+└── docs/                         # Project documentation
+    ├── 01-architecture.md
+    ├── 02-authentication.md
+    ├── 03-internationalization.md
+    ├── 04-frontend.md
+    ├── 05-backend.md
+    ├── 06-deployment.md
+    ├── 07-ecommerce.md
+    ├── 08-testing.md
+    ├── 09-design-system.md
+    └── 10-ci-cd.md
 ```

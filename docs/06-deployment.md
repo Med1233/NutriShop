@@ -50,7 +50,7 @@ When to rebuild in dev mode:
 
 ### Production Mode (`docker-compose.yml`)
 
-Builds Docker images using each service's `Dockerfile`. Frontend runs a production Next.js build, backend runs `node` directly.
+Builds Docker images using each service's `Dockerfile`. The frontend Dockerfile uses the **monorepo root as build context** (not `./frontend`) because it depends on the `@nutrishop/ui` workspace package. Backend runs `node` directly.
 
 ```bash
 # Build and start
@@ -152,6 +152,7 @@ If Google OAuth is not configured, the app works fine with local auth only — t
 - [ ] Add your production domain to Google OAuth authorized origins and redirect URIs
 - [ ] Consider rate limiting on auth endpoints to prevent brute-force attacks
 - [ ] Set up log aggregation for auth errors
+- [ ] Ensure all CI checks pass before merging (lint, tests, build)
 
 ### Generate Secure Secrets
 
