@@ -24,10 +24,10 @@ ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 
 RUN pnpm --filter frontend build
 
-# Resolve pnpm symlinks: standalone only includes next/react as symlinks.
-# Copy the full workspace node_modules (with .pnpm store) so all deps resolve.
-RUN rm -rf /app/frontend/.next/standalone/node_modules && \
-    cp -rL /app/node_modules /app/frontend/.next/standalone/node_modules
+# Resolve pnpm symlinks: install production deps with npm for flat node_modules
+RUN cd /app/frontend/.next/standalone && \
+    rm -rf node_modules && \
+    npm install --omit=dev 2>/dev/null
 
 FROM node:20-alpine AS runner
 
