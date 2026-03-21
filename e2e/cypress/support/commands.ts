@@ -12,7 +12,9 @@ Cypress.Commands.add('login', (email: string, password: string) => {
 });
 
 Cypress.Commands.add('loginAsAdmin', () => {
-  cy.login('macinessa365@gmail.com', '123456');
+  const email = Cypress.env('ADMIN_EMAIL') || 'admin@nutrishop.test';
+  const password = Cypress.env('ADMIN_PASSWORD') || 'admin123456';
+  cy.login(email, password);
 });
 
 Cypress.Commands.add(

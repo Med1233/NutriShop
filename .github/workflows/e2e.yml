@@ -50,6 +50,9 @@ jobs:
           JWT_SECRET: ci-jwt-secret
           JWT_REFRESH_SECRET: ci-refresh-secret
           FRONTEND_URL: http://localhost:3000
+          ADMIN_EMAIL: admin@nutrishop.test
+          ADMIN_PASSWORD: admin123456
+          ADMIN_NAME: CI Admin
 
       - name: Wait for backend
         run: |
@@ -77,6 +80,8 @@ jobs:
         run: pnpm --filter e2e test
         env:
           CYPRESS_BASE_URL: http://localhost:3000
+          CYPRESS_ADMIN_EMAIL: admin@nutrishop.test
+          CYPRESS_ADMIN_PASSWORD: admin123456
 
       - name: Upload Cypress screenshots on failure
         uses: actions/upload-artifact@v4

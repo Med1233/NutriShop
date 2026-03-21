@@ -100,23 +100,29 @@ async function initDb() {
   // Drop old items table if it exists
   await pool.query('DROP TABLE IF EXISTS items');
 
-  // Seed default admin user
-  const { rows: adminCheck } = await pool.query(
-    "SELECT id FROM users WHERE email = 'macinessa365@gmail.com'",
-  );
-  if (adminCheck.length === 0) {
-    const passwordHash = await bcrypt.hash('123456', 12);
-    await pool.query(
-      `INSERT INTO users (email, password_hash, name, role, provider)
-       VALUES ('macinessa365@gmail.com', $1, 'Admin', 'admin', 'local')`,
-      [passwordHash],
+  // Seed default admin user from environment variables
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  const adminName = process.env.ADMIN_NAME || 'Admin';
+
+  if (adminEmail && adminPassword) {
+    const { rows: adminCheck } = await pool.query(
+      'SELECT id FROM users WHERE email = $1',
+      [adminEmail],
     );
-    console.log('Seeded default admin user');
-  } else {
-    // Ensure existing user has admin role
-    await pool.query(
-      "UPDATE users SET role = 'admin' WHERE email = 'macinessa365@gmail.com'",
-    );
+    if (adminCheck.length === 0) {
+      const passwordHash = await bcrypt.hash(adminPassword, 12);
+      await pool.query(
+        `INSERT INTO users (email, password_hash, name, role, provider)
+         VALUES ($1, $2, $3, 'admin', 'local')`,
+        [adminEmail, passwordHash, adminName],
+      );
+      console.log('Seeded default admin user');
+    } else {
+      await pool.query("UPDATE users SET role = 'admin' WHERE email = $1", [
+        adminEmail,
+      ]);
+    }
   }
 
   // Seed products
