@@ -30,11 +30,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy standalone output (server.js, package.json)
-COPY --from=builder /app/frontend/.next/standalone ./
-# Fix broken symlinks: copy real node_modules from builder
-RUN rm -rf node_modules
-COPY --from=builder /app/node_modules ./node_modules
+# Copy standalone output and resolve pnpm symlinks into real files
+COPY --from=builder /app/frontend/.next/standalone /tmp/standalone
+RUN cp -rL /tmp/standalone/. ./ && rm -rf /tmp/standalone
 # Copy public assets and static files
 COPY --from=builder /app/frontend/public ./public
 COPY --from=builder /app/frontend/.next/static ./.next/static
