@@ -22,24 +22,37 @@ GitHub (push to main) → GitHub Actions → SSH into Droplet → git pull → d
 
 ### URLs
 
-| Service     | URL                              |
-| ----------- | -------------------------------- |
-| Frontend    | http://68-183-214-69.nip.io:3000 |
-| Backend API | http://68-183-214-69.nip.io:4000 |
+| Service     | URL                         |
+| ----------- | --------------------------- |
+| Frontend    | https://nutrishop.store     |
+| Backend API | https://nutrishop.store/api |
 
-### Domain — nip.io
+### Domain & SSL
 
-Google OAuth requires a domain name (bare IP addresses are rejected). We use **nip.io**, a free wildcard DNS service that maps any IP to a hostname:
+- **Domain**: `nutrishop.store` (GoDaddy)
+- **DNS**: A records pointing `@` and `www` to the Droplet IP
+- **SSL**: Let's Encrypt via Certbot (auto-renews)
+- **Reverse proxy**: Nginx routes port 443 → frontend (3000) and `/api` → backend (4000)
 
-```
-68-183-214-69.nip.io → resolves to 68.183.214.69
-```
+### Nginx Configuration
 
-No setup needed — it works instantly. If you buy a real domain later, update:
+Located at `/etc/nginx/sites-enabled/nutrishop`:
 
-1. DNS A record pointing to the Droplet IP
-2. `.env` on the server (`FRONTEND_URL`, `NEXT_PUBLIC_BACKEND_URL`, `GOOGLE_CALLBACK_URL`)
-3. Google Cloud Console (authorized origins + redirect URIs)
+- `https://nutrishop.store/` → `http://127.0.0.1:3000` (frontend)
+- `https://nutrishop.store/api/*` → `http://127.0.0.1:4000` (backend)
+- HTTP auto-redirects to HTTPS
+- SSE proxy buffering disabled for chat streaming
+
+### Email (Resend)
+
+Verification emails sent via **Resend** (HTTPS API, not SMTP — DigitalOcean blocks SMTP ports).
+
+DNS records on GoDaddy for Resend:
+
+- TXT `resend._domainkey` — DKIM signing
+- MX `send` → `feedback-smtp.eu-west-1.amazonses.com` (priority 10)
+- TXT `send` → `v=spf1 include:amazonses.com ~all`
+
 4. Rebuild the frontend (`docker compose build --no-cache frontend && docker compose up -d`)
 
 ## Server Setup (One-Time)
