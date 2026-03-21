@@ -9,6 +9,7 @@ const productRoutes = require('./routes/products');
 const cartRoutes = require('./routes/cart');
 const orderRoutes = require('./routes/orders');
 const adminRoutes = require('./routes/admin');
+const chatRoutes = require('./routes/chat');
 
 const app = express();
 
@@ -68,5 +69,6 @@ app.use('/api/products', productRoutes);
 app.use('/api/cart', csrfProtection, cartRoutes);
 app.use('/api/orders', csrfProtection, orderRoutes);
 app.use('/api/admin', csrfProtection, adminRoutes);
+app.use('/api/chat', csrfProtection, chatRoutes);
 
 module.exports = app;

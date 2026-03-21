@@ -10,3 +10,4 @@ export { useAdminProducts } from './useAdminProducts';
 export { useAdminUsers } from './useAdminUsers';
 export { useAdminOrders } from './useAdminOrders';
 export { useStockist } from './useStockist';
+export { useChat } from './useChat';

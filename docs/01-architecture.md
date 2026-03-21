@@ -73,6 +73,7 @@ The Next.js rewrite proxy (`/api/*` → `http://backend:4000/api/*`) works for s
 | `ADMIN_EMAIL`                  | backend  | Default admin account email (seeded on first startup)      |
 | `ADMIN_PASSWORD`               | backend  | Default admin account password                             |
 | `ADMIN_NAME`                   | backend  | Default admin display name (optional, defaults to "Admin") |
+| `ANTHROPIC_API_KEY`            | backend  | Claude API key for AI chatbot                              |
 
 ## Project File Structure
 

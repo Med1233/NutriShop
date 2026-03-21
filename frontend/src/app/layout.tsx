@@ -3,6 +3,7 @@ import { LanguageProvider } from './i18n/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/Navbar';
+import ChatWidget from './components/ChatWidget';
 
 export const metadata = {
   title: 'NutriShop — Nutrition Products',
@@ -25,6 +26,7 @@ export default function RootLayout({
               <main className="mx-auto max-w-[1100px] px-6 pb-8">
                 {children}
               </main>
+              <ChatWidget />
             </CartProvider>
           </AuthProvider>
         </LanguageProvider>

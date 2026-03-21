@@ -178,6 +178,12 @@ export const translations: Record<Locale, Record<string, string>> = {
     'register.emailPlaceholder': 'you@example.com',
     'register.passwordPlaceholder': 'Min 8 characters',
     'register.confirmPlaceholder': 'Repeat password',
+    'chat.title': 'Chat with NutriBot',
+    'chat.placeholder': 'Ask about products, nutrition, or orders...',
+    'chat.send': 'Send',
+    'chat.clear': 'Clear chat',
+    'chat.greeting':
+      "Hi! I'm NutriBot. I can help with product recommendations, nutrition questions, and order status. How can I help?",
   },
 
   fr: {
@@ -349,6 +355,13 @@ export const translations: Record<Locale, Record<string, string>> = {
     'register.emailPlaceholder': 'vous@exemple.com',
     'register.passwordPlaceholder': '8 caractères minimum',
     'register.confirmPlaceholder': 'Répéter le mot de passe',
+    'chat.title': 'Discuter avec NutriBot',
+    'chat.placeholder':
+      'Posez des questions sur les produits, la nutrition ou vos commandes...',
+    'chat.send': 'Envoyer',
+    'chat.clear': 'Effacer',
+    'chat.greeting':
+      'Bonjour ! Je suis NutriBot. Je peux vous aider avec des recommandations, des questions nutritionnelles et le suivi de commandes. Comment puis-je vous aider ?',
   },
 
   ar: {
@@ -519,5 +532,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     'register.emailPlaceholder': 'you@example.com',
     'register.passwordPlaceholder': '٨ أحرف على الأقل',
     'register.confirmPlaceholder': 'أعد كتابة كلمة المرور',
+    'chat.title': 'تحدث مع نيوتري بوت',
+    'chat.placeholder': 'اسأل عن المنتجات، التغذية، أو الطلبات...',
+    'chat.send': 'إرسال',
+    'chat.clear': 'مسح',
+    'chat.greeting':
+      'مرحبًا! أنا نيوتري بوت. يمكنني مساعدتك في توصيات المنتجات وأسئلة التغذية وحالة الطلبات. كيف يمكنني مساعدتك؟',
   },
 };

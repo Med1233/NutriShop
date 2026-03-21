@@ -190,6 +190,7 @@ See [E-Commerce docs](./07-ecommerce.md) for full details on the order flow.
 | `routes/cart.js`     | `/api/cart`     | Required | Shopping cart management                                |
 | `routes/orders.js`   | `/api/orders`   | Required | Order creation/history; admin: list all + update status |
 | `routes/admin.js`    | `/api/admin`    | Admin    | User management + dashboard stats                       |
+| `routes/chat.js`     | `/api/chat`     | Optional | AI chatbot (Claude Haiku) with SSE streaming            |
 
 ---
 
@@ -207,6 +208,7 @@ See [E-Commerce docs](./07-ecommerce.md) for full details on the order flow.
 | `express-rate-limit` | ^8.0    | Rate limiting on auth endpoints        |
 | `dotenv`             | ^16.4   | Load .env file                         |
 | `uuid`               | ^9.0    | Generate v4 UUIDs for refresh tokens   |
+| `@anthropic-ai/sdk`  | ^0.39   | Claude AI API for chatbot              |
 
 ### Dev Dependencies
 
