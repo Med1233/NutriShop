@@ -46,35 +46,70 @@ describe('GET /api/products/:id', () => {
 
 describe('POST /api/products', () => {
   it('creates product as stockist', async () => {
-    const { token } = await createTestUser({ email: 'stock@test.com', role: 'stockist' });
-    const res = await request.post('/api/products')
+    const { token } = await createTestUser({
+      email: 'stock@test.com',
+      role: 'stockist',
+    });
+    const res = await request
+      .post('/api/products')
       .set('Cookie', `access_token=${token}`)
-      .send({ name: 'New', description: 'Desc', price: 10, category: 'proteins', stock: 50 });
+      .send({
+        name: 'New',
+        description: 'Desc',
+        price: 10,
+        category: 'proteins',
+        stock: 50,
+      });
     expect(res.status).toBe(201);
   });
 
   it('rejects customer', async () => {
-    const { token } = await createTestUser({ email: 'cust@test.com', role: 'customer' });
-    const res = await request.post('/api/products')
+    const { token } = await createTestUser({
+      email: 'cust@test.com',
+      role: 'customer',
+    });
+    const res = await request
+      .post('/api/products')
       .set('Cookie', `access_token=${token}`)
-      .send({ name: 'New', description: 'D', price: 10, category: 'proteins', stock: 50 });
+      .send({
+        name: 'New',
+        description: 'D',
+        price: 10,
+        category: 'proteins',
+        stock: 50,
+      });
     expect(res.status).toBe(403);
   });
 
   it('rejects without auth', async () => {
-    const res = await request.post('/api/products')
-      .send({ name: 'New', description: 'D', price: 10, category: 'proteins', stock: 50 });
+    const res = await request.post('/api/products').send({
+      name: 'New',
+      description: 'D',
+      price: 10,
+      category: 'proteins',
+      stock: 50,
+    });
     expect(res.status).toBe(401);
   });
 });
 
 describe('PUT /api/products/:id', () => {
   it('updates product as admin', async () => {
-    const { token } = await createTestUser({ email: 'admin@test.com', role: 'admin' });
+    const { token } = await createTestUser({
+      email: 'admin@test.com',
+      role: 'admin',
+    });
     const p = await createTestProduct();
-    const res = await request.put(`/api/products/${p.id}`)
+    const res = await request
+      .put(`/api/products/${p.id}`)
       .set('Cookie', `access_token=${token}`)
-      .send({ name: 'Updated', description: 'D', price: 20, category: 'vitamins', stock: 200 });
+      .send({
+        name: 'Updated',
+        description: 'D',
+        price: 20,
+        category: 'vitamins',
+        stock: 200,
+      });
     expect(res.status).toBe(200);
     expect(res.body.name).toBe('Updated');
   });
@@ -82,9 +117,13 @@ describe('PUT /api/products/:id', () => {
 
 describe('DELETE /api/products/:id', () => {
   it('deletes product as admin', async () => {
-    const { token } = await createTestUser({ email: 'admin@test.com', role: 'admin' });
+    const { token } = await createTestUser({
+      email: 'admin@test.com',
+      role: 'admin',
+    });
     const p = await createTestProduct();
-    const res = await request.delete(`/api/products/${p.id}`)
+    const res = await request
+      .delete(`/api/products/${p.id}`)
       .set('Cookie', `access_token=${token}`);
     expect(res.status).toBe(200);
   });

@@ -15,6 +15,9 @@ describe('Alert', () => {
 
   it('applies success variant', () => {
     render(<Alert variant="success">Saved</Alert>);
-    expect(screen.getByRole('alert')).toHaveClass('bg-green-50', 'text-green-600');
+    expect(screen.getByRole('alert')).toHaveClass(
+      'bg-green-50',
+      'text-green-600',
+    );
   });
 });

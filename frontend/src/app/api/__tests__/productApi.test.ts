@@ -7,9 +7,12 @@ beforeEach(() => {
 
 describe('fetchCategories', () => {
   it('returns categories array', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      json: () => Promise.resolve(['proteins', 'vitamins']),
-    }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        json: () => Promise.resolve(['proteins', 'vitamins']),
+      }),
+    );
 
     const result = await fetchCategories();
     expect(result).toEqual(['proteins', 'vitamins']);
@@ -43,19 +46,25 @@ describe('fetchProducts', () => {
 describe('fetchProduct', () => {
   it('returns a product', async () => {
     const product = { id: 1, name: 'Test' };
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(product),
-    }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(product),
+      }),
+    );
 
     const result = await fetchProduct(1);
     expect(result).toEqual(product);
   });
 
   it('throws on not found', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: false,
-    }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+      }),
+    );
 
     await expect(fetchProduct(999)).rejects.toThrow('Product not found');
   });

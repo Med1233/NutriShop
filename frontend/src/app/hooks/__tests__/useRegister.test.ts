@@ -24,7 +24,9 @@ import { useAuth } from '../../context/AuthContext';
 
 beforeEach(() => {
   vi.clearAllMocks();
-  vi.mocked(useAuth).mockReturnValue({ register: vi.fn().mockResolvedValue({}) } as any);
+  vi.mocked(useAuth).mockReturnValue({
+    register: vi.fn().mockResolvedValue({}),
+  } as any);
 });
 
 describe('useRegister', () => {

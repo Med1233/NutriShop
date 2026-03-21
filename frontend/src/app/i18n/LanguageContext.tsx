@@ -1,6 +1,13 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from 'react';
 import { translations, rtlLocales, Locale } from './translations';
 
 interface LanguageContextType {
@@ -10,7 +17,9 @@ interface LanguageContextType {
   dir: 'ltr' | 'rtl';
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LanguageContext = createContext<LanguageContextType | undefined>(
+  undefined,
+);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>('en');
@@ -45,7 +54,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       }
       return str;
     },
-    [locale]
+    [locale],
   );
 
   return (

@@ -20,13 +20,15 @@ const colorMap: Record<string, string> = {
 export function Tabs({ tabs, active, onChange, color = 'green' }: TabsProps) {
   const activeClass = colorMap[color] || colorMap.green;
   return (
-    <div className="flex gap-2 mb-6 border-b-2 border-gray-200 pb-2">
+    <div className="mb-6 flex gap-2 border-b-2 border-gray-200 pb-2">
       {tabs.map(({ key, label }) => (
         <button
           key={key}
           onClick={() => onChange(key)}
-          className={`px-5 py-2 border-none rounded-t-md cursor-pointer text-[0.9rem] font-medium transition-colors ${
-            active === key ? `${activeClass} text-white` : 'bg-gray-100 text-gray-700'
+          className={`cursor-pointer rounded-t-md border-none px-5 py-2 text-[0.9rem] font-medium transition-colors ${
+            active === key
+              ? `${activeClass} text-white`
+              : 'bg-gray-100 text-gray-700'
           }`}
         >
           {label}

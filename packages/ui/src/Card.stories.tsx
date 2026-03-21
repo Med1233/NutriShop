@@ -15,8 +15,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = { args: { children: 'Default card content' } };
-export const Form: Story = { args: { children: 'Form card content', variant: 'form' } };
-export const Muted: Story = { args: { children: 'Muted card content', variant: 'muted' } };
+export const Form: Story = {
+  args: { children: 'Form card content', variant: 'form' },
+};
+export const Muted: Story = {
+  args: { children: 'Muted card content', variant: 'muted' },
+};
 
 export const WithHeader: StoryObj = {
   render: () => (

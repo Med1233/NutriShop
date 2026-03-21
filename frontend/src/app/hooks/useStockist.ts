@@ -1,10 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
-import { fetchProducts, createProduct, updateProduct, deleteProduct } from '../api/productApi';
+import {
+  fetchProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from '../api/productApi';
 import type { Product, ProductFormData } from '../types';
 
-const EMPTY_FORM: ProductFormData = { name: '', description: '', price: '', category: 'proteins', stock: '0' };
+const EMPTY_FORM: ProductFormData = {
+  name: '',
+  description: '',
+  price: '',
+  category: 'proteins',
+  stock: '0',
+};
 
 export function useStockist() {
   const { user, loading: authLoading } = useAuth();
@@ -18,7 +29,10 @@ export function useStockist() {
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    if (!authLoading && (!user || (user.role !== 'stockist' && user.role !== 'admin'))) {
+    if (
+      !authLoading &&
+      (!user || (user.role !== 'stockist' && user.role !== 'admin'))
+    ) {
       router.push('/');
     }
   }, [authLoading, user, router]);
@@ -30,23 +44,41 @@ export function useStockist() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
-  const resetForm = () => { setForm({ ...EMPTY_FORM }); setEditing(null); setShowForm(false); };
+  const resetForm = () => {
+    setForm({ ...EMPTY_FORM });
+    setEditing(null);
+    setShowForm(false);
+  };
 
   const handleSave = async () => {
-    const body = { ...form, price: parseFloat(form.price), stock: parseInt(form.stock) };
+    const body = {
+      ...form,
+      price: parseFloat(form.price),
+      stock: parseInt(form.stock),
+    };
     if (editing) {
       await updateProduct(editing.id, body);
     } else {
       await createProduct(body);
     }
-    resetForm(); load();
+    resetForm();
+    load();
   };
 
   const handleEdit = (p: Product) => {
-    setForm({ name: p.name, description: p.description, price: p.price, category: p.category, stock: String(p.stock) });
-    setEditing(p); setShowForm(true);
+    setForm({
+      name: p.name,
+      description: p.description,
+      price: p.price,
+      category: p.category,
+      stock: String(p.stock),
+    });
+    setEditing(p);
+    setShowForm(true);
   };
 
   const handleDelete = async (id: number) => {
@@ -54,13 +86,30 @@ export function useStockist() {
     load();
   };
 
-  const categories = [...new Set(products.map(p => p.category))].sort();
-  const filtered = filter ? products.filter(p => p.category === filter) : products;
-  const lowStock = products.filter(p => p.stock < 20).length;
+  const categories = [...new Set(products.map((p) => p.category))].sort();
+  const filtered = filter
+    ? products.filter((p) => p.category === filter)
+    : products;
+  const lowStock = products.filter((p) => p.stock < 20).length;
 
   return {
-    products, loading, showForm, setShowForm, editing, form, setForm,
-    filter, setFilter, resetForm, handleSave, handleEdit, handleDelete,
-    categories, filtered, lowStock, user, authLoading,
+    products,
+    loading,
+    showForm,
+    setShowForm,
+    editing,
+    form,
+    setForm,
+    filter,
+    setFilter,
+    resetForm,
+    handleSave,
+    handleEdit,
+    handleDelete,
+    categories,
+    filtered,
+    lowStock,
+    user,
+    authLoading,
   };
 }

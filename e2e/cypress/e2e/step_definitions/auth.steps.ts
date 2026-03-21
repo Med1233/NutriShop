@@ -16,13 +16,19 @@ Given('I am on the home page', () => {
   cy.visit('/');
 });
 
-Given('a user exists with email {string} and password {string}', (email: string, password: string) => {
-  cy.seedUser({ email, password, name: 'Test User' });
-});
+Given(
+  'a user exists with email {string} and password {string}',
+  (email: string, password: string) => {
+    cy.seedUser({ email, password, name: 'Test User' });
+  },
+);
 
-Given('I am logged in as {string} with password {string}', (email: string, password: string) => {
-  cy.login(email, password);
-});
+Given(
+  'I am logged in as {string} with password {string}',
+  (email: string, password: string) => {
+    cy.login(email, password);
+  },
+);
 
 When('I fill in {string} with {string}', (field: string, value: string) => {
   cy.get(`#${field}, [name="${field}"]`).first().clear().type(value);
@@ -49,9 +55,13 @@ Then('I should see {string} in the navigation', (name: string) => {
 });
 
 Then('I should see an error alert', () => {
-  cy.get('[role="alert"], [class*="error"], [class*="red"]').should('be.visible');
+  cy.get('[role="alert"], [class*="error"], [class*="red"]').should(
+    'be.visible',
+  );
 });
 
 Then('I should see the sign in link', () => {
-  cy.get('nav').contains(/sign in/i).should('be.visible');
+  cy.get('nav')
+    .contains(/sign in/i)
+    .should('be.visible');
 });

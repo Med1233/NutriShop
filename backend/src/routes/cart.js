@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
        JOIN products p ON ci.product_id = p.id
        WHERE ci.user_id = $1
        ORDER BY ci.created_at`,
-      [req.user.id]
+      [req.user.id],
     );
     res.json(rows);
   } catch (err) {
@@ -44,7 +44,10 @@ router.post('/', async (req, res) => {
 
   try {
     // Check product exists and has stock
-    const { rows: products } = await pool.query('SELECT * FROM products WHERE id = $1', [product_id]);
+    const { rows: products } = await pool.query(
+      'SELECT * FROM products WHERE id = $1',
+      [product_id],
+    );
     if (products.length === 0) {
       return res.status(404).json({ error: 'Product not found' });
     }
@@ -59,7 +62,7 @@ router.post('/', async (req, res) => {
        ON CONFLICT (user_id, product_id)
        DO UPDATE SET quantity = cart_items.quantity + $3
        RETURNING *`,
-      [req.user.id, product_id, quantity]
+      [req.user.id, product_id, quantity],
     );
 
     res.status(201).json(rows[0]);
@@ -82,7 +85,7 @@ router.put('/:id', async (req, res) => {
       `UPDATE cart_items SET quantity = $1
        WHERE id = $2 AND user_id = $3
        RETURNING *`,
-      [quantity, req.params.id, req.user.id]
+      [quantity, req.params.id, req.user.id],
     );
 
     if (rows.length === 0) {
@@ -101,7 +104,7 @@ router.delete('/:id', async (req, res) => {
   try {
     const { rowCount } = await pool.query(
       'DELETE FROM cart_items WHERE id = $1 AND user_id = $2',
-      [req.params.id, req.user.id]
+      [req.params.id, req.user.id],
     );
 
     if (rowCount === 0) {

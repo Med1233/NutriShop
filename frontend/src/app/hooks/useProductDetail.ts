@@ -34,10 +34,19 @@ export function useProductDetail() {
 
   const nutrition = product?.nutrition_info || {};
   const servingSize = nutrition.serving_size;
-  const nutritionEntries = Object.entries(nutrition).filter(([key]) => key !== 'serving_size');
+  const nutritionEntries = Object.entries(nutrition).filter(
+    ([key]) => key !== 'serving_size',
+  );
 
   return {
-    product, loading, added, quantity, setQuantity,
-    handleAdd, isCustomer, nutritionEntries, servingSize,
+    product,
+    loading,
+    added,
+    quantity,
+    setQuantity,
+    handleAdd,
+    isCustomer,
+    nutritionEntries,
+    servingSize,
   };
 }

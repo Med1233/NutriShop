@@ -14,6 +14,18 @@ export const STATUS_COLORS: Record<string, string> = {
   cancelled: '#6b7280',
 };
 
-export const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] as const;
+export const ORDER_STATUSES = [
+  'pending',
+  'processing',
+  'shipped',
+  'delivered',
+  'cancelled',
+] as const;
 
-export const PRODUCT_CATEGORIES = ['proteins', 'vitamins', 'supplements', 'superfoods', 'snacks'] as const;
+export const PRODUCT_CATEGORIES = [
+  'proteins',
+  'vitamins',
+  'supplements',
+  'superfoods',
+  'snacks',
+] as const;

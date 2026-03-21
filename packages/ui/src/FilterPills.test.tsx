@@ -27,7 +27,10 @@ describe('FilterPills', () => {
 
   it('applies active color to selected pill', () => {
     render(<FilterPills options={options} active="a" onChange={() => {}} />);
-    expect(screen.getByText('Option A')).toHaveStyle({ background: '#ff0000', color: '#fff' });
+    expect(screen.getByText('Option A')).toHaveStyle({
+      background: '#ff0000',
+      color: '#fff',
+    });
   });
 
   it('applies inactive style to non-selected pills', () => {

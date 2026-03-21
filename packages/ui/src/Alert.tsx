@@ -13,9 +13,16 @@ export interface AlertProps {
   className?: string;
 }
 
-export function Alert({ children, variant = 'error', className = '' }: AlertProps) {
+export function Alert({
+  children,
+  variant = 'error',
+  className = '',
+}: AlertProps) {
   return (
-    <div role="alert" className={`p-3 rounded-md mb-4 text-sm ${variants[variant]} ${className}`}>
+    <div
+      role="alert"
+      className={`mb-4 rounded-md p-3 text-sm ${variants[variant]} ${className}`}
+    >
       {children}
     </div>
   );

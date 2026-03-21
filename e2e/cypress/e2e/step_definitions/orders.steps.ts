@@ -1,7 +1,12 @@
 import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor';
 
 Given('a manager user exists', () => {
-  cy.seedUser({ email: 'manager@test.com', password: 'pass1234', name: 'Manager', role: 'manager' });
+  cy.seedUser({
+    email: 'manager@test.com',
+    password: 'pass1234',
+    name: 'Manager',
+    role: 'manager',
+  });
 });
 
 Given('a customer has placed an order', () => {

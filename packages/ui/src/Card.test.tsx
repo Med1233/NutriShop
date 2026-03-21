@@ -31,7 +31,11 @@ describe('CardHeader', () => {
   });
 
   it('renders action children', () => {
-    render(<CardHeader title="T"><button>Act</button></CardHeader>);
+    render(
+      <CardHeader title="T">
+        <button>Act</button>
+      </CardHeader>,
+    );
     expect(screen.getByRole('button', { name: 'Act' })).toBeInTheDocument();
   });
 });

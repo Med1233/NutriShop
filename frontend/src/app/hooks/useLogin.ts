@@ -31,10 +31,18 @@ export function useLogin() {
   };
 
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-  const showGoogle = !!(googleClientId && googleClientId !== 'your-google-client-id');
+  const showGoogle = !!(
+    googleClientId && googleClientId !== 'your-google-client-id'
+  );
 
   return {
-    email, setEmail, password, setPassword,
-    error, submitting, handleSubmit, showGoogle,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    error,
+    submitting,
+    handleSubmit,
+    showGoogle,
   };
 }

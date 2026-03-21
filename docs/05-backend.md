@@ -33,10 +33,12 @@ Initializes the Express app with middleware and routes:
 ### CORS Configuration
 
 ```javascript
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+  }),
+);
 ```
 
 - `origin` — only allows requests from the frontend (not `*`)
@@ -74,18 +76,18 @@ See [Authentication docs](./02-authentication.md#database-schema) for user/refre
 
 Pure utility functions with no Express dependency. See [Authentication docs](./02-authentication.md) for full details.
 
-| Function              | Purpose                                  |
-|-----------------------|------------------------------------------|
-| `hashPassword`        | bcrypt hash with 12 salt rounds          |
-| `verifyPassword`      | bcrypt compare                           |
-| `generateAccessToken` | Sign JWT with user payload               |
-| `verifyAccessToken`   | Verify + decode JWT                      |
-| `generateRefreshToken`| Create UUID, store in DB                 |
-| `findRefreshToken`    | Look up by token string, check expiry    |
-| `revokeRefreshToken`  | Delete single token                      |
-| `revokeAllUserTokens` | Delete all tokens for a user             |
-| `setTokenCookies`     | Set access + refresh cookies on response |
-| `clearTokenCookies`   | Clear both cookies                       |
+| Function               | Purpose                                  |
+| ---------------------- | ---------------------------------------- |
+| `hashPassword`         | bcrypt hash with 12 salt rounds          |
+| `verifyPassword`       | bcrypt compare                           |
+| `generateAccessToken`  | Sign JWT with user payload               |
+| `verifyAccessToken`    | Verify + decode JWT                      |
+| `generateRefreshToken` | Create UUID, store in DB                 |
+| `findRefreshToken`     | Look up by token string, check expiry    |
+| `revokeRefreshToken`   | Delete single token                      |
+| `revokeAllUserTokens`  | Delete all tokens for a user             |
+| `setTokenCookies`      | Set access + refresh cookies on response |
+| `clearTokenCookies`    | Clear both cookies                       |
 
 ---
 
@@ -116,10 +118,10 @@ Must be used after `requireAuth`. Checks that `req.user.role === 'admin'`. Retur
 ### Public Endpoints
 
 | Method | Path                       | Description                              |
-|--------|----------------------------|------------------------------------------|
+| ------ | -------------------------- | ---------------------------------------- |
 | GET    | `/api/health`              | Returns `{ status: 'ok' }`               |
 | GET    | `/api/products`            | List products (`?category=`, `?search=`) |
-| GET    | `/api/products/categories` | List distinct product categories          |
+| GET    | `/api/products/categories` | List distinct product categories         |
 | GET    | `/api/products/:id`        | Get single product detail                |
 | POST   | `/api/products`            | Create product (admin only)              |
 | PUT    | `/api/products/:id`        | Update product (admin only)              |
@@ -127,45 +129,45 @@ Must be used after `requireAuth`. Checks that `req.user.role === 'admin'`. Retur
 
 ### Auth Endpoints (mounted at `/api/auth`)
 
-| Method | Path                       | Description                    | Auth Required |
-|--------|----------------------------|--------------------------------|---------------|
-| POST   | `/api/auth/register`       | Create local account           | No            |
-| POST   | `/api/auth/login`          | Login with email/password      | No            |
-| POST   | `/api/auth/refresh`        | Refresh access token           | No (uses refresh cookie) |
-| POST   | `/api/auth/logout`         | Logout current session         | No            |
-| POST   | `/api/auth/logout-all`     | Revoke all sessions            | Yes           |
-| GET    | `/api/auth/me`             | Get current user profile       | Yes           |
-| GET    | `/api/auth/google`         | Start Google OAuth flow        | No            |
-| GET    | `/api/auth/google/callback`| Google OAuth callback          | No            |
+| Method | Path                        | Description               | Auth Required            |
+| ------ | --------------------------- | ------------------------- | ------------------------ |
+| POST   | `/api/auth/register`        | Create local account      | No                       |
+| POST   | `/api/auth/login`           | Login with email/password | No                       |
+| POST   | `/api/auth/refresh`         | Refresh access token      | No (uses refresh cookie) |
+| POST   | `/api/auth/logout`          | Logout current session    | No                       |
+| POST   | `/api/auth/logout-all`      | Revoke all sessions       | Yes                      |
+| GET    | `/api/auth/me`              | Get current user profile  | Yes                      |
+| GET    | `/api/auth/google`          | Start Google OAuth flow   | No                       |
+| GET    | `/api/auth/google/callback` | Google OAuth callback     | No                       |
 
 See [Authentication docs](./02-authentication.md) for detailed request/response formats.
 
 ### Cart Endpoints (mounted at `/api/cart`)
 
-| Method | Path             | Description                              | Auth Required |
-|--------|------------------|------------------------------------------|---------------|
-| GET    | `/api/cart`      | Get cart with product details            | Yes           |
-| POST   | `/api/cart`      | Add product to cart                      | Yes           |
-| PUT    | `/api/cart/:id`  | Update cart item quantity                | Yes           |
-| DELETE | `/api/cart/:id`  | Remove item from cart                    | Yes           |
+| Method | Path            | Description                   | Auth Required |
+| ------ | --------------- | ----------------------------- | ------------- |
+| GET    | `/api/cart`     | Get cart with product details | Yes           |
+| POST   | `/api/cart`     | Add product to cart           | Yes           |
+| PUT    | `/api/cart/:id` | Update cart item quantity     | Yes           |
+| DELETE | `/api/cart/:id` | Remove item from cart         | Yes           |
 
 ### Order Endpoints (mounted at `/api/orders`)
 
-| Method | Path               | Description                              | Auth Required |
-|--------|--------------------|------------------------------------------|---------------|
-| POST   | `/api/orders`      | Create order from cart (transactional)   | Yes           |
-| GET    | `/api/orders`      | List user's orders                       | Yes           |
-| GET    | `/api/orders/:id`  | Get order detail with items              | Yes           |
-| PUT    | `/api/orders/:id/status` | Update order status                | Admin         |
+| Method | Path                     | Description                            | Auth Required |
+| ------ | ------------------------ | -------------------------------------- | ------------- |
+| POST   | `/api/orders`            | Create order from cart (transactional) | Yes           |
+| GET    | `/api/orders`            | List user's orders                     | Yes           |
+| GET    | `/api/orders/:id`        | Get order detail with items            | Yes           |
+| PUT    | `/api/orders/:id/status` | Update order status                    | Admin         |
 
 ### Admin Endpoints (mounted at `/api/admin`)
 
-| Method | Path                       | Description                              | Auth Required |
-|--------|----------------------------|------------------------------------------|---------------|
-| GET    | `/api/admin/users`         | List all users                           | Admin         |
-| PUT    | `/api/admin/users/:id/role`| Change user role                         | Admin         |
-| DELETE | `/api/admin/users/:id`     | Delete a user                            | Admin         |
-| GET    | `/api/admin/stats`         | Dashboard stats (users, products, orders, revenue) | Admin |
+| Method | Path                        | Description                                        | Auth Required |
+| ------ | --------------------------- | -------------------------------------------------- | ------------- |
+| GET    | `/api/admin/users`          | List all users                                     | Admin         |
+| PUT    | `/api/admin/users/:id/role` | Change user role                                   | Admin         |
+| DELETE | `/api/admin/users/:id`      | Delete a user                                      | Admin         |
+| GET    | `/api/admin/stats`          | Dashboard stats (users, products, orders, revenue) | Admin         |
 
 See [E-Commerce docs](./07-ecommerce.md) for full details on the order flow.
 
@@ -173,43 +175,43 @@ See [E-Commerce docs](./07-ecommerce.md) for full details on the order flow.
 
 ## Route Files
 
-| File                     | Mount Point     | Auth     | Description                  |
-|--------------------------|-----------------|----------|------------------------------|
-| `routes/auth.js`         | `/api/auth`     | Mixed    | Authentication endpoints     |
-| `routes/products.js`     | `/api/products` | Public   | Product catalog CRUD         |
-| `routes/cart.js`         | `/api/cart`     | Required | Shopping cart management      |
-| `routes/orders.js`       | `/api/orders`   | Required | Order creation/history; admin: list all + update status |
-| `routes/admin.js`        | `/api/admin`    | Admin    | User management + dashboard stats |
+| File                 | Mount Point     | Auth     | Description                                             |
+| -------------------- | --------------- | -------- | ------------------------------------------------------- |
+| `routes/auth.js`     | `/api/auth`     | Mixed    | Authentication endpoints                                |
+| `routes/products.js` | `/api/products` | Public   | Product catalog CRUD                                    |
+| `routes/cart.js`     | `/api/cart`     | Required | Shopping cart management                                |
+| `routes/orders.js`   | `/api/orders`   | Required | Order creation/history; admin: list all + update status |
+| `routes/admin.js`    | `/api/admin`    | Admin    | User management + dashboard stats                       |
 
 ---
 
 ## Dependencies
 
-| Package        | Version | Purpose                              |
-|----------------|---------|--------------------------------------|
-| `express`      | ^4.19   | HTTP framework                       |
-| `pg`           | ^8.12   | PostgreSQL client with connection pool|
-| `bcrypt`       | ^5.1    | Password hashing (native C++ addon)  |
-| `jsonwebtoken` | ^9.0    | JWT sign/verify                      |
-| `cookie-parser`| ^1.4    | Parse Cookie header into req.cookies |
-| `cors`         | ^2.8    | CORS headers                         |
-| `dotenv`       | ^16.4   | Load .env file                       |
-| `uuid`         | ^9.0    | Generate v4 UUIDs for refresh tokens |
+| Package         | Version | Purpose                                |
+| --------------- | ------- | -------------------------------------- |
+| `express`       | ^4.19   | HTTP framework                         |
+| `pg`            | ^8.12   | PostgreSQL client with connection pool |
+| `bcrypt`        | ^5.1    | Password hashing (native C++ addon)    |
+| `jsonwebtoken`  | ^9.0    | JWT sign/verify                        |
+| `cookie-parser` | ^1.4    | Parse Cookie header into req.cookies   |
+| `cors`          | ^2.8    | CORS headers                           |
+| `dotenv`        | ^16.4   | Load .env file                         |
+| `uuid`          | ^9.0    | Generate v4 UUIDs for refresh tokens   |
 
 ### Dev Dependencies
 
-| Package    | Version | Purpose                                   |
-|------------|---------|-------------------------------------------|
-| `nodemon`  | ^3.1    | Auto-restarts backend on file changes (dev mode) |
+| Package   | Version | Purpose                                          |
+| --------- | ------- | ------------------------------------------------ |
+| `nodemon` | ^3.1    | Auto-restarts backend on file changes (dev mode) |
 
 ---
 
 ## npm Scripts
 
-| Script | Command | Used in |
-|---|---|---|
-| `start` | `node src/index.js` | Production (`docker-compose.yml`) |
-| `dev` | `nodemon src/index.js` | Development (`docker-compose.dev.yml`) |
+| Script  | Command                | Used in                                |
+| ------- | ---------------------- | -------------------------------------- |
+| `start` | `node src/index.js`    | Production (`docker-compose.yml`)      |
+| `dev`   | `nodemon src/index.js` | Development (`docker-compose.dev.yml`) |
 
 ---
 

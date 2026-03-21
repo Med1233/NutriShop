@@ -30,6 +30,7 @@
 ```
 
 **Why this order?**
+
 - `LanguageProvider` is outermost because it has no dependencies
 - `AuthProvider` is inside because it may display translated error messages
 - `CartProvider` is innermost because it needs the current user from `AuthProvider`
@@ -45,12 +46,14 @@
 **Protection:** Public (anyone can browse products)
 
 **Sections:**
+
 1. Hero banner with branding ("Fuel Your Performance")
 2. Search bar for filtering products by name/description
 3. Category filter buttons (All, Proteins, Vitamins, Supplements, Superfoods, Snacks)
 4. Product grid with SVG product images, category badge, description, price, and "Add to Cart" button
 
 **Behavior:**
+
 - Fetches products from `GET /api/products` with optional `?category=` and `?search=` query params
 - Fetches categories from `GET /api/products/categories` on mount
 - "Add to Cart" button shown for all users (guest cart uses localStorage)
@@ -64,6 +67,7 @@
 **Protection:** Public
 
 **Features:**
+
 - Large SVG product image (category-themed)
 - Full product info with category badge and stock count
 - Quantity selector (1-10, capped at stock)
@@ -79,6 +83,7 @@
 **Protection:** None (works for both guests and authenticated users)
 
 **Features:**
+
 - Lists cart items with product thumbnail images and links to product detail pages
 - Quantity selector per item (updates via `PUT /api/cart/:id`)
 - Remove button per item (via `DELETE /api/cart/:id`)
@@ -94,6 +99,7 @@
 **Protection:** Requires authentication (redirects to login)
 
 **Features:**
+
 - Order summary showing all cart items and total
 - Shipping address textarea (required)
 - "Place Order" button → `POST /api/orders`
@@ -110,12 +116,14 @@
 **Two tabs:**
 
 **Profile tab:**
+
 - Header with avatar, name, email
 - Stats: total orders, total spent
 - Account details: name, email, auth method, role
 - Quick links: browse products, view cart
 
 **Orders tab:**
+
 - Lists all orders with status badges (color-coded: pending, processing, shipped, delivered)
 - Order date and total
 - Expandable detail view (click "View Details"):
@@ -124,6 +132,7 @@
   - Links to product detail pages
 
 **Data fetching:**
+
 - Fetches orders from `GET /api/orders`
 - User data comes from `AuthContext`
 
@@ -134,6 +143,7 @@
 **Route:** `/login`
 
 **Features:**
+
 - Email/password form
 - "Continue with Google" button (only shown if `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is configured)
 - Error display (from form validation, API errors, or OAuth errors via `?error=` query param)
@@ -147,6 +157,7 @@
 **Route:** `/register`
 
 **Features:**
+
 - Name, email, password, confirm password fields
 - Client-side validation: passwords must match
 - Server-side validation: email uniqueness, password length
@@ -161,15 +172,16 @@
 
 Renders category-themed SVG product images. Each category has a unique color and icon illustration:
 
-| Category    | Color     | Icon                    |
-|-------------|-----------|-------------------------|
-| proteins    | `#2563eb` | Protein container       |
-| vitamins    | `#f59e0b` | Vitamin capsule         |
-| supplements | `#8b5cf6` | Pill capsules           |
-| superfoods  | `#16a34a` | Leaf shape              |
-| snacks      | `#ef4444` | Energy bar              |
+| Category    | Color     | Icon              |
+| ----------- | --------- | ----------------- |
+| proteins    | `#2563eb` | Protein container |
+| vitamins    | `#f59e0b` | Vitamin capsule   |
+| supplements | `#8b5cf6` | Pill capsules     |
+| superfoods  | `#16a34a` | Leaf shape        |
+| snacks      | `#ef4444` | Energy bar        |
 
 **Props:**
+
 - `category` (string) — determines color and icon
 - `name` (string) — shown as overlay text
 - `size` — `'small'` (60x60, for cart), `'medium'` (full width x 160, for catalog cards), `'large'` (full width x 320, for product detail)
@@ -183,16 +195,19 @@ Used in: homepage product grid, product detail page, cart items.
 Always visible. Shows different content based on auth state:
 
 **Logged out:**
+
 ```
 [NutriShop]                         [🌐 Language ▼] [Sign In] [Register]
 ```
 
 **Logged in (customer):**
+
 ```
 [NutriShop]      [🌐 Language ▼] [Cart (3)] [My Profile] [Hi, Name] [Sign Out]
 ```
 
 **Logged in (admin):**
+
 ```
 [NutriShop]      [🌐 Language ▼] [Cart (3)] [My Profile] [Admin] [Hi, Name] [Sign Out]
 ```
@@ -212,6 +227,7 @@ A `<select>` dropdown that changes the app language. Appears in the Navbar. See 
 See [Authentication documentation](./02-authentication.md#frontend-auth-context) for full details.
 
 **Key design decisions:**
+
 - All API calls use `credentials: 'include'` to send cookies
 - API calls target `http://localhost:4000` directly (not through the Next.js rewrite)
 - On initial load, tries `GET /me` → if 401, tries `POST /refresh` → if that fails, user is null
@@ -221,6 +237,7 @@ See [Authentication documentation](./02-authentication.md#frontend-auth-context)
 See [E-Commerce documentation](./07-ecommerce.md#cart-context) for full details.
 
 **Key design decisions:**
+
 - **Authenticated**: syncs with backend `/api/cart` endpoints
 - **Guest**: stores cart in `localStorage`, fetches product details from `/api/products`
 - **On login**: merges guest cart into backend cart, clears localStorage
@@ -235,12 +252,14 @@ See [E-Commerce documentation](./07-ecommerce.md#cart-context) for full details.
 
 ```javascript
 const nextConfig = {
-  output: 'standalone',    // Produces a minimal self-contained build for Docker
+  output: 'standalone', // Produces a minimal self-contained build for Docker
   async rewrites() {
-    return [{
-      source: '/api/:path*',
-      destination: `${process.env.BACKEND_URL}/api/:path*`,
-    }];
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${process.env.BACKEND_URL}/api/:path*`,
+      },
+    ];
   },
 };
 ```
@@ -265,6 +284,7 @@ All styles use inline React `style` objects — no CSS files, no Tailwind, no CS
 **Brand color:** Green `#16a34a` used for buttons, links, borders, and accents.
 
 **Pattern used throughout:**
+
 ```typescript
 const styles: Record<string, React.CSSProperties> = {
   container: { display: 'flex', ... },

@@ -1,6 +1,14 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  ReactNode,
+} from 'react';
 import { useAuth } from './AuthContext';
 import { apiFetch, getBackendUrl } from '../api/client';
 import type { CartItem, GuestCartEntry } from '../types';
@@ -9,7 +17,10 @@ interface CartContextType {
   items: CartItem[];
   loading: boolean;
   itemCount: number;
-  addToCart: (productId: number, quantity?: number) => Promise<{ error?: string }>;
+  addToCart: (
+    productId: number,
+    quantity?: number,
+  ) => Promise<{ error?: string }>;
   updateQuantity: (cartItemId: number, quantity: number) => Promise<void>;
   removeItem: (cartItemId: number) => Promise<void>;
   refresh: () => Promise<void>;
@@ -55,7 +66,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const products = await res.json();
       const cartItems: CartItem[] = [];
       for (const entry of entries) {
-        const product = products.find((p: { id: number }) => p.id === entry.product_id);
+        const product = products.find(
+          (p: { id: number }) => p.id === entry.product_id,
+        );
         if (product) {
           cartItems.push({
             id: -entry.product_id,
@@ -101,7 +114,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     for (const entry of entries) {
       await apiFetch('/api/cart', {
         method: 'POST',
-        body: JSON.stringify({ product_id: entry.product_id, quantity: entry.quantity }),
+        body: JSON.stringify({
+          product_id: entry.product_id,
+          quantity: entry.quantity,
+        }),
       });
     }
     clearGuestCart();
@@ -147,7 +163,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return { error: data.error };
     } else {
       const entries = getGuestCart();
-      const existing = entries.find(e => e.product_id === productId);
+      const existing = entries.find((e) => e.product_id === productId);
       if (existing) {
         existing.quantity += quantity;
       } else {
@@ -169,7 +185,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } else {
       const productId = -cartItemId;
       const entries = getGuestCart();
-      const entry = entries.find(e => e.product_id === productId);
+      const entry = entries.find((e) => e.product_id === productId);
       if (entry) {
         entry.quantity = quantity;
         saveGuestCart(entries);
@@ -184,7 +200,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       await loadAuthCart();
     } else {
       const productId = -cartItemId;
-      const entries = getGuestCart().filter(e => e.product_id !== productId);
+      const entries = getGuestCart().filter((e) => e.product_id !== productId);
       saveGuestCart(entries);
       await loadGuestCart();
     }
@@ -193,7 +209,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, loading, itemCount, addToCart, updateQuantity, removeItem, refresh }}>
+    <CartContext.Provider
+      value={{
+        items,
+        loading,
+        itemCount,
+        addToCart,
+        updateQuantity,
+        removeItem,
+        refresh,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

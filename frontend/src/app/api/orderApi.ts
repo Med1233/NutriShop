@@ -24,7 +24,10 @@ export async function createOrder(shippingAddress: string): Promise<Response> {
   });
 }
 
-export async function updateOrderStatus(orderId: number, status: string): Promise<Response> {
+export async function updateOrderStatus(
+  orderId: number,
+  status: string,
+): Promise<Response> {
   return apiFetch(`/api/orders/${orderId}/status`, {
     method: 'PUT',
     body: JSON.stringify({ status }),

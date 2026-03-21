@@ -15,11 +15,16 @@ export function useProductCatalog() {
   const [addedId, setAddedId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetchCategories().then(setCategories).catch(() => {});
+    fetchCategories()
+      .then(setCategories)
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
-    fetchProducts({ category: activeCategory || undefined, search: search || undefined })
+    fetchProducts({
+      category: activeCategory || undefined,
+      search: search || undefined,
+    })
       .then(setProducts)
       .catch(() => {});
   }, [activeCategory, search]);
@@ -33,7 +38,14 @@ export function useProductCatalog() {
   };
 
   return {
-    products, categories, activeCategory, setActiveCategory,
-    search, setSearch, addedId, handleAddToCart, isCustomer,
+    products,
+    categories,
+    activeCategory,
+    setActiveCategory,
+    search,
+    setSearch,
+    addedId,
+    handleAddToCart,
+    isCustomer,
   };
 }

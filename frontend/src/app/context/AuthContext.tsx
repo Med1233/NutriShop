@@ -1,6 +1,13 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from 'react';
 import { apiFetch } from '../api/client';
 import type { User } from '../types';
 
@@ -8,10 +15,18 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<{ error?: string }>;
-  register: (email: string, password: string, name: string) => Promise<{ error?: string }>;
+  register: (
+    email: string,
+    password: string,
+    name: string,
+  ) => Promise<{ error?: string }>;
   logout: () => Promise<void>;
   refresh: () => Promise<boolean>;
-  updateProfile: (data: { name?: string; phone?: string; address?: string }) => Promise<{ error?: string }>;
+  updateProfile: (data: {
+    name?: string;
+    phone?: string;
+    address?: string;
+  }) => Promise<{ error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -88,7 +103,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  const updateProfile = async (data: { name?: string; phone?: string; address?: string }) => {
+  const updateProfile = async (data: {
+    name?: string;
+    phone?: string;
+    address?: string;
+  }) => {
     const res = await apiFetch('/api/auth/profile', {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -102,7 +121,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refresh, updateProfile }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, register, logout, refresh, updateProfile }}
+    >
       {children}
     </AuthContext.Provider>
   );

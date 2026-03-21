@@ -21,7 +21,9 @@ import { useAuth } from '../../context/AuthContext';
 beforeEach(() => {
   vi.clearAllMocks();
   mockGet.mockReturnValue(null);
-  vi.mocked(useAuth).mockReturnValue({ login: vi.fn().mockResolvedValue({}) } as any);
+  vi.mocked(useAuth).mockReturnValue({
+    login: vi.fn().mockResolvedValue({}),
+  } as any);
 });
 
 describe('useLogin', () => {
@@ -35,8 +37,12 @@ describe('useLogin', () => {
 
   it('updates email and password', () => {
     const { result } = renderHook(() => useLogin());
-    act(() => { result.current.setEmail('a@b.com'); });
-    act(() => { result.current.setPassword('pass'); });
+    act(() => {
+      result.current.setEmail('a@b.com');
+    });
+    act(() => {
+      result.current.setPassword('pass');
+    });
     expect(result.current.email).toBe('a@b.com');
     expect(result.current.password).toBe('pass');
   });
@@ -52,8 +58,12 @@ describe('useLogin', () => {
     vi.mocked(useAuth).mockReturnValue({ login } as any);
 
     const { result } = renderHook(() => useLogin());
-    act(() => { result.current.setEmail('a@b.com'); });
-    act(() => { result.current.setPassword('pass'); });
+    act(() => {
+      result.current.setEmail('a@b.com');
+    });
+    act(() => {
+      result.current.setPassword('pass');
+    });
 
     await act(async () => {
       await result.current.handleSubmit({ preventDefault: vi.fn() } as any);

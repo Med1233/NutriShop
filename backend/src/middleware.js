@@ -1,5 +1,4 @@
 const { verifyAccessToken } = require('./auth');
-const { pool } = require('./db');
 
 /**
  * Authentication middleware.
@@ -19,7 +18,9 @@ function requireAuth(req, res, next) {
     next();
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
-      return res.status(401).json({ error: 'Token expired', code: 'TOKEN_EXPIRED' });
+      return res
+        .status(401)
+        .json({ error: 'Token expired', code: 'TOKEN_EXPIRED' });
     }
     return res.status(401).json({ error: 'Invalid token' });
   }
@@ -65,10 +66,21 @@ function requireStaff(req, res, next) {
  * Product manager middleware — allows admin or stockist. Must be used after requireAuth.
  */
 function requireProductManager(req, res, next) {
-  if (!req.user || (req.user.role !== 'admin' && req.user.role !== 'stockist')) {
-    return res.status(403).json({ error: 'Product management access required' });
+  if (
+    !req.user ||
+    (req.user.role !== 'admin' && req.user.role !== 'stockist')
+  ) {
+    return res
+      .status(403)
+      .json({ error: 'Product management access required' });
   }
   next();
 }
 
-module.exports = { requireAuth, optionalAuth, requireAdmin, requireStaff, requireProductManager };
+module.exports = {
+  requireAuth,
+  optionalAuth,
+  requireAdmin,
+  requireStaff,
+  requireProductManager,
+};

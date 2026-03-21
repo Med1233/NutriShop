@@ -2,7 +2,9 @@ import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor';
 
 Given('I have placed an order', () => {
   cy.visit('/');
-  cy.contains('button', /add to cart/i).first().click();
+  cy.contains('button', /add to cart/i)
+    .first()
+    .click();
   cy.wait(500);
   cy.visit('/checkout');
   cy.get('textarea').type('123 Test St');

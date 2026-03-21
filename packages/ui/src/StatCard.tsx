@@ -8,9 +8,14 @@ export interface StatCardProps {
 
 export function StatCard({ value, label, color }: StatCardProps) {
   return (
-    <div className="bg-white border border-gray-200 rounded-[10px] p-4 flex flex-col items-center gap-1">
-      <span className="text-2xl font-extrabold" style={{ color: color || '#111827' }}>{value}</span>
-      <span className="text-[0.8rem] text-gray-500 font-medium">{label}</span>
+    <div className="flex flex-col items-center gap-1 rounded-[10px] border border-gray-200 bg-white p-4">
+      <span
+        className="text-2xl font-extrabold"
+        style={{ color: color || '#111827' }}
+      >
+        {value}
+      </span>
+      <span className="text-[0.8rem] font-medium text-gray-500">{label}</span>
     </div>
   );
 }
@@ -22,9 +27,15 @@ const colsClass: Record<number, string> = {
   5: 'grid-cols-5',
 };
 
-export function StatGrid({ cols = 4, children }: { cols?: number; children: ReactNode }) {
+export function StatGrid({
+  cols = 4,
+  children,
+}: {
+  cols?: number;
+  children: ReactNode;
+}) {
   return (
-    <div className={`grid ${colsClass[cols] || 'grid-cols-4'} gap-4 mb-6`}>
+    <div className={`grid ${colsClass[cols] || 'grid-cols-4'} mb-6 gap-4`}>
       {children}
     </div>
   );

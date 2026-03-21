@@ -15,9 +15,12 @@ Cypress.Commands.add('loginAsAdmin', () => {
   cy.login('macinessa365@gmail.com', '123456');
 });
 
-Cypress.Commands.add('seedUser', (data: { email: string; password: string; name: string; role?: string }) => {
-  cy.task('db:seed-user', data);
-});
+Cypress.Commands.add(
+  'seedUser',
+  (data: { email: string; password: string; name: string; role?: string }) => {
+    cy.task('db:seed-user', data);
+  },
+);
 
 Cypress.Commands.add('resetDb', () => {
   cy.task('db:reset');
@@ -28,7 +31,12 @@ declare global {
     interface Chainable {
       login(email: string, password: string): Chainable<void>;
       loginAsAdmin(): Chainable<void>;
-      seedUser(data: { email: string; password: string; name: string; role?: string }): Chainable<void>;
+      seedUser(data: {
+        email: string;
+        password: string;
+        name: string;
+        role?: string;
+      }): Chainable<void>;
       resetDb(): Chainable<void>;
     }
   }

@@ -17,12 +17,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="font-[Inter,-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] m-0 p-0 text-gray-900">
+      <body className="m-0 p-0 font-[Inter,-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] text-gray-900">
         <LanguageProvider>
           <AuthProvider>
             <CartProvider>
               <Navbar />
-              <main className="max-w-[1100px] mx-auto px-6 pb-8">
+              <main className="mx-auto max-w-[1100px] px-6 pb-8">
                 {children}
               </main>
             </CartProvider>

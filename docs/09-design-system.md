@@ -19,17 +19,14 @@ Next.js transpiles it via:
 
 ```js
 // frontend/next.config.js
-transpilePackages: ['@nutrishop/ui']
+transpilePackages: ['@nutrishop/ui'];
 ```
 
 The frontend's Tailwind config scans the package source:
 
 ```js
 // frontend/tailwind.config.js
-content: [
-  './src/**/*.{js,ts,jsx,tsx}',
-  '../packages/ui/src/**/*.{ts,tsx}',
-]
+content: ['./src/**/*.{js,ts,jsx,tsx}', '../packages/ui/src/**/*.{ts,tsx}'];
 ```
 
 ## Running
@@ -43,32 +40,32 @@ pnpm --filter @nutrishop/ui lint            # Type-check
 
 ## Components
 
-| Component | Variants / Props | Usage |
-|---|---|---|
-| `Button` | `variant`: primary, secondary, danger, ghost, outline; `size`: xs, sm, md | All interactive buttons |
-| `LinkButton` | `variant`: primary, outline, ghost; `as`: polymorphic component | Navigation buttons (pass `as={Link}` for Next.js) |
-| `Input` | Standard HTML input props | Text inputs |
-| `Textarea` | Standard HTML textarea props | Multi-line inputs |
-| `Select` | Standard HTML select props | Dropdowns |
-| `FormField` | `label`, `htmlFor` | Label + input wrapper |
-| `FormRow` | — | 3-column grid for form inputs |
-| `Card` | `variant`: default, form, muted | Bordered content containers |
-| `CardHeader` | `title` + action children | Section header with title + action |
-| `Badge` | `color`, `bgColor` | Generic colored badge |
-| `CategoryBadge` | `category`, `label`, `colors` | Product category tags |
-| `StatusBadge` | `status`, `label`, `colors` | Order status pills |
-| `ProviderBadge` | `provider` | Auth provider badge (indigo) |
-| `StatCard` | `value`, `label`, `color` | Dashboard stat display |
-| `StatGrid` | `cols`: 2-5 | Grid wrapper for StatCards |
-| `Table` | — | Responsive table wrapper |
-| `Th` / `Td` | Standard th/td props | Styled table cells |
-| `PageTitle` | `color`: default, blue, red, violet, green | Role-colored page headings |
-| `EmptyState` | `message`, `actionLabel`, `actionHref`, `linkComponent` | Empty data states with CTA |
-| `FilterPills` | `options`, `active`, `onChange` | Category/status filter buttons |
-| `Tabs` | `tabs`, `active`, `onChange`, `color` | Tab navigation |
-| `Alert` | `variant`: error, success | Error/success messages |
-| `DetailPanel` | — | Expandable content panel |
-| `ToggleButton` | `expanded`, `onClick`, `color` | Expand/collapse toggle |
+| Component       | Variants / Props                                                          | Usage                                             |
+| --------------- | ------------------------------------------------------------------------- | ------------------------------------------------- |
+| `Button`        | `variant`: primary, secondary, danger, ghost, outline; `size`: xs, sm, md | All interactive buttons                           |
+| `LinkButton`    | `variant`: primary, outline, ghost; `as`: polymorphic component           | Navigation buttons (pass `as={Link}` for Next.js) |
+| `Input`         | Standard HTML input props                                                 | Text inputs                                       |
+| `Textarea`      | Standard HTML textarea props                                              | Multi-line inputs                                 |
+| `Select`        | Standard HTML select props                                                | Dropdowns                                         |
+| `FormField`     | `label`, `htmlFor`                                                        | Label + input wrapper                             |
+| `FormRow`       | —                                                                         | 3-column grid for form inputs                     |
+| `Card`          | `variant`: default, form, muted                                           | Bordered content containers                       |
+| `CardHeader`    | `title` + action children                                                 | Section header with title + action                |
+| `Badge`         | `color`, `bgColor`                                                        | Generic colored badge                             |
+| `CategoryBadge` | `category`, `label`, `colors`                                             | Product category tags                             |
+| `StatusBadge`   | `status`, `label`, `colors`                                               | Order status pills                                |
+| `ProviderBadge` | `provider`                                                                | Auth provider badge (indigo)                      |
+| `StatCard`      | `value`, `label`, `color`                                                 | Dashboard stat display                            |
+| `StatGrid`      | `cols`: 2-5                                                               | Grid wrapper for StatCards                        |
+| `Table`         | —                                                                         | Responsive table wrapper                          |
+| `Th` / `Td`     | Standard th/td props                                                      | Styled table cells                                |
+| `PageTitle`     | `color`: default, blue, red, violet, green                                | Role-colored page headings                        |
+| `EmptyState`    | `message`, `actionLabel`, `actionHref`, `linkComponent`                   | Empty data states with CTA                        |
+| `FilterPills`   | `options`, `active`, `onChange`                                           | Category/status filter buttons                    |
+| `Tabs`          | `tabs`, `active`, `onChange`, `color`                                     | Tab navigation                                    |
+| `Alert`         | `variant`: error, success                                                 | Error/success messages                            |
+| `DetailPanel`   | —                                                                         | Expandable content panel                          |
+| `ToggleButton`  | `expanded`, `onClick`, `color`                                            | Expand/collapse toggle                            |
 
 ## Polymorphic `as` Pattern
 

@@ -22,8 +22,13 @@ import { fetchProduct } from '../../api/productApi';
 import { useCart } from '../../context/CartContext';
 
 const mockProduct = {
-  id: 1, name: 'Whey Protein', description: 'Great protein', price: '29.99',
-  image_url: '', category: 'proteins', stock: 50,
+  id: 1,
+  name: 'Whey Protein',
+  description: 'Great protein',
+  price: '29.99',
+  image_url: '',
+  category: 'proteins',
+  stock: 50,
   nutrition_info: { calories: '120', protein: '25g', serving_size: '30g' },
 };
 
@@ -73,9 +78,13 @@ describe('useProductDetail', () => {
 
     await waitFor(() => expect(result.current.product).not.toBeNull());
 
-    act(() => { result.current.setQuantity(3); });
+    act(() => {
+      result.current.setQuantity(3);
+    });
 
-    await act(async () => { await result.current.handleAdd(); });
+    await act(async () => {
+      await result.current.handleAdd();
+    });
 
     expect(addToCart).toHaveBeenCalledWith(1, 3);
   });

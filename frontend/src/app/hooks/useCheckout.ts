@@ -14,7 +14,10 @@ export function useCheckout() {
   const [error, setError] = useState('');
   const [orderId, setOrderId] = useState<number | null>(null);
 
-  const subtotal = items.reduce((sum, item) => sum + parseFloat(item.price) * item.quantity, 0);
+  const subtotal = items.reduce(
+    (sum, item) => sum + parseFloat(item.price) * item.quantity,
+    0,
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +41,17 @@ export function useCheckout() {
   };
 
   return {
-    user, authLoading, items, loading, address, setAddress,
-    submitting, error, orderId, subtotal, handleSubmit, router,
+    user,
+    authLoading,
+    items,
+    loading,
+    address,
+    setAddress,
+    submitting,
+    error,
+    orderId,
+    subtotal,
+    handleSubmit,
+    router,
   };
 }

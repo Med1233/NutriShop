@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
-import { fetchAllOrders, fetchOrderDetail, updateOrderStatus } from '../api/orderApi';
+import {
+  fetchAllOrders,
+  fetchOrderDetail,
+  updateOrderStatus,
+} from '../api/orderApi';
 import type { AdminOrder, OrderDetail } from '../types';
 
 export function useOrderManager() {
@@ -47,18 +51,29 @@ export function useOrderManager() {
     setDetail(data);
   };
 
-  const filteredOrders = filter === 'all'
-    ? orders
-    : orders.filter(o => o.status === filter);
+  const filteredOrders =
+    filter === 'all' ? orders : orders.filter((o) => o.status === filter);
 
-  const statusCounts = orders.reduce((acc, o) => {
-    acc[o.status] = (acc[o.status] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const statusCounts = orders.reduce(
+    (acc, o) => {
+      acc[o.status] = (acc[o.status] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   return {
-    orders, loading, expandedId, detail, filter, setFilter,
-    filteredOrders, statusCounts, handleStatusChange, toggleDetail,
-    authLoading, user,
+    orders,
+    loading,
+    expandedId,
+    detail,
+    filter,
+    setFilter,
+    filteredOrders,
+    statusCounts,
+    handleStatusChange,
+    toggleDetail,
+    authLoading,
+    user,
   };
 }

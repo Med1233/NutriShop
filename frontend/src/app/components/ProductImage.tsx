@@ -24,7 +24,13 @@ const SIZES = {
   large: { width: '100%' as const, height: 320 },
 };
 
-export default function ProductImage({ category, name, imageUrl, size = 'medium', style }: ProductImageProps) {
+export default function ProductImage({
+  category,
+  name,
+  imageUrl,
+  size = 'medium',
+  style,
+}: ProductImageProps) {
   const [imgError, setImgError] = useState(false);
   const dims = SIZES[size];
   const bg = CATEGORY_COLORS[category] || '#6b7280';
@@ -32,12 +38,14 @@ export default function ProductImage({ category, name, imageUrl, size = 'medium'
 
   return (
     <div
-      className="relative overflow-hidden shrink-0"
+      className="relative shrink-0 overflow-hidden"
       style={{
         width: dims.width,
         height: dims.height,
         borderRadius: size === 'small' ? 8 : 12,
-        background: hasImage ? '#f3f4f6' : `linear-gradient(135deg, ${bg}, ${bg}dd)`,
+        background: hasImage
+          ? '#f3f4f6'
+          : `linear-gradient(135deg, ${bg}, ${bg}dd)`,
         ...style,
       }}
     >
@@ -46,13 +54,20 @@ export default function ProductImage({ category, name, imageUrl, size = 'medium'
           src={imageUrl}
           alt={name}
           onError={() => setImgError(true)}
-          className="w-full h-full object-cover block"
+          className="block h-full w-full object-cover"
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center">
+        <div className="flex h-full w-full items-center justify-center">
           <span
             className="font-bold text-white/50"
-            style={{ fontSize: size === 'small' ? '1.5rem' : size === 'medium' ? '3rem' : '5rem' }}
+            style={{
+              fontSize:
+                size === 'small'
+                  ? '1.5rem'
+                  : size === 'medium'
+                    ? '3rem'
+                    : '5rem',
+            }}
           >
             {name.charAt(0)}
           </span>
@@ -69,7 +84,7 @@ export default function ProductImage({ category, name, imageUrl, size = 'medium'
           }}
         >
           <span
-            className="text-white font-semibold"
+            className="font-semibold text-white"
             style={{
               fontSize: size === 'large' ? '1.1rem' : '0.75rem',
               textShadow: '0 1px 2px rgba(0,0,0,0.3)',

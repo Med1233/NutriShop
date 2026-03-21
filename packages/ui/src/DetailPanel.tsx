@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 export function DetailPanel({ children }: { children: ReactNode }) {
-  return <div className="mt-3 p-4 bg-gray-50 rounded-lg">{children}</div>;
+  return <div className="mt-3 rounded-lg bg-gray-50 p-4">{children}</div>;
 }
 
 const colorClass: Record<string, string> = {
@@ -16,11 +16,16 @@ export interface ToggleButtonProps {
   color?: string;
 }
 
-export function ToggleButton({ expanded, onClick, children, color = 'green' }: ToggleButtonProps) {
+export function ToggleButton({
+  expanded,
+  onClick,
+  children,
+  color = 'green',
+}: ToggleButtonProps) {
   return (
     <button
       onClick={onClick}
-      className={`bg-transparent border-none ${colorClass[color] || colorClass.green} cursor-pointer text-sm font-medium pt-2 p-0`}
+      className={`border-none bg-transparent ${colorClass[color] || colorClass.green} cursor-pointer p-0 pt-2 text-sm font-medium`}
     >
       {expanded ? '\u25B2' : '\u25BC'} {children}
     </button>

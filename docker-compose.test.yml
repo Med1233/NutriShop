@@ -8,6 +8,6 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: appdb_test
     ports:
-      - "5433:5432"
+      - '5433:5432'
     tmpfs:
       - /var/lib/postgresql/data

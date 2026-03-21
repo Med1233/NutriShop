@@ -102,20 +102,20 @@ async function initDb() {
 
   // Seed default admin user
   const { rows: adminCheck } = await pool.query(
-    "SELECT id FROM users WHERE email = 'macinessa365@gmail.com'"
+    "SELECT id FROM users WHERE email = 'macinessa365@gmail.com'",
   );
   if (adminCheck.length === 0) {
     const passwordHash = await bcrypt.hash('123456', 12);
     await pool.query(
       `INSERT INTO users (email, password_hash, name, role, provider)
        VALUES ('macinessa365@gmail.com', $1, 'Admin', 'admin', 'local')`,
-      [passwordHash]
+      [passwordHash],
     );
     console.log('Seeded default admin user');
   } else {
     // Ensure existing user has admin role
     await pool.query(
-      "UPDATE users SET role = 'admin' WHERE email = 'macinessa365@gmail.com'"
+      "UPDATE users SET role = 'admin' WHERE email = 'macinessa365@gmail.com'",
     );
   }
 

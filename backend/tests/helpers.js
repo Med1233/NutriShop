@@ -4,7 +4,9 @@ const { pool } = require('../src/db');
 const { hashPassword, generateAccessToken } = require('../src/auth');
 
 async function resetDb() {
-  await pool.query('TRUNCATE users, refresh_tokens, products, cart_items, orders, order_items RESTART IDENTITY CASCADE');
+  await pool.query(
+    'TRUNCATE users, refresh_tokens, products, cart_items, orders, order_items RESTART IDENTITY CASCADE',
+  );
 }
 
 async function createTestUser(overrides = {}) {
@@ -18,7 +20,7 @@ async function createTestUser(overrides = {}) {
   const hash = await hashPassword(data.password);
   const { rows } = await pool.query(
     'INSERT INTO users (email, name, password_hash, role, provider) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-    [data.email, data.name, hash, data.role, 'local']
+    [data.email, data.name, hash, data.role, 'local'],
   );
   const user = rows[0];
   const token = generateAccessToken(user);
@@ -36,7 +38,7 @@ async function createTestProduct(overrides = {}) {
   };
   const { rows } = await pool.query(
     'INSERT INTO products (name, description, price, category, stock) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-    [data.name, data.description, data.price, data.category, data.stock]
+    [data.name, data.description, data.price, data.category, data.stock],
   );
   return rows[0];
 }

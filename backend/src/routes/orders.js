@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
        FROM cart_items ci
        JOIN products p ON ci.product_id = p.id
        WHERE ci.user_id = $1`,
-      [req.user.id]
+      [req.user.id],
     );
 
     if (cartItems.length === 0) {
@@ -43,28 +43,35 @@ router.post('/', async (req, res) => {
     }
 
     // Calculate total
-    const total = cartItems.reduce((sum, item) => sum + parseFloat(item.price) * item.quantity, 0);
+    const total = cartItems.reduce(
+      (sum, item) => sum + parseFloat(item.price) * item.quantity,
+      0,
+    );
 
     // Create order
-    const { rows: [order] } = await client.query(
+    const {
+      rows: [order],
+    } = await client.query(
       'INSERT INTO orders (user_id, total, shipping_address) VALUES ($1, $2, $3) RETURNING *',
-      [req.user.id, total.toFixed(2), shipping_address]
+      [req.user.id, total.toFixed(2), shipping_address],
     );
 
     // Create order items and decrement stock
     for (const item of cartItems) {
       await client.query(
         'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)',
-        [order.id, item.product_id, item.quantity, item.price]
+        [order.id, item.product_id, item.quantity, item.price],
       );
       await client.query(
         'UPDATE products SET stock = stock - $1 WHERE id = $2',
-        [item.quantity, item.product_id]
+        [item.quantity, item.product_id],
       );
     }
 
     // Clear cart
-    await client.query('DELETE FROM cart_items WHERE user_id = $1', [req.user.id]);
+    await client.query('DELETE FROM cart_items WHERE user_id = $1', [
+      req.user.id,
+    ]);
 
     await client.query('COMMIT');
 
@@ -81,21 +88,24 @@ router.post('/', async (req, res) => {
 // GET /api/orders — list user's orders (or all orders for staff)
 router.get('/', async (req, res) => {
   try {
-    if ((req.user.role === 'admin' || req.user.role === 'manager') && req.query.all === 'true') {
+    if (
+      (req.user.role === 'admin' || req.user.role === 'manager') &&
+      req.query.all === 'true'
+    ) {
       const { rows } = await pool.query(
         `SELECT o.*, u.name AS user_name, u.email AS user_email,
                 su.name AS status_updated_by_name
          FROM orders o
          JOIN users u ON o.user_id = u.id
          LEFT JOIN users su ON o.status_updated_by = su.id
-         ORDER BY o.created_at DESC`
+         ORDER BY o.created_at DESC`,
       );
       return res.json(rows);
     }
 
     const { rows } = await pool.query(
       'SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC',
-      [req.user.id]
+      [req.user.id],
     );
     res.json(rows);
   } catch (err) {
@@ -127,7 +137,7 @@ router.get('/:id', async (req, res) => {
        FROM order_items oi
        JOIN products p ON oi.product_id = p.id
        WHERE oi.order_id = $1`,
-      [req.params.id]
+      [req.params.id],
     );
 
     res.json({ ...orders[0], items });
@@ -140,10 +150,18 @@ router.get('/:id', async (req, res) => {
 // PUT /api/orders/:id/status — update order status (staff: admin or manager)
 router.put('/:id/status', requireStaff, async (req, res) => {
   const { status } = req.body;
-  const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+  const validStatuses = [
+    'pending',
+    'processing',
+    'shipped',
+    'delivered',
+    'cancelled',
+  ];
 
   if (!status || !validStatuses.includes(status)) {
-    return res.status(400).json({ error: `Status must be one of: ${validStatuses.join(', ')}` });
+    return res
+      .status(400)
+      .json({ error: `Status must be one of: ${validStatuses.join(', ')}` });
   }
 
   const client = await pool.connect();
@@ -152,7 +170,7 @@ router.put('/:id/status', requireStaff, async (req, res) => {
 
     const { rows: orders } = await client.query(
       'SELECT * FROM orders WHERE id = $1 FOR UPDATE',
-      [req.params.id]
+      [req.params.id],
     );
 
     if (orders.length === 0) {
@@ -165,26 +183,28 @@ router.put('/:id/status', requireStaff, async (req, res) => {
     // Prevent changing a cancelled order
     if (oldStatus === 'cancelled') {
       await client.query('ROLLBACK');
-      return res.status(400).json({ error: 'Cannot change status of a cancelled order' });
+      return res
+        .status(400)
+        .json({ error: 'Cannot change status of a cancelled order' });
     }
 
     // Cancelling — restore stock
     if (status === 'cancelled') {
       const { rows: items } = await client.query(
         'SELECT product_id, quantity FROM order_items WHERE order_id = $1',
-        [req.params.id]
+        [req.params.id],
       );
       for (const item of items) {
         await client.query(
           'UPDATE products SET stock = stock + $1 WHERE id = $2',
-          [item.quantity, item.product_id]
+          [item.quantity, item.product_id],
         );
       }
     }
 
     const { rows: updated } = await client.query(
       'UPDATE orders SET status = $1, status_updated_by = $2, status_updated_at = NOW() WHERE id = $3 RETURNING *',
-      [status, req.user.id, req.params.id]
+      [status, req.user.id, req.params.id],
     );
 
     await client.query('COMMIT');

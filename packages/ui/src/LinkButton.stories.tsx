@@ -14,5 +14,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = { args: { children: 'Go to Shop', href: '#' } };
-export const Outline: Story = { args: { children: 'View Cart', href: '#', variant: 'outline' } };
-export const Ghost: Story = { args: { children: 'Continue Shopping', href: '#', variant: 'ghost' } };
+export const Outline: Story = {
+  args: { children: 'View Cart', href: '#', variant: 'outline' },
+};
+export const Ghost: Story = {
+  args: { children: 'Continue Shopping', href: '#', variant: 'ghost' },
+};

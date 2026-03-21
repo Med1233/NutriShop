@@ -22,7 +22,7 @@ describe('StatGrid', () => {
         <StatCard value={1} label="A" />
         <StatCard value={2} label="B" />
         <StatCard value={3} label="C" />
-      </StatGrid>
+      </StatGrid>,
     );
     expect(container.firstChild).toHaveClass('grid-cols-3');
   });

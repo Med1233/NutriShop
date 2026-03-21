@@ -19,10 +19,10 @@ docker-compose up --build
 
 The project has two compose files for different workflows:
 
-| File | Purpose | When to use |
-|---|---|---|
-| `docker-compose.dev.yml` | Development with hot-reload | Day-to-day coding |
-| `docker-compose.yml` | Production builds | Deploying or final testing |
+| File                     | Purpose                     | When to use                |
+| ------------------------ | --------------------------- | -------------------------- |
+| `docker-compose.dev.yml` | Development with hot-reload | Day-to-day coding          |
+| `docker-compose.yml`     | Production builds           | Deploying or final testing |
 
 ### Development Mode (`docker-compose.dev.yml`)
 
@@ -44,6 +44,7 @@ docker-compose -f docker-compose.dev.yml down -v
 ```
 
 When to rebuild in dev mode:
+
 - After changing `package.json` (add/remove dependencies) — run `down -v` then `up` to reinstall
 - Never needed for source code changes (`.js`, `.tsx`, `.ts` files)
 
@@ -72,6 +73,7 @@ docker-compose down -v
 ```
 
 When to rebuild in production mode:
+
 - After any source code change
 - After changing `package.json`
 - After changing environment variables prefixed with `NEXT_PUBLIC_*` (inlined at build time)
@@ -123,6 +125,7 @@ GOOGLE_CALLBACK_URL=http://localhost:4000/api/auth/google/callback
 ```
 
 To obtain these:
+
 1. Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
 2. Create or select a project
 3. Go to **APIs & Services > Credentials**
@@ -174,21 +177,28 @@ docker-compose exec -T postgres psql -U admin appdb < backup.sql
 ## Troubleshooting
 
 ### "CORS error" in browser console
+
 The frontend is trying to reach the backend but CORS is blocking it. Check that `FRONTEND_URL` in `.env` matches the URL you're accessing the frontend from.
 
 ### "Token expired" loops
+
 If you keep getting redirected to login, the access token is expiring and refresh is failing. Check:
+
 - Is the backend running? (`docker-compose logs backend`)
 - Is the `refresh_token` cookie being sent? (Browser DevTools > Application > Cookies)
 
 ### Google OAuth "redirect_uri_mismatch"
+
 The callback URL in your Google Cloud Console doesn't match `GOOGLE_CALLBACK_URL`. They must be identical, including protocol and port.
 
 ### Frontend build fails with "useSearchParams must be wrapped in Suspense"
+
 This is a Next.js 14 requirement. The login page wraps its form in `<Suspense>` to handle this. If you add new pages using `useSearchParams`, wrap them too.
 
 ### Database connection refused
+
 PostgreSQL isn't ready yet. The healthcheck and `depends_on` should handle this, but if it persists:
+
 ```bash
 docker-compose down -v   # remove old volume
 docker-compose up --build

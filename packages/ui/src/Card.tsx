@@ -14,18 +14,30 @@ export interface CardProps {
   variant?: CardVariant;
 }
 
-export function Card({ children, className = '', variant = 'default' }: CardProps) {
+export function Card({
+  children,
+  className = '',
+  variant = 'default',
+}: CardProps) {
   return (
-    <div className={`rounded-[10px] p-5 ${variantClasses[variant]} ${className}`}>
+    <div
+      className={`rounded-[10px] p-5 ${variantClasses[variant]} ${className}`}
+    >
       {children}
     </div>
   );
 }
 
-export function CardHeader({ title, children }: { title: string; children?: ReactNode }) {
+export function CardHeader({
+  title,
+  children,
+}: {
+  title: string;
+  children?: ReactNode;
+}) {
   return (
-    <div className="flex justify-between items-center mb-4">
-      <h2 className="text-lg font-bold m-0 text-gray-900">{title}</h2>
+    <div className="mb-4 flex items-center justify-between">
+      <h2 className="m-0 text-lg font-bold text-gray-900">{title}</h2>
       {children}
     </div>
   );

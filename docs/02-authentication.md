@@ -63,18 +63,18 @@ clearTokenCookies(res)
 
 Sets two separate cookies:
 
-| Cookie          | Path        | MaxAge  | Purpose                        |
-|-----------------|-------------|---------|--------------------------------|
-| `access_token`  | `/`         | 15 min  | Sent on every API request      |
-| `refresh_token` | `/api/auth` | 7 days  | Only sent to auth endpoints    |
+| Cookie          | Path        | MaxAge | Purpose                     |
+| --------------- | ----------- | ------ | --------------------------- |
+| `access_token`  | `/`         | 15 min | Sent on every API request   |
+| `refresh_token` | `/api/auth` | 7 days | Only sent to auth endpoints |
 
 Both cookies use these security settings:
 
-| Setting    | Value          | Why                                           |
-|------------|----------------|-----------------------------------------------|
-| `httpOnly` | `true`         | JavaScript cannot read the cookie (XSS protection) |
+| Setting    | Value          | Why                                                                           |
+| ---------- | -------------- | ----------------------------------------------------------------------------- |
+| `httpOnly` | `true`         | JavaScript cannot read the cookie (XSS protection)                            |
 | `sameSite` | `lax`          | Sent on same-site requests + top-level navigation (needed for OAuth redirect) |
-| `secure`   | `true` in prod | Only sent over HTTPS in production            |
+| `secure`   | `true` in prod | Only sent over HTTPS in production                                            |
 
 ---
 
@@ -104,11 +104,13 @@ Same as `requireAuth`, but doesn't block if no token is present. Attaches `req.u
 Creates a new local account.
 
 **Request body:**
+
 ```json
 { "email": "user@example.com", "password": "min8chars", "name": "John" }
 ```
 
 **Flow:**
+
 1. Validates all fields are present and password ≥ 8 characters
 2. Checks if email already exists → `409 Conflict` if so
 3. Hashes password with bcrypt
@@ -118,6 +120,7 @@ Creates a new local account.
 7. Returns user profile
 
 **Response:** `201 Created`
+
 ```json
 { "user": { "id": 1, "email": "...", "name": "...", "provider": "local" } }
 ```
@@ -129,11 +132,13 @@ Creates a new local account.
 Authenticates with email and password.
 
 **Request body:**
+
 ```json
 { "email": "user@example.com", "password": "min8chars" }
 ```
 
 **Flow:**
+
 1. Looks up user by email
 2. If user's provider is not `local`, returns error suggesting the correct method (e.g., "This account uses google sign-in")
 3. Compares password with stored bcrypt hash
@@ -141,11 +146,13 @@ Authenticates with email and password.
 5. Sets HttpOnly cookies
 
 **Response:** `200 OK`
+
 ```json
 { "user": { "id": 1, "email": "...", "name": "...", "provider": "local" } }
 ```
 
 **Error responses:**
+
 - `401` — Invalid email or password (same message for both to prevent email enumeration)
 - `401` — Account uses different provider
 
@@ -156,6 +163,7 @@ Authenticates with email and password.
 Exchanges an expired access token for a new one using the refresh token.
 
 **Flow:**
+
 1. Reads `refresh_token` from cookies (only sent to `/api/auth` path)
 2. Looks up token in DB — must exist and not be expired
 3. **Rotates**: deletes old token, creates new one
@@ -171,6 +179,7 @@ Exchanges an expired access token for a new one using the refresh token.
 Logs out the current session.
 
 **Flow:**
+
 1. Reads refresh token from cookies
 2. Deletes it from DB
 3. Clears both cookies
@@ -182,6 +191,7 @@ Logs out the current session.
 Revokes all sessions for the current user (requires authentication).
 
 **Flow:**
+
 1. Authenticated via `requireAuth` middleware
 2. Deletes ALL refresh tokens for this user from DB
 3. Clears cookies
@@ -195,6 +205,7 @@ Use case: user suspects their account is compromised and wants to force logout e
 Returns the current user's profile. Protected by `requireAuth`.
 
 **Response:** `200 OK`
+
 ```json
 {
   "user": {
@@ -214,6 +225,7 @@ Returns the current user's profile. Protected by `requireAuth`.
 Initiates the Google OAuth 2.0 flow.
 
 **Flow:**
+
 1. Builds the Google authorization URL with:
    - `client_id` — identifies our app to Google
    - `redirect_uri` — where Google sends the user back
@@ -231,6 +243,7 @@ If Google OAuth is not configured, returns `501 Not Implemented`.
 Handles the redirect back from Google after the user consents.
 
 **Flow:**
+
 1. Receives `?code=...` query parameter from Google
 2. **Exchanges the code for tokens** — POST to `https://oauth2.googleapis.com/token` with the code + client secret. Returns a Google access token.
 3. **Fetches user profile** — GET `https://www.googleapis.com/oauth2/v2/userinfo` using the Google access token. Returns email, name, Google ID.
@@ -250,26 +263,26 @@ Handles the redirect back from Google after the user consents.
 
 ### `users` table
 
-| Column        | Type      | Notes                                |
-|---------------|-----------|--------------------------------------|
-| `id`          | SERIAL PK | Auto-incrementing                    |
-| `email`       | TEXT      | UNIQUE, NOT NULL                     |
-| `password_hash`| TEXT     | NULL for OAuth users                 |
-| `name`        | TEXT      | NOT NULL                             |
-| `provider`    | TEXT      | `'local'` or `'google'`             |
-| `provider_id` | TEXT      | Google user ID (NULL for local)      |
-| `created_at`  | TIMESTAMP | Default NOW()                        |
-| `updated_at`  | TIMESTAMP | Default NOW()                        |
+| Column          | Type      | Notes                           |
+| --------------- | --------- | ------------------------------- |
+| `id`            | SERIAL PK | Auto-incrementing               |
+| `email`         | TEXT      | UNIQUE, NOT NULL                |
+| `password_hash` | TEXT      | NULL for OAuth users            |
+| `name`          | TEXT      | NOT NULL                        |
+| `provider`      | TEXT      | `'local'` or `'google'`         |
+| `provider_id`   | TEXT      | Google user ID (NULL for local) |
+| `created_at`    | TIMESTAMP | Default NOW()                   |
+| `updated_at`    | TIMESTAMP | Default NOW()                   |
 
 ### `refresh_tokens` table
 
-| Column      | Type      | Notes                               |
-|-------------|-----------|-------------------------------------|
-| `id`        | SERIAL PK | Auto-incrementing                   |
-| `user_id`   | INTEGER   | FK → users(id) ON DELETE CASCADE    |
-| `token`     | TEXT      | UNIQUE, UUID v4                     |
-| `expires_at`| TIMESTAMP | 7 days from creation                |
-| `created_at`| TIMESTAMP | Default NOW()                       |
+| Column       | Type      | Notes                            |
+| ------------ | --------- | -------------------------------- |
+| `id`         | SERIAL PK | Auto-incrementing                |
+| `user_id`    | INTEGER   | FK → users(id) ON DELETE CASCADE |
+| `token`      | TEXT      | UNIQUE, UUID v4                  |
+| `expires_at` | TIMESTAMP | 7 days from creation             |
+| `created_at` | TIMESTAMP | Default NOW()                    |
 
 The `ON DELETE CASCADE` ensures that deleting a user automatically cleans up their refresh tokens.
 
@@ -282,21 +295,23 @@ The `ON DELETE CASCADE` ensures that deleting a user automatically cleans up the
 A React context that manages client-side authentication state.
 
 #### State
+
 - `user` — current user object or `null`
 - `loading` — `true` while checking initial auth status
 
 #### Methods
 
-| Method     | Purpose                                          |
-|------------|--------------------------------------------------|
-| `login(email, password)` | POST to `/api/auth/login`, sets `user` on success |
+| Method                            | Purpose                                              |
+| --------------------------------- | ---------------------------------------------------- |
+| `login(email, password)`          | POST to `/api/auth/login`, sets `user` on success    |
 | `register(email, password, name)` | POST to `/api/auth/register`, sets `user` on success |
-| `logout()` | POST to `/api/auth/logout`, clears `user`       |
-| `refresh()` | POST to `/api/auth/refresh`, updates `user`     |
+| `logout()`                        | POST to `/api/auth/logout`, clears `user`            |
+| `refresh()`                       | POST to `/api/auth/refresh`, updates `user`          |
 
 #### Initialization Flow
 
 When the app loads:
+
 1. `fetchUser()` calls `GET /api/auth/me`
 2. If `200 OK` → user is authenticated, set state
 3. If `401` → tries `refresh()` to get a new access token
@@ -310,12 +325,12 @@ When any API call returns `401 TOKEN_EXPIRED`, the context automatically tries t
 
 ## Security Summary
 
-| Threat              | Protection                                              |
-|---------------------|---------------------------------------------------------|
-| Password theft      | bcrypt hashing (12 rounds) — passwords never stored in plain text |
-| XSS token theft     | HttpOnly cookies — JavaScript cannot access tokens      |
-| CSRF                | SameSite=Lax cookies — not sent on cross-site POST requests |
-| Token replay        | Refresh token rotation — each token is single-use       |
-| Session hijacking   | Short-lived access tokens (15 min) + logout-all to revoke everything |
-| Email enumeration   | Same error message for "wrong email" and "wrong password" |
-| OAuth account takeover | Account linking only when same email is verified by Google |
+| Threat                 | Protection                                                           |
+| ---------------------- | -------------------------------------------------------------------- |
+| Password theft         | bcrypt hashing (12 rounds) — passwords never stored in plain text    |
+| XSS token theft        | HttpOnly cookies — JavaScript cannot access tokens                   |
+| CSRF                   | SameSite=Lax cookies — not sent on cross-site POST requests          |
+| Token replay           | Refresh token rotation — each token is single-use                    |
+| Session hijacking      | Short-lived access tokens (15 min) + logout-all to revoke everything |
+| Email enumeration      | Same error message for "wrong email" and "wrong password"            |
+| OAuth account takeover | Account linking only when same email is verified by Google           |

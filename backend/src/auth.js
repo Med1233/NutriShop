@@ -9,9 +9,14 @@ const SALT_ROUNDS = 12;
 
 function generateAccessToken(user) {
   return jwt.sign(
-    { id: user.id, email: user.email, name: user.name, role: user.role || 'customer' },
+    {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role || 'customer',
+    },
     process.env.JWT_SECRET,
-    { expiresIn: ACCESS_TOKEN_EXPIRY }
+    { expiresIn: ACCESS_TOKEN_EXPIRY },
   );
 }
 
@@ -20,7 +25,7 @@ async function generateRefreshToken(userId) {
   const expiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRY_MS);
   await pool.query(
     'INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)',
-    [userId, token, expiresAt]
+    [userId, token, expiresAt],
   );
   return { token, expiresAt };
 }
@@ -48,12 +53,12 @@ async function revokeAllUserTokens(userId) {
 async function findRefreshToken(token) {
   const { rows } = await pool.query(
     'SELECT * FROM refresh_tokens WHERE token = $1 AND expires_at > NOW()',
-    [token]
+    [token],
   );
   return rows[0] || null;
 }
 
-function setTokenCookies(res, accessToken, refreshToken, refreshExpiresAt) {
+function setTokenCookies(res, accessToken, refreshToken) {
   const isProduction = process.env.NODE_ENV === 'production';
 
   res.cookie('access_token', accessToken, {

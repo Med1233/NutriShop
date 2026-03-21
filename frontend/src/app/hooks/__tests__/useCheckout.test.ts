@@ -13,9 +13,7 @@ vi.mock('../../context/AuthContext', () => ({
 
 vi.mock('../../context/CartContext', () => ({
   useCart: vi.fn(() => ({
-    items: [
-      { id: 1, name: 'Whey', price: '29.99', quantity: 2 },
-    ],
+    items: [{ id: 1, name: 'Whey', price: '29.99', quantity: 2 }],
     loading: false,
     refresh: vi.fn(),
   })),
@@ -32,7 +30,10 @@ import { useCart } from '../../context/CartContext';
 
 beforeEach(() => {
   vi.clearAllMocks();
-  vi.mocked(useAuth).mockReturnValue({ user: { id: 1, name: 'Test' }, loading: false } as any);
+  vi.mocked(useAuth).mockReturnValue({
+    user: { id: 1, name: 'Test' },
+    loading: false,
+  } as any);
   vi.mocked(useCart).mockReturnValue({
     items: [{ id: 1, name: 'Whey', price: '29.99', quantity: 2 }],
     loading: false,
@@ -48,7 +49,9 @@ describe('useCheckout', () => {
 
   it('updates address', () => {
     const { result } = renderHook(() => useCheckout());
-    act(() => { result.current.setAddress('123 Main St'); });
+    act(() => {
+      result.current.setAddress('123 Main St');
+    });
     expect(result.current.address).toBe('123 Main St');
   });
 
@@ -60,7 +63,9 @@ describe('useCheckout', () => {
 
     const { result } = renderHook(() => useCheckout());
 
-    act(() => { result.current.setAddress('456 Oak Ave'); });
+    act(() => {
+      result.current.setAddress('456 Oak Ave');
+    });
 
     await act(async () => {
       await result.current.handleSubmit({ preventDefault: vi.fn() } as any);

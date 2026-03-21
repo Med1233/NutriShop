@@ -31,7 +31,7 @@ describe('Select', () => {
       <Select>
         <option value="a">A</option>
         <option value="b">B</option>
-      </Select>
+      </Select>,
     );
     expect(screen.getByRole('combobox')).toBeInTheDocument();
     expect(screen.getAllByRole('option')).toHaveLength(2);
@@ -43,7 +43,7 @@ describe('FormField', () => {
     render(
       <FormField label="Email" htmlFor="email">
         <Input id="email" />
-      </FormField>
+      </FormField>,
     );
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
   });

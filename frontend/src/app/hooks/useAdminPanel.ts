@@ -21,7 +21,9 @@ export function useAdminPanel() {
 
   useEffect(() => {
     if (user?.role === 'admin') {
-      fetchStats().then(setStats).catch(() => {});
+      fetchStats()
+        .then(setStats)
+        .catch(() => {});
     }
   }, [user]);
 

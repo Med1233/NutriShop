@@ -12,7 +12,7 @@ router.use(requireAdmin);
 router.get('/users', async (req, res) => {
   try {
     const { rows } = await pool.query(
-      'SELECT id, email, name, role, provider, created_at FROM users ORDER BY id'
+      'SELECT id, email, name, role, provider, created_at FROM users ORDER BY id',
     );
     res.json(rows);
   } catch (err) {
@@ -28,18 +28,26 @@ router.post('/users', async (req, res) => {
     const validRoles = ['customer', 'manager', 'stockist', 'admin'];
 
     if (!email || !password || !name) {
-      return res.status(400).json({ error: 'Email, password, and name are required' });
+      return res
+        .status(400)
+        .json({ error: 'Email, password, and name are required' });
     }
 
     if (password.length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+      return res
+        .status(400)
+        .json({ error: 'Password must be at least 6 characters' });
     }
 
     if (role && !validRoles.includes(role)) {
-      return res.status(400).json({ error: `Role must be one of: ${validRoles.join(', ')}` });
+      return res
+        .status(400)
+        .json({ error: `Role must be one of: ${validRoles.join(', ')}` });
     }
 
-    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [
+      email,
+    ]);
     if (existing.rows.length > 0) {
       return res.status(409).json({ error: 'Email already registered' });
     }
@@ -48,7 +56,7 @@ router.post('/users', async (req, res) => {
     const { rows } = await pool.query(
       `INSERT INTO users (email, password_hash, name, role, provider)
        VALUES ($1, $2, $3, $4, 'local') RETURNING id, email, name, role, provider, created_at`,
-      [email, passwordHash, name, role || 'customer']
+      [email, passwordHash, name, role || 'customer'],
     );
 
     res.status(201).json(rows[0]);
@@ -64,7 +72,9 @@ router.put('/users/:id/role', async (req, res) => {
   const validRoles = ['customer', 'manager', 'stockist', 'admin'];
 
   if (!role || !validRoles.includes(role)) {
-    return res.status(400).json({ error: `Role must be one of: ${validRoles.join(', ')}` });
+    return res
+      .status(400)
+      .json({ error: `Role must be one of: ${validRoles.join(', ')}` });
   }
 
   // Prevent admin from changing their own role
@@ -75,7 +85,7 @@ router.put('/users/:id/role', async (req, res) => {
   try {
     const { rows } = await pool.query(
       'UPDATE users SET role = $1, updated_at = NOW() WHERE id = $2 RETURNING id, email, name, role, provider, created_at',
-      [role, req.params.id]
+      [role, req.params.id],
     );
 
     if (rows.length === 0) {
@@ -97,7 +107,9 @@ router.delete('/users/:id', async (req, res) => {
   }
 
   try {
-    const { rowCount } = await pool.query('DELETE FROM users WHERE id = $1', [req.params.id]);
+    const { rowCount } = await pool.query('DELETE FROM users WHERE id = $1', [
+      req.params.id,
+    ]);
     if (rowCount === 0) {
       return res.status(404).json({ error: 'User not found' });
     }

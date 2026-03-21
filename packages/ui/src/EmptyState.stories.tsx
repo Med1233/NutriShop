@@ -10,7 +10,11 @@ const meta = {
 export default meta;
 
 export const WithAction: StoryObj<typeof meta> = {
-  args: { message: 'Your cart is empty.', actionLabel: 'Continue Shopping', actionHref: '#' },
+  args: {
+    message: 'Your cart is empty.',
+    actionLabel: 'Continue Shopping',
+    actionHref: '#',
+  },
 };
 
 export const WithoutAction: StoryObj<typeof meta> = {

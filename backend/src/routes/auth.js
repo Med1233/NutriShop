@@ -22,14 +22,20 @@ router.post('/register', async (req, res) => {
     const { email, password, name } = req.body;
 
     if (!email || !password || !name) {
-      return res.status(400).json({ error: 'Email, password, and name are required' });
+      return res
+        .status(400)
+        .json({ error: 'Email, password, and name are required' });
     }
 
     if (password.length < 8) {
-      return res.status(400).json({ error: 'Password must be at least 8 characters' });
+      return res
+        .status(400)
+        .json({ error: 'Password must be at least 8 characters' });
     }
 
-    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [
+      email,
+    ]);
     if (existing.rows.length > 0) {
       return res.status(409).json({ error: 'Email already registered' });
     }
@@ -38,17 +44,25 @@ router.post('/register', async (req, res) => {
     const { rows } = await pool.query(
       `INSERT INTO users (email, password_hash, name, provider)
        VALUES ($1, $2, $3, 'local') RETURNING id, email, name, role, provider, created_at`,
-      [email, passwordHash, name]
+      [email, passwordHash, name],
     );
 
     const user = rows[0];
     const accessToken = generateAccessToken(user);
-    const { token: refreshToken, expiresAt } = await generateRefreshToken(user.id);
+    const { token: refreshToken, expiresAt } = await generateRefreshToken(
+      user.id,
+    );
 
     setTokenCookies(res, accessToken, refreshToken, expiresAt);
 
     res.status(201).json({
-      user: { id: user.id, email: user.email, name: user.name, role: user.role || 'customer', provider: user.provider },
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role || 'customer',
+        provider: user.provider,
+      },
     });
   } catch (err) {
     console.error('Register error:', err);
@@ -68,7 +82,7 @@ router.post('/login', async (req, res) => {
 
     const { rows } = await pool.query(
       'SELECT id, email, name, role, password_hash, provider FROM users WHERE email = $1',
-      [email]
+      [email],
     );
 
     if (rows.length === 0) {
@@ -89,12 +103,20 @@ router.post('/login', async (req, res) => {
     }
 
     const accessToken = generateAccessToken(user);
-    const { token: refreshToken, expiresAt } = await generateRefreshToken(user.id);
+    const { token: refreshToken, expiresAt } = await generateRefreshToken(
+      user.id,
+    );
 
     setTokenCookies(res, accessToken, refreshToken, expiresAt);
 
     res.json({
-      user: { id: user.id, email: user.email, name: user.name, role: user.role || 'customer', provider: user.provider },
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role || 'customer',
+        provider: user.provider,
+      },
     });
   } catch (err) {
     console.error('Login error:', err);
@@ -114,7 +136,9 @@ router.post('/refresh', async (req, res) => {
 
     const stored = await findRefreshToken(oldToken);
     if (!stored) {
-      return res.status(401).json({ error: 'Invalid or expired refresh token' });
+      return res
+        .status(401)
+        .json({ error: 'Invalid or expired refresh token' });
     }
 
     // Rotate: revoke old, issue new
@@ -122,7 +146,7 @@ router.post('/refresh', async (req, res) => {
 
     const { rows } = await pool.query(
       'SELECT id, email, name, role, provider FROM users WHERE id = $1',
-      [stored.user_id]
+      [stored.user_id],
     );
 
     if (rows.length === 0) {
@@ -131,12 +155,20 @@ router.post('/refresh', async (req, res) => {
 
     const user = rows[0];
     const accessToken = generateAccessToken(user);
-    const { token: refreshToken, expiresAt } = await generateRefreshToken(user.id);
+    const { token: refreshToken, expiresAt } = await generateRefreshToken(
+      user.id,
+    );
 
     setTokenCookies(res, accessToken, refreshToken, expiresAt);
 
     res.json({
-      user: { id: user.id, email: user.email, name: user.name, role: user.role || 'customer', provider: user.provider },
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role || 'customer',
+        provider: user.provider,
+      },
     });
   } catch (err) {
     console.error('Refresh error:', err);
@@ -179,7 +211,7 @@ router.get('/me', requireAuth, async (req, res) => {
   try {
     const { rows } = await pool.query(
       'SELECT id, email, name, role, phone, address, provider, created_at FROM users WHERE id = $1',
-      [req.user.id]
+      [req.user.id],
     );
 
     if (rows.length === 0) {
@@ -211,7 +243,12 @@ router.put('/profile', requireAuth, async (req, res) => {
         updated_at = NOW()
        WHERE id = $4
        RETURNING id, email, name, role, phone, address, provider, created_at`,
-      [name || null, phone !== undefined ? phone : null, address !== undefined ? address : null, req.user.id]
+      [
+        name || null,
+        phone !== undefined ? phone : null,
+        address !== undefined ? address : null,
+        req.user.id,
+      ],
     );
 
     if (rows.length === 0) {
@@ -280,9 +317,12 @@ router.get('/google/callback', async (req, res) => {
     }
 
     // Get user info
-    const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-      headers: { Authorization: `Bearer ${tokenData.access_token}` },
-    });
+    const userInfoRes = await fetch(
+      'https://www.googleapis.com/oauth2/v2/userinfo',
+      {
+        headers: { Authorization: `Bearer ${tokenData.access_token}` },
+      },
+    );
 
     const profile = await userInfoRes.json();
 
@@ -292,7 +332,9 @@ router.get('/google/callback', async (req, res) => {
 
     // Find or create user
     let user;
-    const existing = await pool.query('SELECT * FROM users WHERE email = $1', [profile.email]);
+    const existing = await pool.query('SELECT * FROM users WHERE email = $1', [
+      profile.email,
+    ]);
 
     if (existing.rows.length > 0) {
       user = existing.rows[0];
@@ -300,7 +342,7 @@ router.get('/google/callback', async (req, res) => {
       if (user.provider === 'local') {
         await pool.query(
           'UPDATE users SET provider = $1, provider_id = $2, updated_at = NOW() WHERE id = $3',
-          ['google', profile.id, user.id]
+          ['google', profile.id, user.id],
         );
         user.provider = 'google';
       }
@@ -309,13 +351,15 @@ router.get('/google/callback', async (req, res) => {
         `INSERT INTO users (email, name, provider, provider_id)
          VALUES ($1, $2, 'google', $3)
          RETURNING id, email, name, role, provider, created_at`,
-        [profile.email, profile.name || profile.email, profile.id]
+        [profile.email, profile.name || profile.email, profile.id],
       );
       user = rows[0];
     }
 
     const accessToken = generateAccessToken(user);
-    const { token: refreshToken, expiresAt } = await generateRefreshToken(user.id);
+    const { token: refreshToken, expiresAt } = await generateRefreshToken(
+      user.id,
+    );
 
     setTokenCookies(res, accessToken, refreshToken, expiresAt);
 

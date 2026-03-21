@@ -4,13 +4,13 @@
 
 NutriShop uses a multi-layer testing strategy:
 
-| Layer | Framework | Location | Tests |
-|---|---|---|---|
-| UI Components | Vitest + Testing Library | `packages/ui/src/*.test.tsx` | 57 |
-| Frontend (API + Hooks) | Vitest + Testing Library | `frontend/src/app/**/__tests__/` | 41 |
-| Backend Unit | Vitest | `backend/tests/unit/` | 25 |
-| Backend Integration | Vitest + Supertest | `backend/tests/integration/` | 44 |
-| E2E (Gherkin) | Cypress + cucumber-preprocessor | `e2e/cypress/e2e/features/` | 6 features, ~20 scenarios |
+| Layer                  | Framework                       | Location                         | Tests                     |
+| ---------------------- | ------------------------------- | -------------------------------- | ------------------------- |
+| UI Components          | Vitest + Testing Library        | `packages/ui/src/*.test.tsx`     | 57                        |
+| Frontend (API + Hooks) | Vitest + Testing Library        | `frontend/src/app/**/__tests__/` | 41                        |
+| Backend Unit           | Vitest                          | `backend/tests/unit/`            | 25                        |
+| Backend Integration    | Vitest + Supertest              | `backend/tests/integration/`     | 44                        |
+| E2E (Gherkin)          | Cypress + cucumber-preprocessor | `e2e/cypress/e2e/features/`      | 6 features, ~20 scenarios |
 
 **Total: 167 automated tests + E2E scenarios**
 
@@ -44,6 +44,7 @@ pnpm --filter @nutrishop/ui test:watch  # Watch mode
 ```
 
 Each component has a co-located test file (`Button.test.tsx`, `Card.test.tsx`, etc.) covering:
+
 - Rendering and children
 - Variant/prop behavior
 - User interactions (clicks, typing)
@@ -59,11 +60,13 @@ pnpm --filter frontend test:watch  # Watch mode
 ```
 
 ### API Client Tests (`api/__tests__/`)
+
 - `client.test.ts` (4 tests) — `getBackendUrl` env resolution, `apiFetch` credentials/headers merging
 - `productApi.test.ts` (5 tests) — `fetchCategories`, `fetchProducts` with params, `fetchProduct` success/error
 - `orderApi.test.ts` (5 tests) — `fetchMyOrders`, `fetchAllOrders` (array guard), `createOrder`, `updateOrderStatus`
 
 ### Hook Tests (`hooks/__tests__/`)
+
 - `useProductCatalog.test.ts` (6 tests) — loads categories/products on mount, `isCustomer` logic, search/filter state, `handleAddToCart`
 - `useProductDetail.test.ts` (5 tests) — loads product, handles fetch error, parses nutrition entries, `handleAdd` with quantity
 - `useLogin.test.ts` (6 tests) — initial state, email/password setters, reads error from search params, submit success/failure, `showGoogle`
@@ -81,12 +84,14 @@ pnpm --filter backend test:unit
 ```
 
 ### `auth.test.js` (11 tests)
+
 - `generateAccessToken` — JWT payload, expiry, default role
 - `verifyAccessToken` — valid, invalid, tampered tokens
 - `hashPassword` / `verifyPassword` — bcrypt hashing, salting
 - `setTokenCookies` / `clearTokenCookies` — cookie options
 
 ### `middleware.test.js` (14 tests)
+
 - `requireAuth` — missing token (401), invalid token (401), valid token (sets req.user)
 - `optionalAuth` — no token (still calls next), valid token (sets user), invalid (ignores)
 - `requireAdmin` — admin passes, non-admin gets 403
@@ -106,36 +111,42 @@ pnpm --filter backend test:integration
 ```
 
 ### Test Database
+
 - **Docker**: `docker-compose.test.yml` runs Postgres on **port 5433** with tmpfs (RAM-backed)
 - **Connection**: `postgresql://admin:password@localhost:5433/appdb_test`
 - **Schema**: Created by `tests/globalSetup.js` before tests run
 - **Data**: Truncated between every test by `tests/setup.js`
 
 ### Test Helpers (`tests/helpers.js`)
+
 - `createTestUser(overrides)` — inserts a user + returns `{ user, token, rawPassword }`
 - `createTestProduct(overrides)` — inserts a product + returns it
 - `resetDb()` — truncates all tables
 - `authAgent(token)` — returns a supertest agent with auth cookie
 
 ### `auth.routes.test.js` (11 tests)
+
 - Register: valid, duplicate email, missing fields, short password
 - Login: valid credentials, wrong password, nonexistent email
 - Me: with/without token
 - Logout, Profile update
 
 ### `products.routes.test.js` (10 tests)
+
 - List, filter by category, search by name
 - Get single, 404 for missing
 - Create as stockist (201), as customer (403), without auth (401)
 - Update, Delete as admin
 
 ### `cart.routes.test.js` (9 tests)
+
 - Auth required, empty cart
 - Add item, increment on duplicate, insufficient stock, nonexistent product
 - Update quantity, reject < 1
 - Remove item
 
 ### `orders.routes.test.js` (8 tests)
+
 - Create order (stock decremented, cart emptied)
 - Reject empty cart, require auth
 - List own orders, admin lists all
@@ -143,6 +154,7 @@ pnpm --filter backend test:integration
 - Customer cannot update status
 
 ### `admin.routes.test.js` (6 tests)
+
 - List users (admin), reject non-admin
 - Create user, change role, delete user
 - Get stats
@@ -164,47 +176,55 @@ cd e2e && pnpm cypress:run
 
 ### Features
 
-| Feature File | Scenarios |
-|---|---|
-| `auth.feature` | Register, login (valid/invalid), logout |
-| `products.feature` | View listing, search, product detail |
-| `cart.feature` | Add to cart, view cart, remove item |
-| `checkout.feature` | Place order, checkout requires login |
-| `orders.feature` | View order history, manager updates status |
-| `admin.feature` | View dashboard, create user, non-admin blocked |
+| Feature File       | Scenarios                                      |
+| ------------------ | ---------------------------------------------- |
+| `auth.feature`     | Register, login (valid/invalid), logout        |
+| `products.feature` | View listing, search, product detail           |
+| `cart.feature`     | Add to cart, view cart, remove item            |
+| `checkout.feature` | Place order, checkout requires login           |
+| `orders.feature`   | View order history, manager updates status     |
+| `admin.feature`    | View dashboard, create user, non-admin blocked |
 
 ### Step Definitions
+
 Located in `e2e/cypress/e2e/step_definitions/`. Each feature has a matching step definition file.
 
 ### Custom Commands (`cypress/support/commands.ts`)
+
 - `cy.login(email, password)` — login via API (sets cookies)
 - `cy.loginAsAdmin()` — login as default admin
 - `cy.seedUser(data)` — create a user directly in DB via `cy.task`
 - `cy.resetDb()` — truncate transactional data via `cy.task`
 
 ### DB Tasks
+
 Defined in `cypress.config.ts`:
+
 - `db:reset` — truncates cart_items, order_items, orders, refresh_tokens
 - `db:seed-user` — inserts/upserts a user with hashed password
 
 ## Writing New Tests
 
 ### Adding a backend unit test
+
 1. Create `backend/tests/unit/your-module.test.js`
 2. Use `vi.fn()` / `vi.mock()` to mock dependencies
 3. Globals (`describe`, `it`, `expect`, `vi`) are auto-injected (no imports needed)
 
 ### Adding a backend integration test
+
 1. Create `backend/tests/integration/your-routes.test.js`
 2. Import from `../helpers` for `createTestUser`, `createTestProduct`, `app`
 3. DB is automatically reset between tests
 
 ### Adding a UI component test
+
 1. Create `packages/ui/src/YourComponent.test.tsx`
 2. Use `render`, `screen`, `userEvent` from Testing Library
 3. Run with `pnpm --filter @nutrishop/ui test`
 
 ### Adding an E2E scenario
+
 1. Add scenario to an existing `.feature` file or create a new one in `e2e/cypress/e2e/features/`
 2. Add step definitions in `e2e/cypress/e2e/step_definitions/`
 3. Reuse existing steps where possible (e.g., `Given I am logged in as a customer`)

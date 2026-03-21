@@ -36,7 +36,16 @@ export function useRegister() {
   };
 
   return {
-    name, setName, email, setEmail, password, setPassword,
-    confirmPassword, setConfirmPassword, error, submitting, handleSubmit,
+    name,
+    setName,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    error,
+    submitting,
+    handleSubmit,
   };
 }

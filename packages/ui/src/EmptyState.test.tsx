@@ -9,7 +9,9 @@ describe('EmptyState', () => {
   });
 
   it('renders action link when provided', () => {
-    render(<EmptyState message="Empty" actionLabel="Shop" actionHref="/shop" />);
+    render(
+      <EmptyState message="Empty" actionLabel="Shop" actionHref="/shop" />,
+    );
     expect(screen.getByText('Shop')).toHaveAttribute('href', '/shop');
   });
 

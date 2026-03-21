@@ -10,7 +10,12 @@ const {
 
 describe('generateAccessToken', () => {
   it('returns a valid JWT', () => {
-    const token = generateAccessToken({ id: 1, email: 'a@b.com', name: 'A', role: 'customer' });
+    const token = generateAccessToken({
+      id: 1,
+      email: 'a@b.com',
+      name: 'A',
+      role: 'customer',
+    });
     expect(typeof token).toBe('string');
     const decoded = jwt.decode(token);
     expect(decoded.id).toBe(1);
@@ -25,7 +30,12 @@ describe('generateAccessToken', () => {
   });
 
   it('sets expiry', () => {
-    const token = generateAccessToken({ id: 1, email: 'a@b.com', name: 'A', role: 'admin' });
+    const token = generateAccessToken({
+      id: 1,
+      email: 'a@b.com',
+      name: 'A',
+      role: 'admin',
+    });
     const decoded = jwt.decode(token);
     expect(decoded.exp).toBeDefined();
     expect(decoded.exp - decoded.iat).toBe(15 * 60);
@@ -34,7 +44,12 @@ describe('generateAccessToken', () => {
 
 describe('verifyAccessToken', () => {
   it('verifies a valid token', () => {
-    const token = generateAccessToken({ id: 2, email: 'x@y.com', name: 'X', role: 'admin' });
+    const token = generateAccessToken({
+      id: 2,
+      email: 'x@y.com',
+      name: 'X',
+      role: 'admin',
+    });
     const payload = verifyAccessToken(token);
     expect(payload.id).toBe(2);
     expect(payload.role).toBe('admin');
@@ -45,7 +60,12 @@ describe('verifyAccessToken', () => {
   });
 
   it('throws for a tampered token', () => {
-    const token = generateAccessToken({ id: 1, email: 'a@b.com', name: 'A', role: 'customer' });
+    const token = generateAccessToken({
+      id: 1,
+      email: 'a@b.com',
+      name: 'A',
+      role: 'customer',
+    });
     expect(() => verifyAccessToken(token + 'x')).toThrow();
   });
 });
@@ -69,7 +89,9 @@ describe('setTokenCookies', () => {
   it('sets both cookies with correct options', () => {
     const cookies = {};
     const res = {
-      cookie: (name, val, opts) => { cookies[name] = { val, opts }; },
+      cookie: (name, val, opts) => {
+        cookies[name] = { val, opts };
+      },
     };
     setTokenCookies(res, 'acc', 'ref', new Date());
     expect(cookies.access_token).toBeDefined();
@@ -81,7 +103,11 @@ describe('setTokenCookies', () => {
 
   it('sets secure=false in non-production', () => {
     const cookies = {};
-    const res = { cookie: (name, val, opts) => { cookies[name] = { val, opts }; } };
+    const res = {
+      cookie: (name, val, opts) => {
+        cookies[name] = { val, opts };
+      },
+    };
     setTokenCookies(res, 'a', 'r', new Date());
     expect(cookies.access_token.opts.secure).toBe(false);
   });
@@ -93,6 +119,9 @@ describe('clearTokenCookies', () => {
     const res = { clearCookie: (name, opts) => cleared.push({ name, opts }) };
     clearTokenCookies(res);
     expect(cleared).toHaveLength(2);
-    expect(cleared.map(c => c.name)).toEqual(['access_token', 'refresh_token']);
+    expect(cleared.map((c) => c.name)).toEqual([
+      'access_token',
+      'refresh_token',
+    ]);
   });
 });

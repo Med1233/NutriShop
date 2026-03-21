@@ -1,7 +1,12 @@
 import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor';
 
 Given('a customer user exists', () => {
-  cy.seedUser({ email: 'customer@test.com', password: 'pass1234', name: 'Customer', role: 'customer' });
+  cy.seedUser({
+    email: 'customer@test.com',
+    password: 'pass1234',
+    name: 'Customer',
+    role: 'customer',
+  });
 });
 
 Given('I am logged in as a customer', () => {
@@ -10,7 +15,9 @@ Given('I am logged in as a customer', () => {
 
 Given('I have added a product to my cart', () => {
   cy.visit('/');
-  cy.contains('button', /add to cart/i).first().click();
+  cy.contains('button', /add to cart/i)
+    .first()
+    .click();
   cy.wait(500);
 });
 
@@ -23,16 +30,22 @@ When('I navigate to the cart page', () => {
 });
 
 When('I click remove on the item', () => {
-  cy.contains('button', /remove/i).first().click();
+  cy.contains('button', /remove/i)
+    .first()
+    .click();
 });
 
 Then('the cart badge should show at least 1 item', () => {
   cy.wait(500);
-  cy.get('nav').find('[class*="badge"], [class*="rounded-full"]').should('exist');
+  cy.get('nav')
+    .find('[class*="badge"], [class*="rounded-full"]')
+    .should('exist');
 });
 
 Then('I should see the product in my cart', () => {
-  cy.get('main').find('a[href*="/products/"]').should('have.length.greaterThan', 0);
+  cy.get('main')
+    .find('a[href*="/products/"]')
+    .should('have.length.greaterThan', 0);
 });
 
 Then('the cart should show empty', () => {

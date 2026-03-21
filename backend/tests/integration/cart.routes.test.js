@@ -11,7 +11,9 @@ describe('GET /api/cart', () => {
 
   it('returns empty cart', async () => {
     const { token } = await createTestUser();
-    const res = await request.get('/api/cart').set('Cookie', `access_token=${token}`);
+    const res = await request
+      .get('/api/cart')
+      .set('Cookie', `access_token=${token}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual([]);
   });
@@ -21,7 +23,8 @@ describe('POST /api/cart', () => {
   it('adds item to cart', async () => {
     const { token } = await createTestUser();
     const product = await createTestProduct();
-    const res = await request.post('/api/cart')
+    const res = await request
+      .post('/api/cart')
       .set('Cookie', `access_token=${token}`)
       .send({ product_id: product.id, quantity: 2 });
     expect(res.status).toBe(201);
@@ -31,10 +34,12 @@ describe('POST /api/cart', () => {
   it('increments quantity on duplicate add', async () => {
     const { token } = await createTestUser();
     const product = await createTestProduct();
-    await request.post('/api/cart')
+    await request
+      .post('/api/cart')
       .set('Cookie', `access_token=${token}`)
       .send({ product_id: product.id, quantity: 1 });
-    const res = await request.post('/api/cart')
+    const res = await request
+      .post('/api/cart')
       .set('Cookie', `access_token=${token}`)
       .send({ product_id: product.id, quantity: 3 });
     expect(res.status).toBe(201);
@@ -44,7 +49,8 @@ describe('POST /api/cart', () => {
   it('rejects insufficient stock', async () => {
     const { token } = await createTestUser();
     const product = await createTestProduct({ stock: 5 });
-    const res = await request.post('/api/cart')
+    const res = await request
+      .post('/api/cart')
       .set('Cookie', `access_token=${token}`)
       .send({ product_id: product.id, quantity: 10 });
     expect(res.status).toBe(400);
@@ -52,7 +58,8 @@ describe('POST /api/cart', () => {
 
   it('rejects nonexistent product', async () => {
     const { token } = await createTestUser();
-    const res = await request.post('/api/cart')
+    const res = await request
+      .post('/api/cart')
       .set('Cookie', `access_token=${token}`)
       .send({ product_id: 9999, quantity: 1 });
     expect(res.status).toBe(404);
@@ -63,10 +70,12 @@ describe('PUT /api/cart/:id', () => {
   it('updates quantity', async () => {
     const { token } = await createTestUser();
     const product = await createTestProduct();
-    const addRes = await request.post('/api/cart')
+    const addRes = await request
+      .post('/api/cart')
       .set('Cookie', `access_token=${token}`)
       .send({ product_id: product.id, quantity: 1 });
-    const res = await request.put(`/api/cart/${addRes.body.id}`)
+    const res = await request
+      .put(`/api/cart/${addRes.body.id}`)
       .set('Cookie', `access_token=${token}`)
       .send({ quantity: 5 });
     expect(res.status).toBe(200);
@@ -76,10 +85,12 @@ describe('PUT /api/cart/:id', () => {
   it('rejects quantity < 1', async () => {
     const { token } = await createTestUser();
     const product = await createTestProduct();
-    const addRes = await request.post('/api/cart')
+    const addRes = await request
+      .post('/api/cart')
       .set('Cookie', `access_token=${token}`)
       .send({ product_id: product.id, quantity: 1 });
-    const res = await request.put(`/api/cart/${addRes.body.id}`)
+    const res = await request
+      .put(`/api/cart/${addRes.body.id}`)
       .set('Cookie', `access_token=${token}`)
       .send({ quantity: 0 });
     expect(res.status).toBe(400);
@@ -90,14 +101,18 @@ describe('DELETE /api/cart/:id', () => {
   it('removes item', async () => {
     const { token } = await createTestUser();
     const product = await createTestProduct();
-    const addRes = await request.post('/api/cart')
+    const addRes = await request
+      .post('/api/cart')
       .set('Cookie', `access_token=${token}`)
       .send({ product_id: product.id, quantity: 1 });
-    const res = await request.delete(`/api/cart/${addRes.body.id}`)
+    const res = await request
+      .delete(`/api/cart/${addRes.body.id}`)
       .set('Cookie', `access_token=${token}`);
     expect(res.status).toBe(200);
 
-    const cartRes = await request.get('/api/cart').set('Cookie', `access_token=${token}`);
+    const cartRes = await request
+      .get('/api/cart')
+      .set('Cookie', `access_token=${token}`);
     expect(cartRes.body).toEqual([]);
   });
 });

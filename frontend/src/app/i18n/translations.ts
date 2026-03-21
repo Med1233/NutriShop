@@ -32,7 +32,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     'common.back': 'Back',
 
     'home.hero': 'Fuel Your Performance',
-    'home.heroSub': 'Premium nutrition products for athletes and health enthusiasts',
+    'home.heroSub':
+      'Premium nutrition products for athletes and health enthusiasts',
     'home.shopNow': 'Shop Now',
     'home.allCategories': 'All Categories',
     'home.searchPlaceholder': 'Search products...',
@@ -202,7 +203,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     'common.back': 'Retour',
 
     'home.hero': 'Boostez vos performances',
-    'home.heroSub': 'Produits nutritionnels premium pour athlètes et passionnés de santé',
+    'home.heroSub':
+      'Produits nutritionnels premium pour athlètes et passionnés de santé',
     'home.shopNow': 'Acheter maintenant',
     'home.allCategories': 'Toutes les catégories',
     'home.searchPlaceholder': 'Rechercher des produits...',
@@ -266,7 +268,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     'profile.phonePlaceholder': '+33 1 23 45 67 89',
     'profile.address': 'Adresse',
     'profile.addressPlaceholder': '123 Rue Principale, Ville, Pays',
-    'profile.authMethod': 'Méthode d\'authentification',
+    'profile.authMethod': "Méthode d'authentification",
     'profile.role': 'Rôle',
     'profile.edit': 'Modifier',
     'profile.save': 'Enregistrer',
@@ -276,7 +278,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     'profile.browseProducts': 'Parcourir les produits',
     'profile.viewCart': 'Voir le panier',
 
-    'admin.title': 'Panneau d\'administration',
+    'admin.title': "Panneau d'administration",
     'admin.totalUsers': 'Utilisateurs',
     'admin.totalProducts': 'Produits',
     'admin.totalOrders': 'Commandes',

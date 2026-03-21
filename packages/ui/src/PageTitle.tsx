@@ -8,9 +8,15 @@ const colorClasses: Record<string, string> = {
   green: 'text-green-600',
 };
 
-export function PageTitle({ children, color = 'default' }: { children: ReactNode; color?: string }) {
+export function PageTitle({
+  children,
+  color = 'default',
+}: {
+  children: ReactNode;
+  color?: string;
+}) {
   return (
-    <h1 className={`text-2xl font-bold mb-6 ${colorClasses[color] || ''}`}>
+    <h1 className={`mb-6 text-2xl font-bold ${colorClasses[color] || ''}`}>
       {children}
     </h1>
   );

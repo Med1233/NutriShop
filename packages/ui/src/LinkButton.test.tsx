@@ -16,7 +16,11 @@ describe('LinkButton', () => {
   });
 
   it('applies outline variant', () => {
-    render(<LinkButton href="#" variant="outline">Outline</LinkButton>);
+    render(
+      <LinkButton href="#" variant="outline">
+        Outline
+      </LinkButton>,
+    );
     expect(screen.getByText('Outline')).toHaveClass('border-green-600');
   });
 
@@ -24,12 +28,20 @@ describe('LinkButton', () => {
     function CustomLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
       return <a data-testid="custom" {...props} />;
     }
-    render(<LinkButton as={CustomLink} href="/x">Custom</LinkButton>);
+    render(
+      <LinkButton as={CustomLink} href="/x">
+        Custom
+      </LinkButton>,
+    );
     expect(screen.getByTestId('custom')).toBeInTheDocument();
   });
 
   it('merges custom className', () => {
-    render(<LinkButton href="#" className="mt-4">Styled</LinkButton>);
+    render(
+      <LinkButton href="#" className="mt-4">
+        Styled
+      </LinkButton>,
+    );
     expect(screen.getByText('Styled')).toHaveClass('mt-4');
   });
 });

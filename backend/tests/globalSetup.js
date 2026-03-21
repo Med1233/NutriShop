@@ -1,12 +1,12 @@
 const { Pool } = require('pg');
 
-const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://admin:password@localhost:5433/appdb_test';
+const DATABASE_URL =
+  process.env.DATABASE_URL ||
+  'postgresql://admin:password@localhost:5433/appdb_test';
 
 module.exports = async function setup() {
   // Initialize the test DB schema
   const pool = new Pool({ connectionString: DATABASE_URL });
-
-  const bcrypt = require('bcryptjs');
 
   // Create tables
   await pool.query(`CREATE TABLE IF NOT EXISTS users (

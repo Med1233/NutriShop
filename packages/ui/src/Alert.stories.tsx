@@ -11,5 +11,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Error: Story = { args: { children: 'Invalid email or password.' } };
-export const Success: Story = { args: { children: 'Profile saved successfully!', variant: 'success' } };
+export const Error: Story = {
+  args: { children: 'Invalid email or password.' },
+};
+export const Success: Story = {
+  args: { children: 'Profile saved successfully!', variant: 'success' },
+};

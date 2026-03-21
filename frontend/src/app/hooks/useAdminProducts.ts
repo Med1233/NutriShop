@@ -1,8 +1,19 @@
 import { useEffect, useState } from 'react';
-import { fetchProducts, createProduct, updateProduct, deleteProduct } from '../api/productApi';
+import {
+  fetchProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from '../api/productApi';
 import type { Product, ProductFormData } from '../types';
 
-const EMPTY_FORM: ProductFormData = { name: '', description: '', price: '', category: 'proteins', stock: '0' };
+const EMPTY_FORM: ProductFormData = {
+  name: '',
+  description: '',
+  price: '',
+  category: 'proteins',
+  stock: '0',
+};
 
 export function useAdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -10,24 +21,45 @@ export function useAdminProducts() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [form, setForm] = useState<ProductFormData>({ ...EMPTY_FORM });
 
-  const load = () => fetchProducts().then(setProducts).catch(() => {});
-  useEffect(() => { load(); }, []);
+  const load = () =>
+    fetchProducts()
+      .then(setProducts)
+      .catch(() => {});
+  useEffect(() => {
+    load();
+  }, []);
 
-  const resetForm = () => { setForm({ ...EMPTY_FORM }); setEditing(null); setShowForm(false); };
+  const resetForm = () => {
+    setForm({ ...EMPTY_FORM });
+    setEditing(null);
+    setShowForm(false);
+  };
 
   const handleSave = async () => {
-    const body = { ...form, price: parseFloat(form.price), stock: parseInt(form.stock) };
+    const body = {
+      ...form,
+      price: parseFloat(form.price),
+      stock: parseInt(form.stock),
+    };
     if (editing) {
       await updateProduct(editing.id, body);
     } else {
       await createProduct(body);
     }
-    resetForm(); load();
+    resetForm();
+    load();
   };
 
   const handleEdit = (p: Product) => {
-    setForm({ name: p.name, description: p.description, price: p.price, category: p.category, stock: String(p.stock) });
-    setEditing(p); setShowForm(true);
+    setForm({
+      name: p.name,
+      description: p.description,
+      price: p.price,
+      category: p.category,
+      stock: String(p.stock),
+    });
+    setEditing(p);
+    setShowForm(true);
   };
 
   const handleDelete = async (id: number) => {
@@ -36,7 +68,15 @@ export function useAdminProducts() {
   };
 
   return {
-    products, showForm, setShowForm, editing, form, setForm,
-    resetForm, handleSave, handleEdit, handleDelete,
+    products,
+    showForm,
+    setShowForm,
+    editing,
+    form,
+    setForm,
+    resetForm,
+    handleSave,
+    handleEdit,
+    handleDelete,
   };
 }

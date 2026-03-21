@@ -10,50 +10,50 @@ NutriShop is a nutrition-focused e-commerce store selling proteins, vitamins, su
 
 ### `products` table
 
-| Column         | Type          | Description                          |
-|----------------|---------------|--------------------------------------|
-| `id`           | SERIAL PK     | Auto-incrementing ID                 |
-| `name`         | TEXT NOT NULL  | Product name                         |
-| `description`  | TEXT          | Product description                  |
-| `price`        | NUMERIC(10,2) | Price in USD                         |
-| `image_url`    | TEXT          | Product image path                   |
-| `category`     | TEXT NOT NULL  | One of: proteins, vitamins, supplements, superfoods, snacks |
-| `stock`        | INTEGER       | Available quantity (defaults to 0)   |
-| `nutrition_info`| JSONB        | Nutrition facts (calories, protein, etc.) |
-| `created_at`   | TIMESTAMP     | Creation timestamp                   |
+| Column           | Type          | Description                                                 |
+| ---------------- | ------------- | ----------------------------------------------------------- |
+| `id`             | SERIAL PK     | Auto-incrementing ID                                        |
+| `name`           | TEXT NOT NULL | Product name                                                |
+| `description`    | TEXT          | Product description                                         |
+| `price`          | NUMERIC(10,2) | Price in USD                                                |
+| `image_url`      | TEXT          | Product image path                                          |
+| `category`       | TEXT NOT NULL | One of: proteins, vitamins, supplements, superfoods, snacks |
+| `stock`          | INTEGER       | Available quantity (defaults to 0)                          |
+| `nutrition_info` | JSONB         | Nutrition facts (calories, protein, etc.)                   |
+| `created_at`     | TIMESTAMP     | Creation timestamp                                          |
 
 ### `cart_items` table
 
-| Column       | Type        | Description                         |
-|--------------|-------------|-------------------------------------|
-| `id`         | SERIAL PK   | Auto-incrementing ID                |
-| `user_id`    | INTEGER FK  | References users(id), CASCADE delete|
-| `product_id` | INTEGER FK  | References products(id), CASCADE delete |
-| `quantity`    | INTEGER     | Number of items (default 1)         |
-| `created_at` | TIMESTAMP   | Creation timestamp                  |
+| Column       | Type       | Description                             |
+| ------------ | ---------- | --------------------------------------- |
+| `id`         | SERIAL PK  | Auto-incrementing ID                    |
+| `user_id`    | INTEGER FK | References users(id), CASCADE delete    |
+| `product_id` | INTEGER FK | References products(id), CASCADE delete |
+| `quantity`   | INTEGER    | Number of items (default 1)             |
+| `created_at` | TIMESTAMP  | Creation timestamp                      |
 
 **Unique constraint:** `(user_id, product_id)` — one cart entry per product per user; adding duplicates increments quantity.
 
 ### `orders` table
 
-| Column            | Type          | Description                     |
-|-------------------|---------------|---------------------------------|
-| `id`              | SERIAL PK     | Auto-incrementing ID            |
-| `user_id`         | INTEGER FK    | References users(id)            |
-| `total`           | NUMERIC(10,2) | Order total at time of purchase |
-| `status`          | TEXT          | pending, processing, shipped, delivered |
-| `shipping_address`| TEXT          | Customer shipping address       |
-| `created_at`      | TIMESTAMP     | Order creation timestamp        |
+| Column             | Type          | Description                             |
+| ------------------ | ------------- | --------------------------------------- |
+| `id`               | SERIAL PK     | Auto-incrementing ID                    |
+| `user_id`          | INTEGER FK    | References users(id)                    |
+| `total`            | NUMERIC(10,2) | Order total at time of purchase         |
+| `status`           | TEXT          | pending, processing, shipped, delivered |
+| `shipping_address` | TEXT          | Customer shipping address               |
+| `created_at`       | TIMESTAMP     | Order creation timestamp                |
 
 ### `order_items` table
 
-| Column       | Type          | Description                      |
-|--------------|---------------|----------------------------------|
-| `id`         | SERIAL PK     | Auto-incrementing ID             |
-| `order_id`   | INTEGER FK    | References orders(id)            |
-| `product_id` | INTEGER FK    | References products(id)          |
-| `quantity`    | INTEGER       | Quantity purchased               |
-| `price`      | NUMERIC(10,2) | Price at time of purchase        |
+| Column       | Type          | Description               |
+| ------------ | ------------- | ------------------------- |
+| `id`         | SERIAL PK     | Auto-incrementing ID      |
+| `order_id`   | INTEGER FK    | References orders(id)     |
+| `product_id` | INTEGER FK    | References products(id)   |
+| `quantity`   | INTEGER       | Quantity purchased        |
+| `price`      | NUMERIC(10,2) | Price at time of purchase |
 
 ---
 
@@ -61,28 +61,28 @@ NutriShop is a nutrition-focused e-commerce store selling proteins, vitamins, su
 
 ### Products (Public — no auth required)
 
-| Method | Path                    | Description                              |
-|--------|-------------------------|------------------------------------------|
-| GET    | `/api/products`         | List products. Query: `?category=`, `?search=` |
-| GET    | `/api/products/categories` | List distinct categories              |
-| GET    | `/api/products/:id`     | Get single product detail                |
+| Method | Path                       | Description                                    |
+| ------ | -------------------------- | ---------------------------------------------- |
+| GET    | `/api/products`            | List products. Query: `?category=`, `?search=` |
+| GET    | `/api/products/categories` | List distinct categories                       |
+| GET    | `/api/products/:id`        | Get single product detail                      |
 
 ### Cart (Auth required)
 
-| Method | Path             | Description                              |
-|--------|------------------|------------------------------------------|
-| GET    | `/api/cart`      | Get cart with product details            |
-| POST   | `/api/cart`      | Add product to cart (body: `{product_id, quantity}`) |
-| PUT    | `/api/cart/:id`  | Update cart item quantity (body: `{quantity}`) |
-| DELETE | `/api/cart/:id`  | Remove item from cart                    |
+| Method | Path            | Description                                          |
+| ------ | --------------- | ---------------------------------------------------- |
+| GET    | `/api/cart`     | Get cart with product details                        |
+| POST   | `/api/cart`     | Add product to cart (body: `{product_id, quantity}`) |
+| PUT    | `/api/cart/:id` | Update cart item quantity (body: `{quantity}`)       |
+| DELETE | `/api/cart/:id` | Remove item from cart                                |
 
 ### Orders (Auth required)
 
-| Method | Path               | Description                              |
-|--------|--------------------|------------------------------------------|
-| POST   | `/api/orders`      | Create order from cart (body: `{shipping_address}`) |
-| GET    | `/api/orders`      | List user's orders                       |
-| GET    | `/api/orders/:id`  | Get order detail with items              |
+| Method | Path              | Description                                         |
+| ------ | ----------------- | --------------------------------------------------- |
+| POST   | `/api/orders`     | Create order from cart (body: `{shipping_address}`) |
+| GET    | `/api/orders`     | List user's orders                                  |
+| GET    | `/api/orders/:id` | Get order detail with items                         |
 
 ---
 
@@ -106,7 +106,7 @@ NutriShop is a nutrition-focused e-commerce store selling proteins, vitamins, su
 ## Product Categories
 
 | Category      | Translation Key          | Color     |
-|---------------|--------------------------|-----------|
+| ------------- | ------------------------ | --------- |
 | `proteins`    | `categories.proteins`    | `#2563eb` |
 | `vitamins`    | `categories.vitamins`    | `#f59e0b` |
 | `supplements` | `categories.supplements` | `#8b5cf6` |
@@ -151,6 +151,7 @@ No external image files are needed — everything is rendered as inline SVG.
 ## Frontend Pages
 
 ### Homepage (`/`)
+
 - Public (no login required to browse)
 - Hero banner with branding
 - Search bar and category filter buttons
@@ -158,18 +159,21 @@ No external image files are needed — everything is rendered as inline SVG.
 - Logged-in users can add products directly; anonymous users see products but no add button
 
 ### Product Detail (`/products/[id]`)
+
 - Large SVG product image
 - Full product information with nutrition facts table
 - Quantity selector and "Add to Cart" button
 - Category badge and stock indicator
 
 ### Cart (`/cart`)
+
 - Lists all cart items with product thumbnail images, quantity selectors, and remove buttons
 - Shows line totals and subtotal
 - "Proceed to Checkout" button
 - Requires authentication
 
 ### Dashboard (`/dashboard`)
+
 - Welcome banner with user name
 - Stats grid: total orders, total spent, cart items, cart value
 - Recent orders (last 5) with status badges
@@ -178,12 +182,14 @@ No external image files are needed — everything is rendered as inline SVG.
 - Requires authentication
 
 ### Checkout (`/checkout`)
+
 - Order summary with all items
 - Shipping address textarea
 - "Place Order" button
 - Success screen with order ID and link to orders page
 
 ### Orders (`/orders`)
+
 - Lists all user orders with status badges
 - Expandable detail view showing order items and shipping address
 - Links to product detail pages
@@ -210,13 +216,13 @@ Provider hierarchy: `LanguageProvider` → `AuthProvider` → `CartProvider`
 
 All e-commerce UI strings are translated in EN, FR, and AR:
 
-| Namespace       | Keys                                     |
-|-----------------|------------------------------------------|
-| `categories.*`  | Product category names                   |
-| `product.*`     | Product detail page strings              |
-| `cart.*`        | Cart page strings                        |
-| `checkout.*`    | Checkout page strings                    |
-| `orders.*`      | Orders page strings                      |
-| `status.*`      | Order status labels                      |
-| `common.*`      | Shared strings (Add to Cart, Remove, etc.) |
-| `home.*`        | Homepage hero and catalog strings        |
+| Namespace      | Keys                                       |
+| -------------- | ------------------------------------------ |
+| `categories.*` | Product category names                     |
+| `product.*`    | Product detail page strings                |
+| `cart.*`       | Cart page strings                          |
+| `checkout.*`   | Checkout page strings                      |
+| `orders.*`     | Orders page strings                        |
+| `status.*`     | Order status labels                        |
+| `common.*`     | Shared strings (Add to Cart, Remove, etc.) |
+| `home.*`       | Homepage hero and catalog strings          |

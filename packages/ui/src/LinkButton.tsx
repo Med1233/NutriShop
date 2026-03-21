@@ -13,7 +13,10 @@ export type LinkButtonProps<C extends ElementType = 'a'> = {
   variant?: LinkButtonVariant;
   className?: string;
   children: ReactNode;
-} & Omit<ComponentPropsWithoutRef<C>, 'as' | 'variant' | 'className' | 'children'>;
+} & Omit<
+  ComponentPropsWithoutRef<C>,
+  'as' | 'variant' | 'className' | 'children'
+>;
 
 export function LinkButton<C extends ElementType = 'a'>({
   as,
@@ -25,7 +28,7 @@ export function LinkButton<C extends ElementType = 'a'>({
   const Component = as || 'a';
   return (
     <Component
-      className={`inline-block no-underline font-semibold px-6 py-2.5 rounded-lg text-center transition-colors ${variantClasses[variant]} ${className}`}
+      className={`inline-block rounded-lg px-6 py-2.5 text-center font-semibold no-underline transition-colors ${variantClasses[variant]} ${className}`}
       {...props}
     >
       {children}

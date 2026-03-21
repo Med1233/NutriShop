@@ -12,9 +12,11 @@ vi.mock('../../context/CartContext', () => ({
 
 vi.mock('../../api/productApi', () => ({
   fetchCategories: vi.fn().mockResolvedValue(['proteins', 'vitamins']),
-  fetchProducts: vi.fn().mockResolvedValue([
-    { id: 1, name: 'Whey', price: '29.99', category: 'proteins', stock: 100 },
-  ]),
+  fetchProducts: vi
+    .fn()
+    .mockResolvedValue([
+      { id: 1, name: 'Whey', price: '29.99', category: 'proteins', stock: 100 },
+    ]),
 }));
 
 import { useProductCatalog } from '../useProductCatalog';
@@ -25,10 +27,21 @@ import { fetchCategories, fetchProducts } from '../../api/productApi';
 beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(useAuth).mockReturnValue({ user: null } as any);
-  vi.mocked(useCart).mockReturnValue({ addToCart: vi.fn().mockResolvedValue({}) } as any);
+  vi.mocked(useCart).mockReturnValue({
+    addToCart: vi.fn().mockResolvedValue({}),
+  } as any);
   vi.mocked(fetchCategories).mockResolvedValue(['proteins', 'vitamins']);
   vi.mocked(fetchProducts).mockResolvedValue([
-    { id: 1, name: 'Whey', price: '29.99', category: 'proteins', stock: 100, description: '', image_url: '', nutrition_info: {} },
+    {
+      id: 1,
+      name: 'Whey',
+      price: '29.99',
+      category: 'proteins',
+      stock: 100,
+      description: '',
+      image_url: '',
+      nutrition_info: {},
+    },
   ]);
 });
 

@@ -6,7 +6,12 @@ vi.mock('../client', () => ({
   getBackendUrl: () => 'http://localhost:4000',
 }));
 
-import { fetchMyOrders, fetchAllOrders, createOrder, updateOrderStatus } from '../orderApi';
+import {
+  fetchMyOrders,
+  fetchAllOrders,
+  createOrder,
+  updateOrderStatus,
+} from '../orderApi';
 import { apiFetch } from '../client';
 
 const mockApiFetch = vi.mocked(apiFetch);
@@ -18,7 +23,9 @@ beforeEach(() => {
 describe('fetchMyOrders', () => {
   it('calls /api/orders and returns data', async () => {
     const orders = [{ id: 1, total: '29.99', status: 'pending' }];
-    mockApiFetch.mockResolvedValue({ json: () => Promise.resolve(orders) } as Response);
+    mockApiFetch.mockResolvedValue({
+      json: () => Promise.resolve(orders),
+    } as Response);
 
     const result = await fetchMyOrders();
     expect(mockApiFetch).toHaveBeenCalledWith('/api/orders');
@@ -28,7 +35,9 @@ describe('fetchMyOrders', () => {
 
 describe('fetchAllOrders', () => {
   it('calls with ?all=true and returns array', async () => {
-    mockApiFetch.mockResolvedValue({ json: () => Promise.resolve([{ id: 1 }]) } as Response);
+    mockApiFetch.mockResolvedValue({
+      json: () => Promise.resolve([{ id: 1 }]),
+    } as Response);
 
     const result = await fetchAllOrders();
     expect(mockApiFetch).toHaveBeenCalledWith('/api/orders?all=true');
@@ -36,7 +45,9 @@ describe('fetchAllOrders', () => {
   });
 
   it('returns empty array if response is not array', async () => {
-    mockApiFetch.mockResolvedValue({ json: () => Promise.resolve({ error: 'fail' }) } as Response);
+    mockApiFetch.mockResolvedValue({
+      json: () => Promise.resolve({ error: 'fail' }),
+    } as Response);
 
     const result = await fetchAllOrders();
     expect(result).toEqual([]);

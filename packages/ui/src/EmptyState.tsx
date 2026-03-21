@@ -9,12 +9,20 @@ export interface EmptyStateProps {
   children?: ReactNode;
 }
 
-export function EmptyState({ message, actionLabel, actionHref, linkComponent, children }: EmptyStateProps) {
+export function EmptyState({
+  message,
+  actionLabel,
+  actionHref,
+  linkComponent,
+  children,
+}: EmptyStateProps) {
   return (
-    <div className="text-center py-12">
+    <div className="py-12 text-center">
       <p className="text-gray-500">{message}</p>
       {actionLabel && actionHref && (
-        <LinkButton as={linkComponent} href={actionHref} className="mt-2">{actionLabel}</LinkButton>
+        <LinkButton as={linkComponent} href={actionHref} className="mt-2">
+          {actionLabel}
+        </LinkButton>
       )}
       {children}
     </div>

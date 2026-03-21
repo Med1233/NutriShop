@@ -29,14 +29,18 @@ export function useProfile() {
 
   useEffect(() => {
     if (user) {
-      setForm({ name: user.name, phone: user.phone || '', address: user.address || '' });
+      setForm({
+        name: user.name,
+        phone: user.phone || '',
+        address: user.address || '',
+      });
     }
   }, [user]);
 
   useEffect(() => {
     if (!user || !isCustomer) return;
     fetchMyOrders()
-      .then(data => setOrders(Array.isArray(data) ? data : []))
+      .then((data) => setOrders(Array.isArray(data) ? data : []))
       .catch(() => {})
       .finally(() => setOrdersLoaded(true));
   }, [user, isCustomer]);
@@ -56,7 +60,12 @@ export function useProfile() {
   };
 
   const handleCancel = () => {
-    if (user) setForm({ name: user.name, phone: user.phone || '', address: user.address || '' });
+    if (user)
+      setForm({
+        name: user.name,
+        phone: user.phone || '',
+        address: user.address || '',
+      });
     setEditing(false);
     setSaveMsg('');
   };
@@ -75,8 +84,24 @@ export function useProfile() {
   const totalSpent = orders.reduce((sum, o) => sum + parseFloat(o.total), 0);
 
   return {
-    user, authLoading, isCustomer, editing, setEditing, form, setForm,
-    saving, saveMsg, tab, setTab, orders, ordersLoaded, expandedId,
-    detail, handleSave, handleCancel, toggleDetail, totalSpent,
+    user,
+    authLoading,
+    isCustomer,
+    editing,
+    setEditing,
+    form,
+    setForm,
+    saving,
+    saveMsg,
+    tab,
+    setTab,
+    orders,
+    ordersLoaded,
+    expandedId,
+    detail,
+    handleSave,
+    handleCancel,
+    toggleDetail,
+    totalSpent,
   };
 }

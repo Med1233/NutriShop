@@ -1,5 +1,11 @@
 const { generateAccessToken } = require('../../src/auth');
-const { requireAuth, optionalAuth, requireAdmin, requireStaff, requireProductManager } = require('../../src/middleware');
+const {
+  requireAuth,
+  optionalAuth,
+  requireAdmin,
+  requireStaff,
+  requireProductManager,
+} = require('../../src/middleware');
 
 function mockReq(cookies = {}, user = undefined) {
   return { cookies, user };
@@ -32,7 +38,12 @@ describe('requireAuth', () => {
   });
 
   it('calls next and sets req.user for valid token', () => {
-    const token = generateAccessToken({ id: 1, email: 'a@b.com', name: 'A', role: 'customer' });
+    const token = generateAccessToken({
+      id: 1,
+      email: 'a@b.com',
+      name: 'A',
+      role: 'customer',
+    });
     const req = mockReq({ access_token: token });
     const res = mockRes();
     const next = vi.fn();
@@ -53,7 +64,12 @@ describe('optionalAuth', () => {
   });
 
   it('sets user with valid token', () => {
-    const token = generateAccessToken({ id: 5, email: 'x@y.com', name: 'X', role: 'admin' });
+    const token = generateAccessToken({
+      id: 5,
+      email: 'x@y.com',
+      name: 'X',
+      role: 'admin',
+    });
     const req = mockReq({ access_token: token });
     const res = mockRes();
     const next = vi.fn();

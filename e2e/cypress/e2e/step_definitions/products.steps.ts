@@ -2,7 +2,9 @@ import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor';
 
 Given('products exist in the database', () => {
   // Products are seeded on app startup — just verify the API is reachable
-  cy.request('http://localhost:4000/api/products').its('status').should('eq', 200);
+  cy.request('http://localhost:4000/api/products')
+    .its('status')
+    .should('eq', 200);
 });
 
 Then('I should see a list of products', () => {
