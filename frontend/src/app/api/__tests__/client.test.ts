@@ -26,8 +26,9 @@ describe('apiFetch', () => {
 
     await apiFetch('/api/test', { method: 'POST', body: '{}' });
 
-    expect(mockFetch).toHaveBeenCalledOnce();
-    const [url, opts] = mockFetch.mock.calls[0];
+    // Last call is the actual request (first may be CSRF token fetch)
+    const lastCall = mockFetch.mock.calls[mockFetch.mock.calls.length - 1];
+    const [url, opts] = lastCall;
     expect(url).toContain('/api/test');
     expect(opts.credentials).toBe('include');
     expect(opts.headers['Content-Type']).toBe('application/json');
