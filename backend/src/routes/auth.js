@@ -102,9 +102,7 @@ router.post('/login', authLimiter, async (req, res) => {
     const user = rows[0];
 
     if (user.provider !== 'local') {
-      return res.status(401).json({
-        error: `This account uses ${user.provider} sign-in. Please use that method instead.`,
-      });
+      return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     const valid = await verifyPassword(password, user.password_hash);
