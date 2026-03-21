@@ -124,7 +124,7 @@ router.post('/', optionalAuth, chatLimiter, async (req, res) => {
     res.flushHeaders();
 
     const stream = anthropic.messages.stream({
-      model: 'claude-haiku-4-5-20241022',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 512,
       system: systemPrompt,
       messages: messages.map((m) => ({
@@ -134,19 +134,25 @@ router.post('/', optionalAuth, chatLimiter, async (req, res) => {
     });
 
     stream.on('text', (text) => {
-      res.write(`data: ${JSON.stringify({ text })}\n\n`);
+      if (!res.writableEnded) {
+        res.write(`data: ${JSON.stringify({ text })}\n\n`);
+      }
     });
 
     stream.on('error', (err) => {
       console.error('Claude stream error:', err);
-      res.write(`data: ${JSON.stringify({ error: 'Stream error' })}\n\n`);
-      res.write('data: [DONE]\n\n');
-      res.end();
+      if (!res.writableEnded) {
+        res.write(`data: ${JSON.stringify({ error: 'Stream error' })}\n\n`);
+        res.write('data: [DONE]\n\n');
+        res.end();
+      }
     });
 
     stream.on('end', () => {
-      res.write('data: [DONE]\n\n');
-      res.end();
+      if (!res.writableEnded) {
+        res.write('data: [DONE]\n\n');
+        res.end();
+      }
     });
 
     // Handle client disconnect
