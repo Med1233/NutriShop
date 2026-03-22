@@ -1,6 +1,7 @@
 const express = require('express');
 const { pool } = require('../db');
 const { requireAuth, requireStaff, requireVerified } = require('../middleware');
+const { sendOrderStatusEmail, sendNewOrderEmail } = require('../email');
 
 const router = express.Router();
 
@@ -74,6 +75,21 @@ router.post('/', requireVerified, async (req, res) => {
     ]);
 
     await client.query('COMMIT');
+
+    // Email admin/managers about new order (non-blocking)
+    pool
+      .query("SELECT email, name FROM users WHERE role IN ('admin', 'manager')")
+      .then(({ rows: staff }) => {
+        for (const s of staff) {
+          sendNewOrderEmail(s.email, {
+            name: s.name,
+            orderId: order.id,
+            total: order.total,
+            customerName: req.user.name,
+          }).catch((err) => console.error('New order email error:', err));
+        }
+      })
+      .catch((err) => console.error('Staff query error:', err));
 
     res.status(201).json(order);
   } catch (err) {
@@ -208,6 +224,23 @@ router.put('/:id/status', requireStaff, async (req, res) => {
     );
 
     await client.query('COMMIT');
+
+    // Email customer about status change (non-blocking)
+    pool
+      .query('SELECT email, name FROM users WHERE id = $1', [
+        orders[0].user_id,
+      ])
+      .then(({ rows }) => {
+        if (rows[0]) {
+          sendOrderStatusEmail(rows[0].email, {
+            name: rows[0].name,
+            orderId: parseInt(req.params.id),
+            status,
+            total: `$${orders[0].total}`,
+          }).catch((err) => console.error('Status email error:', err));
+        }
+      })
+      .catch((err) => console.error('Customer query error:', err));
 
     res.json(updated[0]);
   } catch (err) {
