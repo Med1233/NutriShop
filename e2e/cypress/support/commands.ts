@@ -19,13 +19,23 @@ Cypress.Commands.add('loginAsAdmin', () => {
 
 Cypress.Commands.add(
   'seedUser',
-  (data: { email: string; password: string; name: string; role?: string }) => {
+  (data: {
+    email: string;
+    password: string;
+    name: string;
+    role?: string;
+    email_verified?: boolean;
+  }) => {
     cy.task('db:seed-user', data);
   },
 );
 
 Cypress.Commands.add('resetDb', () => {
   cy.task('db:reset');
+});
+
+Cypress.Commands.add('createVerificationToken', (email: string) => {
+  return cy.task('db:create-verification-token', { email });
 });
 
 declare global {
@@ -38,7 +48,9 @@ declare global {
         password: string;
         name: string;
         role?: string;
+        email_verified?: boolean;
       }): Chainable<void>;
+      createVerificationToken(email: string): Chainable<string>;
       resetDb(): Chainable<void>;
     }
   }

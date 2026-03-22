@@ -10,7 +10,7 @@ NutriShop uses a multi-layer testing strategy:
 | Frontend (API + Hooks) | Vitest + Testing Library        | `frontend/src/app/**/__tests__/` | 41                        |
 | Backend Unit           | Vitest                          | `backend/tests/unit/`            | 25                        |
 | Backend Integration    | Vitest + Supertest              | `backend/tests/integration/`     | 44                        |
-| E2E (Gherkin)          | Cypress + cucumber-preprocessor | `e2e/cypress/e2e/features/`      | 6 features, ~20 scenarios |
+| E2E (Gherkin)          | Cypress + cucumber-preprocessor | `e2e/cypress/e2e/features/`      | 8 features, ~29 scenarios |
 
 **Total: 167 automated tests + E2E scenarios**
 
@@ -186,6 +186,8 @@ cd e2e && pnpm cypress:run
 | `checkout.feature` | Place order, checkout requires login           |
 | `orders.feature`   | View order history, manager updates status     |
 | `admin.feature`    | View dashboard, create user, non-admin blocked |
+| `email-verification.feature` | Verification banner, checkout blocked unverified, verify via link, invalid token |
+| `chatbot.feature`  | Widget visibility, open/close, send message, clear history |
 
 ### Step Definitions
 
@@ -197,13 +199,15 @@ Located in `e2e/cypress/e2e/step_definitions/`. Each feature has a matching step
 - `cy.loginAsAdmin()` — login as default admin
 - `cy.seedUser(data)` — create a user directly in DB via `cy.task`
 - `cy.resetDb()` — truncate transactional data via `cy.task`
+- `cy.createVerificationToken(email)` — create a verification token for a user via `cy.task`
 
 ### DB Tasks
 
 Defined in `cypress.config.ts`:
 
-- `db:reset` — truncates cart_items, order_items, orders, refresh_tokens
-- `db:seed-user` — inserts/upserts a user with hashed password
+- `db:reset` — truncates cart_items, order_items, orders, refresh_tokens, verification_tokens
+- `db:seed-user` — inserts/upserts a user with hashed password (supports `email_verified` flag)
+- `db:create-verification-token` — creates a verification token for a user and returns the token string
 
 ## Writing New Tests
 
