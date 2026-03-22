@@ -91,7 +91,11 @@ function RegisterForm() {
         <p className="mt-6 text-center text-sm text-gray-500">
           {t('register.hasAccount')}{' '}
           <Link
-            href={redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login'}
+            href={
+              redirect
+                ? `/login?redirect=${encodeURIComponent(redirect)}`
+                : '/login'
+            }
             className="text-blue-600 no-underline"
           >
             {t('register.signIn')}

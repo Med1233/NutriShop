@@ -106,7 +106,11 @@ function LoginForm() {
         <p className="mt-6 text-center text-sm text-gray-500">
           {t('login.noAccount')}{' '}
           <Link
-            href={redirect ? `/register?redirect=${encodeURIComponent(redirect)}` : '/register'}
+            href={
+              redirect
+                ? `/register?redirect=${encodeURIComponent(redirect)}`
+                : '/register'
+            }
             className="text-blue-600 no-underline"
           >
             {t('login.createOne')}
