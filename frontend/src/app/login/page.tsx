@@ -72,7 +72,7 @@ function LoginForm() {
               </span>
             </div>
             <a
-              href={`${getBackendUrl()}/api/auth/google`}
+              href={`${getBackendUrl()}/api/auth/google${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ''}`}
               className="flex cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white p-2.5 text-sm font-medium text-gray-700 no-underline"
             >
               <svg
