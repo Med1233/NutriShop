@@ -400,19 +400,17 @@ export const translations: Record<Locale, Record<string, string>> = {
       'Bonjour ! Je suis NutriBot. Je peux vous aider avec des recommandations, des questions nutritionnelles et le suivi de commandes. Comment puis-je vous aider ?',
     'error.invalidCredentials': 'Email ou mot de passe incorrect',
     'error.emailPasswordRequired': "L'email et le mot de passe sont requis",
-    'error.allFieldsRequired':
-      "L'email, le mot de passe et le nom sont requis",
+    'error.allFieldsRequired': "L'email, le mot de passe et le nom sont requis",
     'error.passwordTooShort':
       'Le mot de passe doit comporter au moins 8 caractères',
     'error.emailTaken':
       'Impossible de créer le compte. Veuillez réessayer ou utiliser un autre email.',
-    'error.tooManyAttempts':
-      'Trop de tentatives, veuillez réessayer plus tard',
+    'error.tooManyAttempts': 'Trop de tentatives, veuillez réessayer plus tard',
     'error.internalError': 'Erreur interne du serveur',
     'error.authRequired': 'Authentification requise',
     'error.tokenExpired': 'Session expirée. Veuillez vous reconnecter.',
     'error.invalidToken': 'Jeton invalide',
-    'error.adminRequired': "Accès administrateur requis",
+    'error.adminRequired': 'Accès administrateur requis',
     'error.staffRequired': 'Accès personnel requis',
     'error.emailVerificationRequired':
       'Veuillez vérifier votre email avant de passer commande.',
@@ -421,8 +419,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     'error.orderNotFound': 'Commande introuvable',
     'error.userNotFound': 'Utilisateur introuvable',
     'error.nameRequired': 'Le nom ne peut pas être vide',
-    'error.somethingWrong':
-      "Une erreur s'est produite. Veuillez réessayer.",
+    'error.somethingWrong': "Une erreur s'est produite. Veuillez réessayer.",
     'error.googleNotConfigured': "Google OAuth n'est pas configuré",
     'error.cancelledOrder':
       "Impossible de modifier le statut d'une commande annulée",
@@ -616,21 +613,16 @@ export const translations: Record<Locale, Record<string, string>> = {
     'chat.clear': 'مسح',
     'chat.greeting':
       'مرحبًا! أنا نيوتري بوت. يمكنني مساعدتك في توصيات المنتجات وأسئلة التغذية وحالة الطلبات. كيف يمكنني مساعدتك؟',
-    'error.invalidCredentials':
-      'البريد الإلكتروني أو كلمة المرور غير صحيحة',
-    'error.emailPasswordRequired':
-      'البريد الإلكتروني وكلمة المرور مطلوبان',
-    'error.allFieldsRequired':
-      'البريد الإلكتروني وكلمة المرور والاسم مطلوبة',
+    'error.invalidCredentials': 'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+    'error.emailPasswordRequired': 'البريد الإلكتروني وكلمة المرور مطلوبان',
+    'error.allFieldsRequired': 'البريد الإلكتروني وكلمة المرور والاسم مطلوبة',
     'error.passwordTooShort': 'يجب أن تكون كلمة المرور ٨ أحرف على الأقل',
     'error.emailTaken':
       'تعذر إنشاء الحساب. يرجى المحاولة مرة أخرى أو استخدام بريد إلكتروني آخر.',
-    'error.tooManyAttempts':
-      'محاولات كثيرة جدًا، يرجى المحاولة لاحقًا',
+    'error.tooManyAttempts': 'محاولات كثيرة جدًا، يرجى المحاولة لاحقًا',
     'error.internalError': 'خطأ داخلي في الخادم',
     'error.authRequired': 'المصادقة مطلوبة',
-    'error.tokenExpired':
-      'انتهت الجلسة. يرجى تسجيل الدخول مرة أخرى.',
+    'error.tokenExpired': 'انتهت الجلسة. يرجى تسجيل الدخول مرة أخرى.',
     'error.invalidToken': 'رمز غير صالح',
     'error.adminRequired': 'يتطلب صلاحيات المدير',
     'error.staffRequired': 'يتطلب صلاحيات الموظف',

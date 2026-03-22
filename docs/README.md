@@ -8,20 +8,20 @@ NutriShop is built with **Next.js**, **Express**, and **PostgreSQL**, orchestrat
 
 ## Quick Links
 
-| Topic | Description |
-|---|---|
-| [Architecture](01-architecture.md) | System diagram, services, data flow |
-| [Frontend](04-frontend.md) | Next.js pages, hooks, API client |
-| [Backend](05-backend.md) | Express routes, middleware, database |
-| [E-Commerce](07-ecommerce.md) | Products, cart, orders, stock management |
-| [Authentication](02-authentication.md) | JWT, OAuth, roles, session handling |
-| [Email Verification](13-email-verification.md) | Resend integration, verification flow |
-| [AI Chatbot](12-chatbot.md) | NutriBot with Claude, SSE streaming |
-| [Internationalization](03-internationalization.md) | i18n with EN, FR, AR (RTL) |
-| [Design System](09-design-system.md) | @nutrishop/ui components, Storybook |
-| [Testing](08-testing.md) | Vitest, Cypress + Gherkin, 167+ tests |
-| [CI/CD](10-ci-cd.md) | GitHub Actions, 7 workflows |
-| [Deployment](11-deployment.md) | DigitalOcean, Nginx, SSL |
+| Topic                                              | Description                              |
+| -------------------------------------------------- | ---------------------------------------- |
+| [Architecture](01-architecture.md)                 | System diagram, services, data flow      |
+| [Frontend](04-frontend.md)                         | Next.js pages, hooks, API client         |
+| [Backend](05-backend.md)                           | Express routes, middleware, database     |
+| [E-Commerce](07-ecommerce.md)                      | Products, cart, orders, stock management |
+| [Authentication](02-authentication.md)             | JWT, OAuth, roles, session handling      |
+| [Email Verification](13-email-verification.md)     | Resend integration, verification flow    |
+| [AI Chatbot](12-chatbot.md)                        | NutriBot with Claude, SSE streaming      |
+| [Internationalization](03-internationalization.md) | i18n with EN, FR, AR (RTL)               |
+| [Design System](09-design-system.md)               | @nutrishop/ui components, Storybook      |
+| [Testing](08-testing.md)                           | Vitest, Cypress + Gherkin, 167+ tests    |
+| [CI/CD](10-ci-cd.md)                               | GitHub Actions, 7 workflows              |
+| [Deployment](11-deployment.md)                     | DigitalOcean, Nginx, SSL                 |
 
 ## Running Locally
 
