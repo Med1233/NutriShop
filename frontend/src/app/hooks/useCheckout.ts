@@ -12,7 +12,7 @@ export function useCheckout() {
   const { t } = useLanguage();
   const router = useRouter();
 
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState(user?.address || '');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [orderId, setOrderId] = useState<number | null>(null);
