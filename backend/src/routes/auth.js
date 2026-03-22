@@ -315,6 +315,18 @@ router.get('/google', (req, res) => {
     path: '/api/auth',
   });
 
+  // Store redirect path for post-login navigation
+  const redirectPath = req.query.redirect;
+  if (redirectPath) {
+    res.cookie('oauth_redirect', redirectPath, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+      maxAge: 10 * 60 * 1000,
+      path: '/api/auth',
+    });
+  }
+
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
@@ -416,7 +428,22 @@ router.get('/google/callback', async (req, res) => {
 
     setTokenCookies(res, accessToken, refreshToken, expiresAt);
 
-    res.redirect(`${frontendUrl}/`);
+    // Determine redirect: explicit redirect cookie > role-based > home
+    const redirectPath = req.cookies?.oauth_redirect;
+    res.clearCookie('oauth_redirect', { path: '/api/auth' });
+
+    let destination = '/';
+    if (redirectPath) {
+      destination = redirectPath;
+    } else if (user.role === 'admin') {
+      destination = '/admin';
+    } else if (user.role === 'manager') {
+      destination = '/manager';
+    } else if (user.role === 'stockist') {
+      destination = '/stockist';
+    }
+
+    res.redirect(`${frontendUrl}${destination}`);
   } catch (err) {
     console.error('Google callback error:', err);
     res.redirect(`${frontendUrl}/login?error=server_error`);
