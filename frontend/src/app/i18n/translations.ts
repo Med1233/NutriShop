@@ -184,6 +184,31 @@ export const translations: Record<Locale, Record<string, string>> = {
     'chat.clear': 'Clear chat',
     'chat.greeting':
       "Hi! I'm NutriBot. I can help with product recommendations, nutrition questions, and order status. How can I help?",
+    'error.invalidCredentials': 'Invalid email or password',
+    'error.emailPasswordRequired': 'Email and password are required',
+    'error.allFieldsRequired': 'Email, password, and name are required',
+    'error.passwordTooShort': 'Password must be at least 8 characters',
+    'error.emailTaken':
+      'Unable to create account. Please try again or use a different email.',
+    'error.tooManyAttempts': 'Too many attempts, please try again later',
+    'error.internalError': 'Internal server error',
+    'error.authRequired': 'Authentication required',
+    'error.tokenExpired': 'Session expired. Please sign in again.',
+    'error.invalidToken': 'Invalid token',
+    'error.adminRequired': 'Admin access required',
+    'error.staffRequired': 'Staff access required',
+    'error.emailVerificationRequired':
+      'Please verify your email before placing an order.',
+    'error.shippingRequired': 'Shipping address is required',
+    'error.cartEmpty': 'Cart is empty',
+    'error.orderNotFound': 'Order not found',
+    'error.userNotFound': 'User not found',
+    'error.nameRequired': 'Name cannot be empty',
+    'error.somethingWrong': 'Something went wrong. Please try again.',
+    'error.googleNotConfigured': 'Google OAuth is not configured',
+    'error.cancelledOrder': 'Cannot change status of a cancelled order',
+    'error.databaseError': 'Database error',
+
     'verification.banner':
       'Please verify your email address. Check your inbox for the verification link.',
     'verification.resend': 'Resend verification email',
@@ -373,6 +398,36 @@ export const translations: Record<Locale, Record<string, string>> = {
     'chat.clear': 'Effacer',
     'chat.greeting':
       'Bonjour ! Je suis NutriBot. Je peux vous aider avec des recommandations, des questions nutritionnelles et le suivi de commandes. Comment puis-je vous aider ?',
+    'error.invalidCredentials': 'Email ou mot de passe incorrect',
+    'error.emailPasswordRequired': "L'email et le mot de passe sont requis",
+    'error.allFieldsRequired':
+      "L'email, le mot de passe et le nom sont requis",
+    'error.passwordTooShort':
+      'Le mot de passe doit comporter au moins 8 caractères',
+    'error.emailTaken':
+      'Impossible de créer le compte. Veuillez réessayer ou utiliser un autre email.',
+    'error.tooManyAttempts':
+      'Trop de tentatives, veuillez réessayer plus tard',
+    'error.internalError': 'Erreur interne du serveur',
+    'error.authRequired': 'Authentification requise',
+    'error.tokenExpired': 'Session expirée. Veuillez vous reconnecter.',
+    'error.invalidToken': 'Jeton invalide',
+    'error.adminRequired': "Accès administrateur requis",
+    'error.staffRequired': 'Accès personnel requis',
+    'error.emailVerificationRequired':
+      'Veuillez vérifier votre email avant de passer commande.',
+    'error.shippingRequired': "L'adresse de livraison est requise",
+    'error.cartEmpty': 'Le panier est vide',
+    'error.orderNotFound': 'Commande introuvable',
+    'error.userNotFound': 'Utilisateur introuvable',
+    'error.nameRequired': 'Le nom ne peut pas être vide',
+    'error.somethingWrong':
+      "Une erreur s'est produite. Veuillez réessayer.",
+    'error.googleNotConfigured': "Google OAuth n'est pas configuré",
+    'error.cancelledOrder':
+      "Impossible de modifier le statut d'une commande annulée",
+    'error.databaseError': 'Erreur de base de données',
+
     'verification.banner':
       'Veuillez vérifier votre adresse email. Consultez votre boîte de réception.',
     'verification.resend': 'Renvoyer le mail de vérification',
@@ -561,6 +616,36 @@ export const translations: Record<Locale, Record<string, string>> = {
     'chat.clear': 'مسح',
     'chat.greeting':
       'مرحبًا! أنا نيوتري بوت. يمكنني مساعدتك في توصيات المنتجات وأسئلة التغذية وحالة الطلبات. كيف يمكنني مساعدتك؟',
+    'error.invalidCredentials':
+      'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+    'error.emailPasswordRequired':
+      'البريد الإلكتروني وكلمة المرور مطلوبان',
+    'error.allFieldsRequired':
+      'البريد الإلكتروني وكلمة المرور والاسم مطلوبة',
+    'error.passwordTooShort': 'يجب أن تكون كلمة المرور ٨ أحرف على الأقل',
+    'error.emailTaken':
+      'تعذر إنشاء الحساب. يرجى المحاولة مرة أخرى أو استخدام بريد إلكتروني آخر.',
+    'error.tooManyAttempts':
+      'محاولات كثيرة جدًا، يرجى المحاولة لاحقًا',
+    'error.internalError': 'خطأ داخلي في الخادم',
+    'error.authRequired': 'المصادقة مطلوبة',
+    'error.tokenExpired':
+      'انتهت الجلسة. يرجى تسجيل الدخول مرة أخرى.',
+    'error.invalidToken': 'رمز غير صالح',
+    'error.adminRequired': 'يتطلب صلاحيات المدير',
+    'error.staffRequired': 'يتطلب صلاحيات الموظف',
+    'error.emailVerificationRequired':
+      'يرجى التحقق من بريدك الإلكتروني قبل تقديم الطلب.',
+    'error.shippingRequired': 'عنوان الشحن مطلوب',
+    'error.cartEmpty': 'السلة فارغة',
+    'error.orderNotFound': 'الطلب غير موجود',
+    'error.userNotFound': 'المستخدم غير موجود',
+    'error.nameRequired': 'لا يمكن أن يكون الاسم فارغًا',
+    'error.somethingWrong': 'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
+    'error.googleNotConfigured': 'لم يتم تهيئة تسجيل الدخول بجوجل',
+    'error.cancelledOrder': 'لا يمكن تغيير حالة طلب ملغي',
+    'error.databaseError': 'خطأ في قاعدة البيانات',
+
     'verification.banner':
       'يرجى التحقق من عنوان بريدك الإلكتروني. تحقق من صندوق الوارد.',
     'verification.resend': 'إعادة إرسال رسالة التحقق',

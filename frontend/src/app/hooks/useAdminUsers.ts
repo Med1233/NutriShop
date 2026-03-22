@@ -6,8 +6,11 @@ import {
   deleteUser,
 } from '../api/adminApi';
 import type { AdminUser } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
+import { translateError } from '../i18n/errorMessages';
 
 export function useAdminUsers() {
+  const { t } = useLanguage();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
@@ -45,7 +48,7 @@ export function useAdminUsers() {
       load();
     } else {
       const data = await res.json();
-      setFormError(data.error || 'Error');
+      setFormError(translateError(data.error || 'Internal server error', t));
     }
   };
 
