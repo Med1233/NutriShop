@@ -178,16 +178,16 @@ cd e2e && pnpm cypress:run
 
 ### Features
 
-| Feature File       | Scenarios                                      |
-| ------------------ | ---------------------------------------------- |
-| `auth.feature`     | Register, login (valid/invalid), logout        |
-| `products.feature` | View listing, search, product detail           |
-| `cart.feature`     | Add to cart, view cart, remove item            |
-| `checkout.feature` | Place order, checkout requires login           |
-| `orders.feature`   | View order history, manager updates status     |
-| `admin.feature`    | View dashboard, create user, non-admin blocked |
+| Feature File                 | Scenarios                                                                        |
+| ---------------------------- | -------------------------------------------------------------------------------- |
+| `auth.feature`               | Register, login (valid/invalid), logout                                          |
+| `products.feature`           | View listing, search, product detail                                             |
+| `cart.feature`               | Add to cart, view cart, remove item                                              |
+| `checkout.feature`           | Place order, checkout requires login                                             |
+| `orders.feature`             | View order history, manager updates status                                       |
+| `admin.feature`              | View dashboard, create user, non-admin blocked                                   |
 | `email-verification.feature` | Verification banner, checkout blocked unverified, verify via link, invalid token |
-| `chatbot.feature`  | Widget visibility, open/close, send message, clear history |
+| `chatbot.feature`            | Widget visibility, open/close, send message, clear history                       |
 
 ### Step Definitions
 
