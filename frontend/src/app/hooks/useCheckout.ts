@@ -3,10 +3,13 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { createOrder } from '../api/orderApi';
+import { useLanguage } from '../i18n/LanguageContext';
+import { translateError } from '../i18n/errorMessages';
 
 export function useCheckout() {
   const { user, loading: authLoading } = useAuth();
   const { items, loading, refresh } = useCart();
+  const { t } = useLanguage();
   const router = useRouter();
 
   const [address, setAddress] = useState('');
@@ -31,10 +34,10 @@ export function useCheckout() {
         setOrderId(data.id);
         await refresh();
       } else {
-        setError(data.error);
+        setError(translateError(data.error, t));
       }
     } catch {
-      setError('Something went wrong');
+      setError(t('error.somethingWrong'));
     } finally {
       setSubmitting(false);
     }

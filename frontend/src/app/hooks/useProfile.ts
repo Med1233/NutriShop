@@ -3,11 +3,14 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 import { fetchMyOrders, fetchOrderDetail } from '../api/orderApi';
 import type { Order, OrderDetail } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
+import { translateError } from '../i18n/errorMessages';
 
 type Tab = 'info' | 'orders';
 
 export function useProfile() {
   const { user, loading: authLoading, updateProfile } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
 
   const isCustomer = user?.role === 'customer';
@@ -51,7 +54,7 @@ export function useProfile() {
     const result = await updateProfile(form);
     setSaving(false);
     if (result.error) {
-      setSaveMsg(result.error);
+      setSaveMsg(translateError(result.error, t));
     } else {
       setEditing(false);
       setSaveMsg('saved');

@@ -23,6 +23,15 @@ vi.mock('../../api/orderApi', () => ({
   createOrder: vi.fn(),
 }));
 
+vi.mock('../../i18n/LanguageContext', () => ({
+  useLanguage: vi.fn(() => ({
+    t: (key: string) => key,
+    locale: 'en',
+    setLocale: vi.fn(),
+    dir: 'ltr',
+  })),
+}));
+
 import { useCheckout } from '../useCheckout';
 import { createOrder } from '../../api/orderApi';
 import { useAuth } from '../../context/AuthContext';
@@ -101,7 +110,7 @@ describe('useCheckout', () => {
       await result.current.handleSubmit({ preventDefault: vi.fn() } as any);
     });
 
-    expect(result.current.error).toBe('Something went wrong');
+    expect(result.current.error).toBe('error.somethingWrong');
   });
 
   it('exposes user and loading state', () => {

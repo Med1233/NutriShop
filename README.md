@@ -15,18 +15,18 @@ A full-stack e-commerce platform for nutrition products, built with Next.js, Exp
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js 14 (App Router), TypeScript, Tailwind CSS |
-| Backend | Express.js, Node.js |
-| Database | PostgreSQL 16 |
-| Design System | React, Tailwind CSS, Storybook, Vitest |
-| Auth | JWT (HttpOnly cookies), Google OAuth 2.0 |
-| Email | Resend API |
-| AI | Claude Haiku 4.5 (SSE streaming) |
-| Testing | Vitest, Cypress + Gherkin, Testing Library |
-| CI/CD | GitHub Actions (7 workflows), Docker |
-| Deployment | DigitalOcean, Nginx, Let's Encrypt SSL |
+| Layer         | Technology                                        |
+| ------------- | ------------------------------------------------- |
+| Frontend      | Next.js 14 (App Router), TypeScript, Tailwind CSS |
+| Backend       | Express.js, Node.js                               |
+| Database      | PostgreSQL 16                                     |
+| Design System | React, Tailwind CSS, Storybook, Vitest            |
+| Auth          | JWT (HttpOnly cookies), Google OAuth 2.0          |
+| Email         | Resend API                                        |
+| AI            | Claude Haiku 4.5 (SSE streaming)                  |
+| Testing       | Vitest, Cypress + Gherkin, Testing Library        |
+| CI/CD         | GitHub Actions (7 workflows), Docker              |
+| Deployment    | DigitalOcean, Nginx, Let's Encrypt SSL            |
 
 ## Quick Start
 
@@ -86,10 +86,10 @@ ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=your-admin-password
 ADMIN_NAME=Admin
 
-# AI Chatbot 
+# AI Chatbot
 ANTHROPIC_API_KEY=
 
-# Email verification 
+# Email verification
 RESEND_API_KEY=
 EMAIL_FROM=NutriShop <onboarding@resend.dev>
 ```
@@ -127,13 +127,13 @@ docker-compose -f docker-compose.dev.yml up -d
 cd e2e && pnpm cypress:run
 ```
 
-| Layer | Framework | Tests |
-|---|---|---|
-| UI Components | Vitest + Testing Library | 57 |
-| Frontend | Vitest + Testing Library | 41 |
-| Backend Unit | Vitest | 25 |
-| Backend Integration | Vitest + Supertest | 44 |
-| E2E | Cypress + Gherkin | 8 features, 26 scenarios |
+| Layer               | Framework                | Tests                    |
+| ------------------- | ------------------------ | ------------------------ |
+| UI Components       | Vitest + Testing Library | 57                       |
+| Frontend            | Vitest + Testing Library | 41                       |
+| Backend Unit        | Vitest                   | 25                       |
+| Backend Integration | Vitest + Supertest       | 44                       |
+| E2E                 | Cypress + Gherkin        | 8 features, 26 scenarios |
 
 ## Linting & Formatting
 
@@ -156,26 +156,26 @@ Components include: Button, Input, Card, Badge, Table, Tabs, Alert, FormField, E
 
 ## Documentation
 
-Full documentation is available in [`docs/`](docs/) 
+Full documentation is available in [`docs/`](docs/)
 
 ```bash
 npx docsify-cli serve docs --port 4500
 ```
 
-| Section | Topics |
-|---|---|
-| [Architecture](docs/01-architecture.md) | System diagram, services, data flow |
-| [Authentication](docs/02-authentication.md) | JWT, OAuth, roles, sessions |
-| [Internationalization](docs/03-internationalization.md) | EN, FR, AR with RTL |
-| [Frontend](docs/04-frontend.md) | Pages, hooks, API client |
-| [Backend](docs/05-backend.md) | Routes, middleware, database |
-| [E-Commerce](docs/07-ecommerce.md) | Products, cart, orders, stock |
-| [Testing](docs/08-testing.md) | All test layers and strategies |
-| [Design System](docs/09-design-system.md) | Components, Storybook |
-| [CI/CD](docs/10-ci-cd.md) | GitHub Actions workflows |
-| [Deployment](docs/11-deployment.md) | DigitalOcean, Nginx, SSL |
-| [AI Chatbot](docs/12-chatbot.md) | NutriBot, Claude, SSE |
-| [Email Verification](docs/13-email-verification.md) | Resend, verification flow |
+| Section                                                 | Topics                              |
+| ------------------------------------------------------- | ----------------------------------- |
+| [Architecture](docs/01-architecture.md)                 | System diagram, services, data flow |
+| [Authentication](docs/02-authentication.md)             | JWT, OAuth, roles, sessions         |
+| [Internationalization](docs/03-internationalization.md) | EN, FR, AR with RTL                 |
+| [Frontend](docs/04-frontend.md)                         | Pages, hooks, API client            |
+| [Backend](docs/05-backend.md)                           | Routes, middleware, database        |
+| [E-Commerce](docs/07-ecommerce.md)                      | Products, cart, orders, stock       |
+| [Testing](docs/08-testing.md)                           | All test layers and strategies      |
+| [Design System](docs/09-design-system.md)               | Components, Storybook               |
+| [CI/CD](docs/10-ci-cd.md)                               | GitHub Actions workflows            |
+| [Deployment](docs/11-deployment.md)                     | DigitalOcean, Nginx, SSL            |
+| [AI Chatbot](docs/12-chatbot.md)                        | NutriBot, Claude, SSE               |
+| [Email Verification](docs/13-email-verification.md)     | Resend, verification flow           |
 
 ## License
 

@@ -1,9 +1,12 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../i18n/LanguageContext';
+import { translateError } from '../i18n/errorMessages';
 
 export function useLogin() {
   const { login } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -14,8 +17,8 @@ export function useLogin() {
 
   useEffect(() => {
     const err = searchParams.get('error');
-    if (err) setError(err);
-  }, [searchParams]);
+    if (err) setError(translateError(err, t));
+  }, [searchParams, t]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -24,7 +27,7 @@ export function useLogin() {
     const result = await login(email, password);
     setSubmitting(false);
     if (result.error) {
-      setError(result.error);
+      setError(translateError(result.error, t));
     } else {
       router.push('/');
     }

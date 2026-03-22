@@ -15,6 +15,15 @@ vi.mock('../../context/AuthContext', () => ({
   })),
 }));
 
+vi.mock('../../i18n/LanguageContext', () => ({
+  useLanguage: vi.fn(() => ({
+    t: (key: string) => key,
+    locale: 'en',
+    setLocale: vi.fn(),
+    dir: 'ltr',
+  })),
+}));
+
 import { useLogin } from '../useLogin';
 import { useAuth } from '../../context/AuthContext';
 
