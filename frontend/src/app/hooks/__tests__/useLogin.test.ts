@@ -63,7 +63,9 @@ describe('useLogin', () => {
   });
 
   it('handleSubmit navigates on success', async () => {
-    const login = vi.fn().mockResolvedValue({});
+    const login = vi
+      .fn()
+      .mockResolvedValue({ user: { id: 1, name: 'Test', role: 'customer' } });
     vi.mocked(useAuth).mockReturnValue({ login } as any);
 
     const { result } = renderHook(() => useLogin());

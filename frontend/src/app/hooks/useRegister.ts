@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
 import { translateError } from '../i18n/errorMessages';
@@ -8,6 +8,7 @@ export function useRegister() {
   const { register } = useAuth();
   const { t } = useLanguage();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -32,7 +33,8 @@ export function useRegister() {
     if (result.error) {
       setError(translateError(result.error, t));
     } else {
-      router.push('/');
+      const redirect = searchParams.get('redirect');
+      router.push(redirect || '/');
     }
   };
 

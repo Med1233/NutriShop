@@ -25,7 +25,7 @@ export default function CheckoutPage() {
   if (authLoading || loading) return <p>{t('common.loading')}</p>;
 
   if (!user) {
-    router.push('/login');
+    router.push('/login?redirect=/checkout');
     return null;
   }
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useLogin } from '../hooks';
 import { getBackendUrl } from '../api/client';
@@ -9,6 +10,8 @@ import { Button, Input, FormField, Alert, Card } from '@nutrishop/ui';
 
 function LoginForm() {
   const { t, dir } = useLanguage();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect');
   const {
     email,
     setEmail,
@@ -102,7 +105,14 @@ function LoginForm() {
 
         <p className="mt-6 text-center text-sm text-gray-500">
           {t('login.noAccount')}{' '}
-          <Link href="/register" className="text-blue-600 no-underline">
+          <Link
+            href={
+              redirect
+                ? `/register?redirect=${encodeURIComponent(redirect)}`
+                : '/register'
+            }
+            className="text-blue-600 no-underline"
+          >
             {t('login.createOne')}
           </Link>
         </p>

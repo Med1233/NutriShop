@@ -5,6 +5,7 @@ const mockPush = vi.fn();
 
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(() => ({ push: mockPush })),
+  useSearchParams: vi.fn(() => ({ get: () => null })),
 }));
 
 vi.mock('../../context/AuthContext', () => ({
