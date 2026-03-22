@@ -27,7 +27,7 @@ export function useProfile() {
   const [detail, setDetail] = useState<OrderDetail | null>(null);
 
   useEffect(() => {
-    if (!authLoading && !user) router.push('/login');
+    if (!authLoading && !user) router.push('/login?redirect=/profile');
   }, [authLoading, user, router]);
 
   useEffect(() => {

@@ -1,12 +1,16 @@
 'use client';
 
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useRegister } from '../hooks';
 import Link from 'next/link';
 import { Button, Input, FormField, Alert, Card } from '@nutrishop/ui';
 
-export default function RegisterPage() {
+function RegisterForm() {
   const { t } = useLanguage();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect');
   const {
     name,
     setName,
@@ -86,11 +90,22 @@ export default function RegisterPage() {
 
         <p className="mt-6 text-center text-sm text-gray-500">
           {t('register.hasAccount')}{' '}
-          <Link href="/login" className="text-blue-600 no-underline">
+          <Link
+            href={redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login'}
+            className="text-blue-600 no-underline"
+          >
             {t('register.signIn')}
           </Link>
         </p>
       </Card>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <RegisterForm />
+    </Suspense>
   );
 }

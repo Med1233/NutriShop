@@ -3,6 +3,18 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
 import { translateError } from '../i18n/errorMessages';
+import type { User } from '../types';
+
+const roleHomePage: Record<string, string> = {
+  admin: '/admin',
+  manager: '/manager',
+  stockist: '/stockist',
+};
+
+function getRedirectPath(user: User, redirectParam: string | null): string {
+  if (redirectParam) return redirectParam;
+  return roleHomePage[user.role] || '/';
+}
 
 export function useLogin() {
   const { login } = useAuth();
@@ -28,8 +40,9 @@ export function useLogin() {
     setSubmitting(false);
     if (result.error) {
       setError(translateError(result.error, t));
-    } else {
-      router.push('/');
+    } else if (result.user) {
+      const redirect = searchParams.get('redirect');
+      router.push(getRedirectPath(result.user, redirect));
     }
   };
 

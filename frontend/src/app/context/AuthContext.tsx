@@ -14,12 +14,15 @@ import type { User } from '../types';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<{ error?: string }>;
+  login: (
+    email: string,
+    password: string,
+  ) => Promise<{ error?: string; user?: User }>;
   register: (
     email: string,
     password: string,
     name: string,
-  ) => Promise<{ error?: string }>;
+  ) => Promise<{ error?: string; user?: User }>;
   logout: () => Promise<void>;
   refresh: () => Promise<boolean>;
   updateProfile: (data: {
@@ -81,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const data = await res.json();
     if (res.ok) {
       setUser(data.user);
-      return {};
+      return { user: data.user };
     }
     return { error: data.error };
   };
@@ -94,7 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const data = await res.json();
     if (res.ok) {
       setUser(data.user);
-      return {};
+      return { user: data.user };
     }
     return { error: data.error };
   };
