@@ -3,7 +3,7 @@ const { Resend } = require('resend');
 async function sendVerificationEmail(to, token, name) {
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
   const verifyUrl = `${frontendUrl}/verify-email?token=${token}`;
-  
+
   const apiKey = process.env.RESEND_API_KEY;
 
   const html = `
