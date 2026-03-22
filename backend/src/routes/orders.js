@@ -77,15 +77,22 @@ router.post('/', requireVerified, async (req, res) => {
     await client.query('COMMIT');
 
     // Email admin/managers about new order (non-blocking)
+    const orderItems = cartItems.map((i) => ({
+      name: i.name,
+      quantity: i.quantity,
+      price: i.price,
+    }));
     pool
       .query("SELECT email, name FROM users WHERE role IN ('admin', 'manager')")
       .then(({ rows: staff }) => {
         for (const s of staff) {
           sendNewOrderEmail(s.email, {
             name: s.name,
-            orderId: order.id,
             total: order.total,
             customerName: req.user.name,
+            customerEmail: req.user.email,
+            items: orderItems,
+            shippingAddress: shipping_address,
           }).catch((err) => console.error('New order email error:', err));
         }
       })
@@ -226,15 +233,27 @@ router.put('/:id/status', requireStaff, async (req, res) => {
     await client.query('COMMIT');
 
     // Email customer about status change (non-blocking)
-    pool
-      .query('SELECT email, name FROM users WHERE id = $1', [orders[0].user_id])
-      .then(({ rows }) => {
-        if (rows[0]) {
-          sendOrderStatusEmail(rows[0].email, {
-            name: rows[0].name,
-            orderId: parseInt(req.params.id),
+    const oid = parseInt(req.params.id);
+    Promise.all([
+      pool.query('SELECT email, name FROM users WHERE id = $1', [
+        orders[0].user_id,
+      ]),
+      pool.query(
+        `SELECT oi.quantity, oi.price, p.name
+         FROM order_items oi JOIN products p ON oi.product_id = p.id
+         WHERE oi.order_id = $1`,
+        [oid],
+      ),
+    ])
+      .then(([userRes, itemsRes]) => {
+        if (userRes.rows[0]) {
+          sendOrderStatusEmail(userRes.rows[0].email, {
+            name: userRes.rows[0].name,
             status,
             total: `$${orders[0].total}`,
+            items: itemsRes.rows,
+            shippingAddress: orders[0].shipping_address,
+            orderDate: orders[0].created_at,
           }).catch((err) => console.error('Status email error:', err));
         }
       })
