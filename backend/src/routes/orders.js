@@ -227,9 +227,7 @@ router.put('/:id/status', requireStaff, async (req, res) => {
 
     // Email customer about status change (non-blocking)
     pool
-      .query('SELECT email, name FROM users WHERE id = $1', [
-        orders[0].user_id,
-      ])
+      .query('SELECT email, name FROM users WHERE id = $1', [orders[0].user_id])
       .then(({ rows }) => {
         if (rows[0]) {
           sendOrderStatusEmail(rows[0].email, {
