@@ -6,6 +6,7 @@ Given('a customer user exists', () => {
     password: 'pass1234',
     name: 'Customer',
     role: 'customer',
+    email_verified: true,
   });
 });
 
